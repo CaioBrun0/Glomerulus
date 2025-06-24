@@ -1,6 +1,6 @@
 import './Login.css'
 
-function Login({isOpen, onClose}) {
+function Login({isOpen, onClose, onOpenRegister}) {
     if (!isOpen) return null;
 
   return (
@@ -13,7 +13,7 @@ function Login({isOpen, onClose}) {
                 <button type='submit'>Entrar</button>
                 <a href="http://">Esqueceu a senha?</a>
                 <p>ou</p>
-                <button>Cadastro</button>
+                <button type='button' onClick={onOpenRegister}>Cadastro</button>
             </form>
 
             <button className='close-btn' onClick={onClose}>x</button>

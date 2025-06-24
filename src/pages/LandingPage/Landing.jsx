@@ -1,10 +1,12 @@
 import Gradiente from "../../assets/Gradiente-tela-principal.png";
 import { useState } from "react";
-import Login from '../Login/Login.jsx'
+import Login from '../Login/Login.jsx';
+import Register from '../Register/Register.jsx';
 import './Landing.css'
 
 function Landing() {
   const [modalOpen, setModalOpen] = useState(false);
+  const [modalRegisterOpen, setModalRegisterOpen] = useState(false);
 
   return (
     <>
@@ -26,7 +28,20 @@ function Landing() {
         <img src={Gradiente} alt="" />
       </div>
 
-      <Login isOpen={modalOpen} onClose={() => setModalOpen(false)} />
+      <Login isOpen={modalOpen}
+       onClose={() => setModalOpen(false)}
+       onOpenRegister={() => {
+        setModalOpen(false);
+        setModalRegisterOpen(true);
+       }}
+       />
+
+      <Register
+      isOpen={modalRegisterOpen}
+      onClose={() => setModalRegisterOpen(false)}
+      onOpenLogin={() => setModalOpen(true)}
+      />
+      
     </>
   );
 }
