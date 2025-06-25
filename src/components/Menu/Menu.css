@@ -1,0 +1,43 @@
+/* Garante que body e html ocupem 100% da altura da tela */
+html, body {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  justify-content: start;
+  align-items: start;
+}
+
+/* Atualiza a .principal para ocupar altura total e se ajustar */
+.principal {
+  display: flex;
+  align-items: start;
+  flex-direction: column;
+  height: 100vh; /* ocupa a altura total da viewport */
+  width: 100%;
+  background-color: white;
+  padding: 1rem;
+  box-sizing: border-box;
+  box-shadow: 0 0 3px rgba(0,0,0,0.3);
+}
+
+/* Ícones com animação */
+.icon {
+  display: flex;
+  max-width: 26px;
+  height: auto;
+  margin-bottom: 1rem;
+  margin-top: 20px;
+  cursor: pointer;
+  transition: transform 0.2s ease-in-out;
+}
+
+
+
+.icon:hover {
+  transform: scale(1.1);
+}
+
+.principal img {
+  width: 100%;
+  max-width: 26px;
+}
