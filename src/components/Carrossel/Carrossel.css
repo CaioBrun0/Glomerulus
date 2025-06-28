@@ -1,0 +1,54 @@
+.carrossel-container {
+  position: relative;
+  width: 750px; /* 3 * 300px + espaçamento */
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.carrossel {
+  display: flex;
+  overflow-x: auto;
+  padding: 10px;
+  gap: 3rem;
+  scroll-behavior: smooth;
+  scrollbar-width: none; /* Firefox */
+  flex-wrap: nowrap;
+
+}
+
+.carrossel > * {
+  flex: 0 0 175px; /* cada card ocupa exatamente 300px */
+}
+
+.carrossel::-webkit-scrollbar {
+  display: none; /* Chrome, Safari */
+}
+
+.seta {
+  background-color: rgba(0, 0, 0, 0.05);
+  border: none;
+  font-size: 2rem;
+  cursor: pointer;
+  padding: 0.5rem;
+  z-index: 2;
+  transition: transform 0.2s ease;
+}
+
+.seta:hover {
+  transform: scale(1.2);
+  color: #6C63FF;
+  box-shadow: 0 0 5px rgba(0,0,0,0.3);
+
+}
+
+.esquerda {
+  position: absolute;
+  left: 0;
+}
+
+.direita {
+  position: absolute;
+  right: 0;
+}

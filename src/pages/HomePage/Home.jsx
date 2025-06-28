@@ -1,18 +1,28 @@
 import Menu from "../../components/Menu/Menu"
 import CardAmbiente from "../../components/cardAmbiente/cardAmbiente"
-import Imagem1 from "../../assets/img-inovacao-medica.jpg"
+import Imagem1 from "../../assets/img-inovacao-medica.png"
 import Imagem2 from "../../assets/card1.png"
 import Imagem3 from "../../assets/card2.png"
+import Carrossel from "../../components/Carrossel/Carrossel.jsx"
 import "./Home.css"
 
 
 function Home() {
     const imagensAvaliadas = 0;
     const ambiantesDisponiveis = 3;
+    const dados = [
+        {tipo: "Crescente", quantidade: 578},
+        {tipo: "Membronosa", quantidade: 128},
+        {tipo: "Titanica", quantidade: 225},
+
+    ]
     return(
         <>        
         <div className="main-content">
-            <Menu/>
+
+            <Menu/>{/*Menu lateral */}
+
+            {/*Parte de cima da página*/}
             <div className="topo">
                 <img src={Imagem1} alt="inovacaoMedica" className="img-inovacao"/>
 
@@ -28,6 +38,23 @@ function Home() {
                     <p>Não deixe para amanhã o que você pode fazer hoje</p>
                 </div>
             </div>
+            
+            <h2 style={{color: "black", marginLeft: "10px"}}>Ambientes</h2>
+
+            {/*Parte de ambientes */}
+            <div className="carrossel-ambientes">
+                <Carrossel>
+                {dados.map((item, index) =>(
+                    <CardAmbiente
+                        key={index}
+                        type={item.tipo}
+                        amount={item.quantidade}
+                    />    
+                ))}
+                </Carrossel>
+            </div>
+            
+
         </div>
         </>
     )

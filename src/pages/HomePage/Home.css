@@ -1,21 +1,24 @@
-body{
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    margin: 0;
-    overflow: hidden;
-
+html, body {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  width: 100%;
+  overflow-x: hidden; /* evita scroll lateral indesejado */
+  overflow-y: auto;
+  box-sizing: border-box;
 }
 
 .main-content {
-    margin-left: 160px;
+  margin-left: 80px; /* igual à largura do seu menu */
+  padding: 1rem;
+  box-sizing: border-box;
+  width: calc(100% - 80px);
 }
 
 .topo {
     width: 100vw;
     height: 300px;
     display: flex;
-    margin-top: 2px;
     flex-direction: row;
     align-items: center;
     justify-content: center;
@@ -31,6 +34,8 @@ body{
     max-width: 440px;
     height: 275px;
     margin-right: 60px;
+    box-shadow: 0px 0 4px rgba(0,0,200,0.2);
+
 }
 
 .cardTopo {
@@ -47,6 +52,7 @@ body{
     box-shadow: 0px 0 4px rgba(0,0,200,0.2);
     flex-shrink: 0;
     aspect-ratio: 27/22;
+    
 }
 
 .cardTopo p{
@@ -81,3 +87,12 @@ body{
 }
 
 
+/*Parte de ambientes*/
+
+.carrossel-ambientes {
+    width: 90%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: black;
+}
