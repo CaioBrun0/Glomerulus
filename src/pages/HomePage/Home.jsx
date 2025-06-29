@@ -4,6 +4,7 @@ import Imagem1 from "../../assets/img-inovacao-medica.png"
 import Imagem2 from "../../assets/card1.png"
 import Imagem3 from "../../assets/card2.png"
 import Carrossel from "../../components/Carrossel/Carrossel.jsx"
+import ImagemFallback from "../../assets/ambiente-indisponivel.png"
 import "./Home.css"
 
 
@@ -11,10 +12,11 @@ function Home() {
     const imagensAvaliadas = 0;
     const ambiantesDisponiveis = 3;
     const dados = [
-        {tipo: "Crescente", quantidade: 578},
+        /*{tipo: "Crescente", quantidade: 578},
         {tipo: "Membronosa", quantidade: 128},
         {tipo: "Titanica", quantidade: 225},
-
+        {tipo: "Teste 2", quantidade: 225},
+        {tipo: "Teste 3", quantidade: 225},*/
     ]
     return(
         <>        
@@ -42,16 +44,22 @@ function Home() {
             <h2 style={{color: "black", marginLeft: "10px"}}>Ambientes</h2>
 
             {/*Parte de ambientes */}
-            <div className="carrossel-ambientes">
+           <div className="carrossel-ambientes">
+            {dados.length === 0 ? (
+                <div className="sem-conteudo">
+                <img src={ImagemFallback} alt="Sem conteúdo" />
+                </div>
+            ) : (
                 <Carrossel>
-                {dados.map((item, index) =>(
+                {dados.map((item, index) => (
                     <CardAmbiente
-                        key={index}
-                        type={item.tipo}
-                        amount={item.quantidade}
-                    />    
+                    key={index}
+                    type={item.tipo}
+                    amount={item.quantidade}
+                    />
                 ))}
                 </Carrossel>
+            )}
             </div>
             
 

@@ -1,6 +1,6 @@
 .carrossel-container {
   position: relative;
-  width: 750px; /* 3 * 300px + espaçamento */
+  width: 950px; /* 3 * 300px + espaçamento */
   overflow: hidden;
   display: flex;
   align-items: center;
@@ -27,7 +27,7 @@
 }
 
 .seta {
-  background-color: rgba(0, 0, 0, 0.05);
+  background-color: rgba(102, 0, 255, 0.60);
   border: none;
   font-size: 2rem;
   cursor: pointer;
@@ -39,16 +39,19 @@
 .seta:hover {
   transform: scale(1.2);
   color: #6C63FF;
+  background-color: rgba(141, 141, 141, 0.6);
   box-shadow: 0 0 5px rgba(0,0,0,0.3);
 
 }
 
 .esquerda {
+  margin-left: 5px;
   position: absolute;
   left: 0;
 }
 
 .direita {
+  margin-right: 5px;
   position: absolute;
   right: 0;
 }
