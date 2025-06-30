@@ -1,7 +1,12 @@
 // Menu.jsx
 import './Menu.css';
+import AdmsInfo from '../../pages/AdmInfo/AdmInfo';
+import {useState} from 'react';
+
 
 function Menu() {
+  const [viewModal, setViewModal] = useState(false)
+
   return (
     <div className="principal">
       <div className="icons">
@@ -34,8 +39,9 @@ function Menu() {
             </svg>
             {/* <span className='icon-label'>ùltimo Formulário</span> */}
         </div>
+
         {/* ADM */}
-        <div className='icon-wrapper'>
+        <div className='icon-wrapper' onClick={() => setViewModal(true)}>
             <svg className='icon adm' xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
                 <path d="M23 21V19C22.9993 18.1136 22.7044 17.2527 22.1614 16.5522C21.6184 15.8517 20.8581 15.3515 20 15.1299" stroke="#191D23" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
                 <path d="M17 21V19C17 17.9391 16.5786 16.9217 15.8284 16.1716C15.0783 15.4214 14.0609 15 13 15H5C3.93913 15 2.92172 15.4214 2.17157 16.1716C1.42143 16.9217 1 17.9391 1 19V21" stroke="#191D23" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
@@ -43,6 +49,7 @@ function Menu() {
                 <path d="M9 11C11.2091 11 13 9.20914 13 7C13 4.79086 11.2091 3 9 3C6.79086 3 5 4.79086 5 7C5 9.20914 6.79086 11 9 11Z" stroke="#191D23" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
             </svg>
             {/* <span className='icon-label'>Administradores</span> */}
+             <AdmsInfo open={viewModal} onClose={() => setViewModal(false)} />
         </div>
       </div>
 
@@ -58,3 +65,7 @@ function Menu() {
 }
 
 export default Menu;
+
+
+
+

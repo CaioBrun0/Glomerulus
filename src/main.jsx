@@ -6,6 +6,7 @@ import Login from './pages/Login/Login.jsx'
 import CardAmbiente from './components/cardAmbiente/cardAmbiente.jsx'
 import Menu from './components/Menu/Menu.jsx'
 import Home from './pages/HomePage/Home.jsx'
+import AdmInfo from "./pages/AdmInfo/AdmInfo.jsx"
 
 createRoot(document.getElementById('root')).render(
   <StrictMode>

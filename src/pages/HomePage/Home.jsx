@@ -12,11 +12,11 @@ function Home() {
     const imagensAvaliadas = 0;
     const ambiantesDisponiveis = 3;
     const dados = [
-        /*{tipo: "Crescente", quantidade: 578},
+        {tipo: "Crescente", quantidade: 578},
         {tipo: "Membronosa", quantidade: 128},
         {tipo: "Titanica", quantidade: 225},
         {tipo: "Teste 2", quantidade: 225},
-        {tipo: "Teste 3", quantidade: 225},*/
+        {tipo: "Teste 3", quantidade: 225},
     ]
     return(
         <>        
