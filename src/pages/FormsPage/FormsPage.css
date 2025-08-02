@@ -1,0 +1,31 @@
+html, body {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  width: 100%;
+  overflow-x: hidden; /* evita scroll lateral indesejado */
+  overflow-y: auto;
+  box-sizing: border-box;
+}
+
+.geral {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100vmax;
+  height: 100vh;
+}
+
+.main-wrapper {
+  padding: 10px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 900px;
+  height: 500px;
+  box-shadow: 0 0 2px rgba(0,0,0, 0.4);
+}
+
+.forms-direita {
+  margin-left: auto; /* empurra o componente para a extrema direita */
+}

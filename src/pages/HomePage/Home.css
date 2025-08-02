@@ -9,7 +9,7 @@ html, body {
 }
 
 .main-content {
-  margin-left: 80px; /* igual à largura do seu menu */
+  margin-left: 62px; /* igual à largura do seu menu */
   padding: 1rem;
   box-sizing: border-box;
   width: calc(100% - 80px);

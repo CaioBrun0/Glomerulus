@@ -7,9 +7,11 @@ import CardAmbiente from './components/cardAmbiente/cardAmbiente.jsx'
 import Menu from './components/Menu/Menu.jsx'
 import Home from './pages/HomePage/Home.jsx'
 import AdmInfo from "./pages/AdmInfo/AdmInfo.jsx"
+import FormsPage from './pages/FormsPage/FormsPage.jsx';
+import FormsAmbiente from './components/FormsAmbiente/FormsAmbiente.jsx';
 
 createRoot(document.getElementById('root')).render(
   <StrictMode>
-    <Home/>
+    <Landing/>
   </StrictMode>,
 )

@@ -3,25 +3,27 @@ body {
   background-color: white;
 }
 
-.Navbar {
+.Navbar1 {
+  color: black;
   top: 0;
   margin-left: 60px;
-  margin-top: 10px;
   display: flex;
   padding: 1rem;
   z-index: 1000;
 
 }
 
-.Navbar a{
+.Navbar1 a{
+  text-decoration: underline;
   font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
   font-size: 25px;
   color: rgb(0, 0, 0);
   margin-left: 20px;
+
 }
 
-.Navbar a:hover{
-  opacity: 50%;
+.Navbar1 a:hover{
+  color: #1C75BC;
 }
 
 .principal {
@@ -35,7 +37,7 @@ body {
 
 .principal img{
   width: 100%;
-  max-width: 700px;
+  max-width: 650px;
   height: auto;
   
 }
@@ -70,6 +72,7 @@ body {
 
 .button:hover{
   opacity: 80%;
+  transform: scale(1.03);
 
 }
 

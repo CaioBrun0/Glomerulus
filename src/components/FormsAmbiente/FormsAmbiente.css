@@ -1,0 +1,37 @@
+.forms-base {
+    width: 350px;
+    height: 472px;
+    background-color: rgb(255, 255, 255);
+    box-shadow: 0 0 2px rgba(0,0,0,0.5);
+    border-radius: 16px;
+    color: black;
+}
+
+.forms-base button[type="submit"]  {
+    width: 180px;
+    margin-left: 88px;
+    margin-top: 5px;
+    background-color: #6C63FF;
+    color: white;
+    border: none;
+    padding: 0.8rem;
+    border-radius: 30px;
+    cursor: pointer;
+}
+.forms-base button:hover  {
+    transform: scale(1.02);
+}
+
+.forms-base h2 {
+    font-size: 17px;
+    color: white;
+    background-color: #6C63FF;
+    text-align: center;
+    border-radius: 16px;
+    padding: 6px;
+}
+
+.forms-control{
+    padding: 4px;
+}
+

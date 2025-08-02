@@ -7,8 +7,8 @@ html, body {
   align-items: start;
 }
 
-/* Atualiza a .principal para ocupar altura total e se ajustar */
-.principal {
+/* Atualiza a .princ para ocupar altura total e se ajustar */
+.princ {
   position: fixed;           /* Faz o menu ficar fixo na tela */
   top: 0;
   left: 0;
@@ -41,7 +41,15 @@ html, body {
   transform: scale(1.1);
 }
 
-.principal img {
+#icon-out {
+  margin-top: 230px;
+}
+
+#icon-out:hover .icon path{
+  fill: brown;
+}
+
+.princ img {
   width: 100%;
   max-width: 26px;
 }
