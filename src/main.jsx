@@ -15,6 +15,6 @@ import CardGreenList from './components/CardsAdmin/greenList/CardgreenList.jsx';
 
 createRoot(document.getElementById('root')).render(
   <StrictMode>
-    <CardGreenList/>
+    <HomePageAdmin/>
   </StrictMode>,
 )

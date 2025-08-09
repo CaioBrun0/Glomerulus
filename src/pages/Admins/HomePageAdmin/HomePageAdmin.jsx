@@ -1,8 +1,13 @@
 import "./HomePageAdmin.css";
-import ImgNav from "../../../assets/navAdmin.png";  
+import ImgNav from "../../../assets/navAdmin.png";
+import CardGreenList from "../../../components/CardsAdmin/greenList/CardgreenList.jsx";
+import ModalGreenList from "../../../pages/Admins/ModalGreenList/ModalGreenList.jsx";
+import { useState } from "react";
+
 
 
 function HomePageAdmin() {
+    const [isGreenListOpen, setIsGreenListOpen] = useState(false);
     return (
     <>
         <div className="navHomeAdmin">
@@ -11,8 +16,10 @@ function HomePageAdmin() {
         </div>
 
         <div className="cardArea"> 
-            
+            <CardGreenList onOpen={() => setIsGreenListOpen(true)} />
         </div>
+
+        {isGreenListOpen && <ModalGreenList onClose={() => setIsGreenListOpen(false)} />}
     </>
     
     )

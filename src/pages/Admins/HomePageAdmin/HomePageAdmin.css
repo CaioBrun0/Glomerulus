@@ -1,13 +1,13 @@
 .navHomeAdmin {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    text-align: center;
-    width: 100vw;
-    height: 310px;
-    color: black;
-    box-shadow: 0 1px 1px rgba(0, 0, 0, 0.1);
+  display: flex;
+  flex-direction: column;
+  align-items: center;       /* centraliza horizontalmente */
+  justify-content: center;   /* centraliza verticalmente */
+  text-align: center;
+  width: 100vw;              /* ocupa toda a largura da tela */
+  padding: 20px;
+  box-sizing: border-box;
+  box-shadow: 0 1px 1px rgba(0, 0, 0, 0.1);
 }
 
 .navHomeAdmin h1 {
@@ -23,3 +23,12 @@
     height: 215px;
     flex-shrink: 0;
 }
+
+.cardArea {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 20px;
+  padding: 20px;
+}
+
+
