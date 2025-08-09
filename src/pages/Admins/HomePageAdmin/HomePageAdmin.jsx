@@ -3,6 +3,7 @@ import ImgNav from "../../../assets/navAdmin.png";
 import CardGreenList from "../../../components/CardsAdmin/greenList/CardgreenList.jsx";
 import ModalGreenList from "../../../pages/Admins/ModalGreenList/ModalGreenList.jsx";
 import CardCriarAmbiente from "../../../components/CardsAdmin/CardCriarAmbiente/CardCriarAmbiente.jsx";
+import CardAmbientes from "../../../components/CardsAdmin/AmbientesAdmin/CardAmbientesAdmin.jsx";
 import { useState } from "react";
 
 
@@ -19,14 +20,18 @@ function HomePageAdmin() {
         <div className="cardArea"> 
             <CardGreenList onOpen={() => setModalAberto('greenList')} />
             <CardCriarAmbiente onOpen={() => setModalAberto('criarAmbiente')} />
+            <CardAmbientes onOpen={() => setModalAberto('ambientes')} />
         </div>
 
         {modalAberto === 'greenList' && (
-                <ModalGreenList onClose={() => setModalAberto(null)} />
+            <ModalGreenList onClose={() => setModalAberto(null)} />
             )}
-            {modalAberto === 'criarAmbiente' && (
-                <ModalCriarAmbiente onClose={() => setModalAberto(null)} />
-            )}
+        {modalAberto === 'criarAmbiente' && (
+            <ModalCriarAmbiente onClose={() => setModalAberto(null)} />
+        )}
+        {modalAberto === 'ambientes' && (
+            <ModalAmbientes onClose={() => setModalAberto(null)} />
+        )}
     </>
     
     )
