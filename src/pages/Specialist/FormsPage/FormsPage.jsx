@@ -1,6 +1,6 @@
 import './FormsPage.css'
-import Menu from '../../components/Menu/Menu.jsx';
-import FormsAmbiente from '../../components/FormsAmbiente/FormsAmbiente.jsx';
+import Menu from '../../../components/Menu/Menu.jsx';
+import FormsAmbiente from '../../../components/FormsAmbiente/FormsAmbiente.jsx';
 
 function FormsPage(){
     return(

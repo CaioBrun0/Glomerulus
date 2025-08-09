@@ -1,0 +1,25 @@
+.navHomeAdmin {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    width: 100vw;
+    height: 310px;
+    color: black;
+    box-shadow: 0 1px 1px rgba(0, 0, 0, 0.1);
+}
+
+.navHomeAdmin h1 {
+    color: rgb(168, 168, 168);
+    font-weight: 700;
+    font-size: 40px;
+    margin-bottom: 40px;
+}
+
+.navHomeAdmin img {
+    margin-top: 50px;
+    width: 295px;
+    height: 215px;
+    flex-shrink: 0;
+}

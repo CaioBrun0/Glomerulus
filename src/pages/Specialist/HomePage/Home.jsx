@@ -1,12 +1,11 @@
-import Menu from "../../components/Menu/Menu"
-import CardAmbiente from "../../components/cardAmbiente/cardAmbiente"
-import Imagem1 from "../../assets/img-inovacao-medica.png"
-import Imagem2 from "../../assets/card1.png"
-import Imagem3 from "../../assets/card2.png"
-import Carrossel from "../../components/Carrossel/Carrossel.jsx"
-import ImagemFallback from "../../assets/ambiente-indisponivel.png"
+import Menu from "../../../components/Menu/Menu.jsx"
+import CardAmbiente from "../../../components/cardAmbiente/cardAmbiente.jsx"
+import Imagem1 from "../../../assets/img-inovacao-medica.png"
+import Imagem2 from "../../../assets/card1.png" 
+import Imagem3 from "../../../assets/card2.png"
+import Carrossel from "../../../components/Carrossel/Carrossel.jsx"
+import ImagemFallback from "../../../assets/ambiente-indisponivel.png"
 import "./Home.css"
-
 
 function Home() {
     const imagensAvaliadas = 0;

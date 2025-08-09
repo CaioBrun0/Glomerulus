@@ -1,6 +1,6 @@
 // Menu.jsx
 import './Menu.css';
-import AdmsInfo from '../../pages/AdmInfo/AdmInfo';
+import AdmsInfo from '../../pages/Specialist/AdmInfo/AdmInfo';
 import {useState} from 'react';
 
 
