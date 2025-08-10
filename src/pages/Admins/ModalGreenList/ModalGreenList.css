@@ -13,9 +13,116 @@
 
 .modalContent {
   background: white;
+  color: black;
   padding: 20px;
   border-radius: 12px;
   width: 400px;
   text-align: center;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
 }
+
+.navGreenList {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #6C63FF; /* Cor verde */
+  height: 50px;
+  color: white;
+  padding: 10px;
+  border-radius: 12px 8px 0 0;
+  margin: -20px -20px 20px -20px; /* Ajusta a margem para cobrir a borda do modal */
+  
+}
+
+.navGreenList button {
+  position: absolute;
+  top: 1px;
+  right: 1px;
+  background: transparent;
+  border: none;
+  font-size: 16px;
+  cursor: pointer;
+}
+
+.navGreenList:hover button {
+  color: black;
+}
+
+.infoGreenContainer  {
+  margin-top: 10px;
+  font-size: 14px;
+  color: #333;
+  box-shadow: 0px 0px 2px rgba(0, 0, 0, 0.3);
+}
+
+.infoGreenContainer h2 {
+  margin: 23px 0 2px 0; /* margem superior menor e inferior pequena */
+  font-size: 20px;
+}
+
+.infoGreenContainer input {
+  margin-bottom: 1px; /* reduz o espaço após o input */
+}
+
+.buttonsFormsGreen {
+  display: flex;
+  justify-content: center;
+  gap: 12px; /* Espaçamento horizontal entre os botões */
+  padding-bottom: 15px;
+  margin: 0 0 0 0; /* reduz o espaço acima dos botões */
+}
+
+.buttonsFormsGreen button {
+  background-color: transparent;
+  box-shadow:  0px 0px 2px rgba(0, 0, 0, 0.3);
+  width: 140px;
+  color: #979798;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 16px;
+}
+
+.buttonsFormsGreen button:hover,
+.buttonsFormsGreen button.active {
+  color: #6C63FF;
+  box-shadow: 0px 0px 3px #6C63FF;
+  font-weight: bold;
+}
+
+.buttonsFormsGreen button:focus {
+  outline: none;
+  box-shadow: 0px 0px 3px #6C63FF; /* mantém o box-shadow azul do hover/active */
+}
+
+.buttonsSubGreen {
+  display: flex;
+  justify-content: center;
+  margin: 20px;
+  gap: 12px; /* Espaçamento horizontal entre os botões */
+}
+
+.buttonsSubGreen button {
+  background-color: transparent;
+  box-shadow:  0px 0px 2px rgba(0, 0, 0, 0.3);
+  width: 140px;
+  color: #979798;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 16px;
+}
+
+.buttonsSubGreen button:first-child:hover {
+  background-color: #00cf07; /* Verde para "Adicionar" */
+  color: #fff;
+}
+
+.buttonsSubGreen button:last-child:hover {
+  background-color: #f44336; /* Vermelho para "Remover" */
+  color: #fff;
+}
+
