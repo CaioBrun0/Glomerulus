@@ -1,0 +1,187 @@
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap');
+
+.modalOverlay-CriarAmbiente {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(0, 0, 0, 0.45);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  font-family: 'Roboto', Arial, sans-serif;
+}
+
+.modalContent-CriarAmbiente {
+  background: #fff;
+  color: #222;
+  padding: 32px 24px 24px 24px;
+  border-radius: 16px;
+  width: 420px;
+  max-width: 95vw;
+  text-align: left;
+  box-shadow: 0 8px 32px rgba(108, 99, 255, 0.18), 0 1.5px 8px rgba(0,0,0,0.10);
+  font-family: 'Roboto', Arial, sans-serif;
+  position: relative;
+  animation: modalFadeIn 0.3s;
+}
+
+
+@keyframes modalFadeIn {
+  from { opacity: 0; transform: translateY(-30px);}
+  to   { opacity: 1; transform: translateY(0);}
+}
+
+.navCriarAmbiente {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(90deg, #6C63FF 60%, #8577ff 100%);
+  height: 54px;
+  color: #fff;
+  padding: 0 16px;
+  border-radius: 14px 14px 0 0;
+  margin: -32px -24px 24px -24px;
+  font-size: 1.3rem;
+  font-weight: 700;
+  letter-spacing: 1px;
+  box-shadow: 0 2px 8px rgba(108, 99, 255, 0.10);
+}
+
+.navCriarAmbiente button {
+  position: absolute;
+  right: 1px;
+  background: transparent;
+  border: none;
+  font-size: 16px;
+  color: #fff;
+  cursor: pointer;
+  transition: color 0.2s;
+  font-weight: bold;
+}
+.navCriarAmbiente button:hover {
+  color: #ff4d4d;
+}
+
+.navCriarAmbiente h1{
+    font-size: 40px;
+}
+
+form label {
+  font-weight: 700;
+  color: #6C63FF;
+  margin-bottom: 4px;
+  display: block;
+  font-size: 1.05rem;
+  letter-spacing: 0.5px;
+}
+
+form input[type="text"] {
+  width: 100%;
+  padding: 10px 12px;
+  margin: 6px 0 12px 0;
+  border: 1.5px solid #e0e0e0;
+  border-radius: 8px;
+  font-size: 1rem;
+  background: #f7f7fb;
+  color: #222;
+  transition: border 0.2s;
+  font-family: 'Roboto', Arial, sans-serif;
+}
+form input[type="text"]:focus {
+  outline: none;
+}
+
+form input[type="file"] {
+  margin: 10px 0 18px 0;
+  font-size: 1rem;
+  color: #6C63FF;
+}
+
+form input[type="file"]::-webkit-file-upload-button {
+  background: #6C63FF;
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  padding: 7px 16px;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+form input[type="file"]:hover::-webkit-file-upload-button {
+  background: #8577ff;
+}
+
+form > div {
+  margin-bottom: 18px;
+}
+
+.perguntas-btns {
+  display: flex;
+  gap: 10px;
+  margin: 10px 0 0 0;
+}
+
+.perguntas-btns button {
+  padding: 7px 16px;
+  border: none;
+  border-radius: 6px;
+  font-size: 1rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.2s, color 0.2s;
+  box-shadow: 0 1px 4px rgba(108, 99, 255, 0.08);
+}
+
+.perguntas-btns button:first-child {
+  background: #6C63FF;
+  color: #fff;
+}
+.perguntas-btns button:first-child:hover {
+  background: #8577ff;
+}
+
+.perguntas-btns button:last-child {
+  background: #ff4d4d;
+  color: #fff;
+}
+.perguntas-btns button:last-child:disabled {
+  background: #ccc;
+  color: #fff;
+  cursor: not-allowed;
+}
+
+form button[type="submit"] {
+  width: 100%;
+  background: linear-gradient(90deg, #6C63FF 60%, #8577ff 100%);
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  padding: 12px 0;
+  font-size: 1.1rem;
+  font-weight: bold;
+  margin-top: 10px;
+  cursor: pointer;
+  box-shadow: 0 2px 8px rgba(108, 99, 255, 0.10);
+  transition: background 0.2s, box-shadow 0.2s;
+}
+form button[type="submit"]:hover {
+  background: #574fd6;
+  box-shadow: 0 4px 16px rgba(108, 99, 255, 0.18);
+}
+
+@media (max-width: 500px) {
+  .modalContent-CriarAmbiente {
+    width: 98vw;
+    padding: 12px 4vw 16px 4vw;
+    min-width: unset;
+  }
+  .navCriarAmbiente {
+    font-size: 1.1rem;
+    padding: 0 8px;
+    height: 48px;
+  }
+}

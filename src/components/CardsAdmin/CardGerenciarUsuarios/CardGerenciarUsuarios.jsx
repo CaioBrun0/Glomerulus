@@ -9,7 +9,7 @@ function CardGerenciarUsuarios({onOpen}) {
                 <img src={CardGerenciarUsuariosImg} alt="" className="img-default-GU" />
                 <img src={CardGerenciarUsuariosImgHover} alt="" className="img-hover-GU" />
             </div>
-            <h2>Gerenciar Usuários</h2>
+            <h2>Usuários</h2>
             <p>Neste espaço, você pode consultar facilmente os médicos e administradores ativos e inativos que fazem parte do sistema </p>
         </div>
     );

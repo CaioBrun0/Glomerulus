@@ -2,6 +2,7 @@ import "./HomePageAdmin.css";
 import ImgNav from "../../../assets/navAdmin.png";
 import CardGreenList from "../../../components/CardsAdmin/CardgreenList/CardgreenList.jsx";
 import ModalGreenList from "../../../pages/Admins/ModalGreenList/ModalGreenList.jsx";
+import ModalCriarAmbiente from "../../../pages/Admins/ModalCriarAmbiente/ModalCriarAmbiente.jsx";
 import CardCriarAmbiente from "../../../components/CardsAdmin/CardCriarAmbiente/CardCriarAmbiente.jsx";
 import CardAmbientes from "../../../components/CardsAdmin/CardAmbientesAdmin/CardAmbientesAdmin.jsx";
 import CardGerenciarUsuarios from "../../../components/CardsAdmin/CardGerenciarUsuarios/CardGerenciarUsuarios.jsx";
@@ -25,7 +26,7 @@ function HomePageAdmin() {
 
         {modalAberto === 'greenList' && (
             <ModalGreenList onClose={() => setModalAberto(null)} />
-            )}
+        )}
         {modalAberto === 'criarAmbiente' && (
             <ModalCriarAmbiente onClose={() => setModalAberto(null)} />
         )}

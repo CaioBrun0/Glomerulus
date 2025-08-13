@@ -32,7 +32,7 @@ function ModalGreenList({ onClose }) {
 
         <form onSubmit={handleSubmit}>
           <div className="infoGreenContainer">
-            <h2>Digite o email</h2>
+            <h2 style={{fontFamily:"Roboto, arial, sans-serif"}}>Digite o email</h2>
             <input
               type="email"
               name="email"
@@ -53,7 +53,7 @@ function ModalGreenList({ onClose }) {
               required
             />
 
-            <h2>Tipo de usuário</h2>
+            <h2 style={{fontFamily:"Roboto, arial, sans-serif"}}>Tipo de usuário</h2>
             <div className="buttonsFormsGreen">
               <button
                 className={selected === 1 ? "active" : ""}

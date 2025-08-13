@@ -10,7 +10,7 @@ function CardGreenList({onOpen}) {
                 <img src={CriarAmbienteImgHover} alt="GreenList hover" className="img-hover-CA" />
             </div>
             <h2>Criar Ambientes</h2>
-            <p>Neste espaço, você poderá fazer o upload da pasta de imagens e configurar as opções nescessárias </p>
+            <p>Neste espaço, você poderá fazer o upload da pasta de imagens e configurar as opções nescessárias</p>
         </div>
     );
 }
