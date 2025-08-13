@@ -12,10 +12,12 @@ import FormsAmbiente from './components/FormsAmbiente/FormsAmbiente.jsx';
 import HomePageAdmin from './pages/Admins/HomePageAdmin/HomePageAdmin.jsx';
 import CardGreenList from './components/CardsAdmin/CardgreenList/CardgreenList.jsx';
 import CardCriarAmbiente from './components/CardsAdmin/CardCriarAmbiente/CardCriarAmbiente.jsx';
+import InfoBoxAdmin from "./components/InfoBoxAdmin/infoBoxAdmin.jsx";
 
 
 createRoot(document.getElementById('root')).render(
   <StrictMode>
-    <HomePageAdmin/>
+    {/* <HomePageAdmin/> */}
+    <InfoBoxAdmin name={"Caio Bruno"} email={"kmbmatos2@gmail.com"}/>
   </StrictMode>,
 )
