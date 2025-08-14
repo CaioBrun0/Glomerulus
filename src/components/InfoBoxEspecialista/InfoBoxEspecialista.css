@@ -1,0 +1,24 @@
+.infoBoxButton {
+  background-color: transparent;
+  box-shadow: 0px 0px 2px rgba(0, 0, 0, 0.3);
+  width: 210px;
+  color: #979798;
+  border: none;
+  padding: 14px 20px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 16px;
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  gap: 8px;
+  transition: box-shadow 0.2s, color 0.2s;
+}
+
+.infoBoxButton:hover,
+.infoBoxButton:focus {
+  color: #6C63FF;
+  box-shadow: 0px 0px 3px #6C63FF;
+  font-weight: bold;
+  outline: none;
+}

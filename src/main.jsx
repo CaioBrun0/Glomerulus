@@ -13,11 +13,13 @@ import HomePageAdmin from './pages/Admins/HomePageAdmin/HomePageAdmin.jsx';
 import CardGreenList from './components/CardsAdmin/CardgreenList/CardgreenList.jsx';
 import CardCriarAmbiente from './components/CardsAdmin/CardCriarAmbiente/CardCriarAmbiente.jsx';
 import InfoBoxAdmin from "./components/InfoBoxAdmin/infoBoxAdmin.jsx";
+import InfoBoxEspecialista from "./components/InfoBoxEspecialista/InfoBoxEspecialista.jsx";
 
 
 createRoot(document.getElementById('root')).render(
   <StrictMode>
     {/* <HomePageAdmin/> */}
-    <InfoBoxAdmin name={"Caio Bruno"} email={"kmbmatos2@gmail.com"}/>
+    {/* <InfoBoxAdmin name={"Caio Bruno"} email={"kmbmatos2@gmail.com"}/> */}
+    <InfoBoxEspecialista name={"Caio Bruno"} email={"kmbmatos2@gmail.com"}/>
   </StrictMode>,
 )
