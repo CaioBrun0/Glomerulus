@@ -6,6 +6,7 @@ import ModalCriarAmbiente from "../../../pages/Admins/ModalCriarAmbiente/ModalCr
 import CardCriarAmbiente from "../../../components/CardsAdmin/CardCriarAmbiente/CardCriarAmbiente.jsx";
 import CardAmbientes from "../../../components/CardsAdmin/CardAmbientesAdmin/CardAmbientesAdmin.jsx";
 import CardGerenciarUsuarios from "../../../components/CardsAdmin/CardGerenciarUsuarios/CardGerenciarUsuarios.jsx";
+import ModalUsuarios from "../../../pages/Admins/ModalUsuarios/ModalUsuarios.jsx";
 import { useState } from "react";
 
 function HomePageAdmin() {
@@ -21,7 +22,7 @@ function HomePageAdmin() {
             <CardGreenList onOpen={() => setModalAberto('greenList')} />
             <CardCriarAmbiente onOpen={() => setModalAberto('criarAmbiente')} />
             <CardAmbientes onOpen={() => setModalAberto('ambientes')} />
-            <CardGerenciarUsuarios onOpen={() => setModalAberto('gerenciarUsuarios')} />
+            <CardGerenciarUsuarios onOpen={() => setModalAberto('usuarios')} />
         </div>
 
         {modalAberto === 'greenList' && (
@@ -33,8 +34,8 @@ function HomePageAdmin() {
         {modalAberto === 'ambientes' && (
             <ModalAmbientes onClose={() => setModalAberto(null)} />
         )}
-        {modalAberto === 'gerenciarUsuarios' && (
-            <ModalAmbientes onClose={() => setModalAberto(null)} />
+        {modalAberto === 'usuarios' && (
+            <ModalUsuarios onClose={() => setModalAberto(null)} />
         )}
     </>
     

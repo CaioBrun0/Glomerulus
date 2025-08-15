@@ -18,8 +18,8 @@ import InfoBoxEspecialista from "./components/InfoBoxEspecialista/InfoBoxEspecia
 
 createRoot(document.getElementById('root')).render(
   <StrictMode>
-    {/* <HomePageAdmin/> */}
+    <HomePageAdmin/>
     {/* <InfoBoxAdmin name={"Caio Bruno"} email={"kmbmatos2@gmail.com"}/> */}
-    <InfoBoxEspecialista name={"Caio Bruno"} email={"kmbmatos2@gmail.com"}/>
+    {/* <InfoBoxEspecialista name={"Caio Bruno"} email={"kmbmatos2@gmail.com"}/> */}
   </StrictMode>,
 )

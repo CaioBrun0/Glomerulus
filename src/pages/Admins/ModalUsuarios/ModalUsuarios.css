@@ -1,0 +1,62 @@
+.modalOverlay-Usuario {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(0, 0, 0, 0.4);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+.modalContent-Usuarios {
+
+  background: white;
+  color: black;
+  padding: 20px;
+  border-radius: 12px;
+  width: 650px;
+  text-align: center;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+}
+
+.navUsuarios {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #6C63FF; /* Cor verde */
+  height: 50px;
+  color: white;
+  padding: 10px;
+  border-radius: 12px 8px 0 0;
+  margin: -20px -20px 20px -20px; /* Ajusta a margem para cobrir a borda do modal */
+  
+}
+
+.navUsuarios button {
+  position: absolute;
+  top: 1px;
+  right: 1px;
+  background: transparent;
+  border: none;
+  font-size: 16px;
+  cursor: pointer;
+}
+
+.navUsuarios:hover button {
+  color: black;
+}
+
+.cardsInfoBox {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr); /* sempre duas colunas */
+    gap: 20px;
+    padding: 10px;
+    margin-top: 20px;
+    margin-left: 80px;
+    max-height: 430px;
+    overflow-y: auto;
+}
