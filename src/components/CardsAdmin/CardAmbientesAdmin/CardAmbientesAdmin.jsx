@@ -1,6 +1,6 @@
 import "./CardAmbientesAdmin.css";
-import CardAmbientesImg from '../../../assets/ambienteAdminImg.png';
-import CardAmbientesImgHover from '../../../assets/ambienteAdminImgHover.png';
+import CardAmbientesImg from '../../../assets/criarAmbienteCard.png';
+import CardAmbientesImgHover from '../../../assets/criarAmbienteCardHover.png';
 
 function CardAmbientes({onOpen}) {
     return (

@@ -71,6 +71,7 @@ function ModalCriarAmbiente({ onClose }) {
             style={{
               width: "100%",
               backgroundColor: "#f7f7fb",
+              color: "#333",
               margin: "6px 0 8px 0",
               padding: "8px",
               fontSize: "15px",

@@ -4,13 +4,26 @@ import CardGreenList from "../../../components/CardsAdmin/CardgreenList/Cardgree
 import ModalGreenList from "../../../pages/Admins/ModalGreenList/ModalGreenList.jsx";
 import ModalCriarAmbiente from "../../../pages/Admins/ModalCriarAmbiente/ModalCriarAmbiente.jsx";
 import CardCriarAmbiente from "../../../components/CardsAdmin/CardCriarAmbiente/CardCriarAmbiente.jsx";
+import ModalAmbientes from "../../../pages/Admins/ModalAmbientes/ModalAmbientes.jsx";
 import CardAmbientes from "../../../components/CardsAdmin/CardAmbientesAdmin/CardAmbientesAdmin.jsx";
 import CardGerenciarUsuarios from "../../../components/CardsAdmin/CardGerenciarUsuarios/CardGerenciarUsuarios.jsx";
 import ModalUsuarios from "../../../pages/Admins/ModalUsuarios/ModalUsuarios.jsx";
 import { useState } from "react";
 
+
 function HomePageAdmin() {
-    const [modalAberto, setModalAberto] = useState(null); // padronize o nome 
+    const [modalAberto, setModalAberto] = useState(null); 
+    // Simulação dos dados vindos do backend:
+    const ambientesAtivos = [
+        { id: 1, type: "Ambiente 1", amount: 12 },
+        { id: 2, type: "Ambiente 2", amount: 8 },
+        { id: 4, type: "Ambiente 4", amount: 15 },
+        { id: 5, type: "Ambiente 5", amount: 7 }
+    ];
+    const ambientesInativos = [
+        { id: 3, type: "Ambiente 3", amount: 5 }
+    ];
+
     return (
     <>
         <div className="navHomeAdmin">
@@ -20,7 +33,6 @@ function HomePageAdmin() {
 
         <div className="cardArea"> 
             <CardGreenList onOpen={() => setModalAberto('greenList')} />
-            <CardCriarAmbiente onOpen={() => setModalAberto('criarAmbiente')} />
             <CardAmbientes onOpen={() => setModalAberto('ambientes')} />
             <CardGerenciarUsuarios onOpen={() => setModalAberto('usuarios')} />
         </div>
@@ -28,14 +40,20 @@ function HomePageAdmin() {
         {modalAberto === 'greenList' && (
             <ModalGreenList onClose={() => setModalAberto(null)} />
         )}
-        {modalAberto === 'criarAmbiente' && (
-            <ModalCriarAmbiente onClose={() => setModalAberto(null)} />
-        )}
+        
         {modalAberto === 'ambientes' && (
-            <ModalAmbientes onClose={() => setModalAberto(null)} />
+            <ModalAmbientes onClose={() => setModalAberto(null)}
+            onCriarAmbiente={() => setModalAberto('criarAmbiente')}
+            ambientesAtivos={ambientesAtivos}
+            ambientesInativos={ambientesInativos} />
         )}
         {modalAberto === 'usuarios' && (
             <ModalUsuarios onClose={() => setModalAberto(null)} />
+        )}
+        {modalAberto === 'criarAmbiente' && (
+        <ModalCriarAmbiente
+            onClose={() => setModalAberto('ambientes')}
+        />
         )}
     </>
     
