@@ -34,7 +34,7 @@
 
 }
 
-@media (max-width: 600px) {
+@media (max-width: 633px) {
   .cardArea {
     grid-template-columns: 1fr;
     padding: 10px;

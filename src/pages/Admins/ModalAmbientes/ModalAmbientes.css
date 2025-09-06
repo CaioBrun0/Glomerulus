@@ -112,7 +112,10 @@
   overflow-y: auto;
   margin: 24px 0 0 0;
   padding: 9px;
-  margin-left: 90px;
+  padding-left: 100px;
+  padding-right: 50px;
+
+
 }
 
 .cardsInfoBox-Ambientes p {
@@ -132,6 +135,7 @@
   .cardsInfoBox-Ambientes {
     grid-template-columns: 1fr;
     max-height: 350px;
+    
   }
   .navAmbientes h1 {
     font-size: 1.3rem;
@@ -150,5 +154,11 @@
   .abasAmbientes button {
     padding: 8px 10px;
     font-size: 0.95rem;
+  }
+  .cardsInfoBox-Ambientes {
+    padding: 9px;
+    padding-left: 20px;
+    padding-right: 20px;
+    gap: 10px;
   }
 }

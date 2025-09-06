@@ -60,3 +60,14 @@
     max-height: 430px;
     overflow-y: auto;
 }
+
+@media (max-width: 500px) {
+  .cardsInfoBox {
+    grid-template-columns: 1fr;
+    max-height: 300px;
+    margin-left: 20px;
+    margin-right: 20px;
+    padding-left: 60px;
+  }
+  
+}

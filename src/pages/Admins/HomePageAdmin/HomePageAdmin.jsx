@@ -18,7 +18,12 @@ function HomePageAdmin() {
         { id: 1, type: "Ambiente 1", amount: 12 },
         { id: 2, type: "Ambiente 2", amount: 8 },
         { id: 4, type: "Ambiente 4", amount: 15 },
-        { id: 5, type: "Ambiente 5", amount: 7 }
+        { id: 5, type: "Ambiente 5", amount: 7 },
+        { id: 6, type: "Ambiente 6", amount: 12 },
+        { id: 7, type: "Ambiente 7", amount: 8 },
+        { id: 8, type: "Ambiente 8", amount: 15 },
+        { id: 9, type: "Ambiente 9", amount: 7 },
+
     ];
     const ambientesInativos = [
         { id: 3, type: "Ambiente 3", amount: 5 }
