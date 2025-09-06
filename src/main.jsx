@@ -11,7 +11,6 @@ import FormsPage from './pages/Specialist/FormsPage/FormsPage.jsx';
 import FormsAmbiente from './components/FormsAmbiente/FormsAmbiente.jsx';
 import HomePageAdmin from './pages/Admins/HomePageAdmin/HomePageAdmin.jsx';
 import CardGreenList from './components/CardsAdmin/CardgreenList/CardgreenList.jsx';
-import CardCriarAmbiente from './components/CardsAdmin/CardCriarAmbiente/CardCriarAmbiente.jsx';
 import InfoBoxAdmin from "./components/InfoBoxAdmin/infoBoxAdmin.jsx";
 import InfoBoxEspecialista from "./components/InfoBoxEspecialista/InfoBoxEspecialista.jsx";
 

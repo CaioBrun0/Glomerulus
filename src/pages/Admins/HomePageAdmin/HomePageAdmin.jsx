@@ -3,9 +3,9 @@ import ImgNav from "../../../assets/navAdmin.png";
 import CardGreenList from "../../../components/CardsAdmin/CardgreenList/CardgreenList.jsx";
 import ModalGreenList from "../../../pages/Admins/ModalGreenList/ModalGreenList.jsx";
 import ModalCriarAmbiente from "../../../pages/Admins/ModalCriarAmbiente/ModalCriarAmbiente.jsx";
-import CardCriarAmbiente from "../../../components/CardsAdmin/CardCriarAmbiente/CardCriarAmbiente.jsx";
 import ModalAmbientes from "../../../pages/Admins/ModalAmbientes/ModalAmbientes.jsx";
 import CardAmbientes from "../../../components/CardsAdmin/CardAmbientesAdmin/CardAmbientesAdmin.jsx";
+import CardDashboard from "../../../components/CardsAdmin/CardDashboard/CardDashboard.jsx";
 import CardGerenciarUsuarios from "../../../components/CardsAdmin/CardGerenciarUsuarios/CardGerenciarUsuarios.jsx";
 import ModalUsuarios from "../../../pages/Admins/ModalUsuarios/ModalUsuarios.jsx";
 import { useState } from "react";
@@ -35,6 +35,7 @@ function HomePageAdmin() {
             <CardGreenList onOpen={() => setModalAberto('greenList')} />
             <CardAmbientes onOpen={() => setModalAberto('ambientes')} />
             <CardGerenciarUsuarios onOpen={() => setModalAberto('usuarios')} />
+            <CardDashboard onOpen={() => setModalAberto('dashboard')} />
         </div>
 
         {modalAberto === 'greenList' && (
@@ -55,10 +56,10 @@ function HomePageAdmin() {
             onClose={() => setModalAberto('ambientes')}
         />
         )}
+
     </>
     
     )
-
 }
 
 export default HomePageAdmin;
