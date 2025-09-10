@@ -1,57 +1,88 @@
+:root {
+  --arrow-size: clamp(36px, 4vw, 54px);
+}
+
 .carrossel-container {
   position: relative;
-  width: 950px; /* 3 * 300px + espaçamento */
-  overflow: hidden;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  width: 100%;
+  max-width: 1200px; /* ajuste conforme necessário */
+  margin: 0 auto;
+  padding: 8px 56px; /* espaço lateral para as setas flutuantes */
+  box-sizing: border-box;
 }
 
 .carrossel {
   display: flex;
+  gap: 1rem;
   overflow-x: auto;
-  padding: 10px;
-  gap: 3rem;
   scroll-behavior: smooth;
   scrollbar-width: none; /* Firefox */
-  flex-wrap: nowrap;
-
-}
-
-.carrossel > * {
-  flex: 0 0 175px; /* cada card ocupa exatamente 300px */
+  -webkit-overflow-scrolling: touch;
+  padding: 8px 0;
 }
 
 .carrossel::-webkit-scrollbar {
-  display: none; /* Chrome, Safari */
+  display: none;
+}
+
+.carrossel-item {
+  flex: 0 0 clamp(90px, 22vw, 320px); /* responsivo: min 180px, ideal 22vw, max 320px */
+  box-sizing: border-box;
+  scroll-snap-align: center; /* se quiser o snap */
+}
+
+/* Estilo básico para o conteúdo interno - ajuste conforme seu CardAmbiente */
+.carrossel-item > * {
+  width: 90%;
+  height: 80%;
+  padding: 10px;
 }
 
 .seta {
-  background-color: rgba(102, 0, 255, 0.60);
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  width: var(--arrow-size);
+  height: var(--arrow-size);
+  border-radius: 50%;
   border: none;
-  font-size: 2rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: calc(var(--arrow-size) * 0.45);
+  background-color: rgba(108, 99, 255, 0.85);
+  color: white;
   cursor: pointer;
-  padding: 0.5rem;
-  z-index: 2;
-  transition: transform 0.2s ease;
+  z-index: 10;
+  transition: transform 0.18s ease, opacity 0.18s ease, background-color 0.18s ease;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.12);
 }
 
 .seta:hover {
-  transform: scale(1.2);
-  color: #6C63FF;
-  background-color: rgba(141, 141, 141, 0.6);
-  box-shadow: 0 0 5px rgba(0,0,0,0.3);
-
+  transform: translateY(-50%) scale(1.06);
 }
 
-.esquerda {
-  margin-left: 5px;
-  position: absolute;
-  left: 0;
+.seta.esquerda { left: 12px; }
+.seta.direita { right: 12px; }
+
+.seta.disabled {
+  opacity: 0.35;
+  cursor: default;
+  pointer-events: none;
 }
 
-.direita {
-  margin-right: 5px;
-  position: absolute;
-  right: 0;
+/* Media queries menores para ajustar espaçamentos */
+@media (max-width: 900px) {
+  .carrossel-container { padding: 6px 44px; }
+}
+
+@media (max-width: 640px) {
+  .carrossel-container { padding: 6px 12px; }
+  .seta { width: clamp(32px, 9vw, 44px); height: clamp(32px, 9vw, 44px); font-size: calc(var(--arrow-size) * 0.45); }
+  .carrossel-item { flex: 0 0 clamp(200px, 70vw, 280px); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .carrossel { scroll-behavior: auto; }
+ 
 }
