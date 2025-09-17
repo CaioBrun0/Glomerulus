@@ -11,7 +11,6 @@ function Register({ isOpen, onClose, onOpenLogin }) {
     repeteSenha: '',
     telefone: '',
     cpf: '',
-    crm: ''
   });
 
   const [error, setError] = useState('');
@@ -27,9 +26,9 @@ function Register({ isOpen, onClose, onOpenLogin }) {
     const telRegex = /^\d{10,11}$/;
     const senhaRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{6,}$/;
 
-    const { nome, email, senha, repeteSenha, telefone, cpf, crm } = formData;
+    const { nome, email, senha, repeteSenha, telefone, cpf} = formData;
 
-    if (!nome || !email || !senha || !repeteSenha || !telefone || !cpf || !crm) {
+    if (!nome || !email || !senha || !repeteSenha || !telefone || !cpf) {
       return "Todos os campos são obrigatórios.";
     }
     if (!emailRegex.test(email)) {
@@ -46,9 +45,6 @@ function Register({ isOpen, onClose, onOpenLogin }) {
     }
     if (!telRegex.test(telefone)) {
       return "Telefone inválido. Use 10 ou 11 dígitos.";
-    }
-    if (!crm.trim()) {
-      return "CRM é obrigatório.";
     }
 
     return null;
@@ -68,7 +64,6 @@ function Register({ isOpen, onClose, onOpenLogin }) {
       email: formData.email,
       senha: formData.senha,
       cpf: formData.cpf,
-      crm: formData.crm
     };
 
     try {
@@ -94,8 +89,8 @@ function Register({ isOpen, onClose, onOpenLogin }) {
   };
 
   return (
-    <div className='modal-overlay' onClick={onClose}>
-      <div className='modal-content' onClick={e => e.stopPropagation()}>
+    <div className='modal-overlay-login-register' onClick={onClose}>
+      <div className='modal-content-login-register' onClick={e => e.stopPropagation()}>
         <h2>Cadastro</h2>
         <form onSubmit={handleRegisterSubmit}>
           <input name="nome" placeholder='Nome Completo' type="text" value={formData.nome} onChange={handleChange} />
@@ -104,7 +99,6 @@ function Register({ isOpen, onClose, onOpenLogin }) {
           <input name="repeteSenha" placeholder='Repita a Senha' type="password" value={formData.repeteSenha} onChange={handleChange} />
           <input name="telefone" placeholder='Telefone' type="tel" value={formData.telefone} onChange={handleChange} />
           <input name="cpf" placeholder='CPF' type="text" value={formData.cpf} onChange={handleChange} />
-          <input name="crm" placeholder='CRM' type="text" value={formData.crm} onChange={handleChange} />
 
           {error && <p className="error-message">{error}</p>}
 

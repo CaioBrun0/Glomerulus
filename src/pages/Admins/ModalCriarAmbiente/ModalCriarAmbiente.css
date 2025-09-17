@@ -79,7 +79,7 @@ form label {
   letter-spacing: 0.5px;
 }
 
-form input[type="text"] {
+.modalContent-CriarAmbiente form input[type="text"] {
   width: 100%;
   padding: 10px 12px;
   margin: 6px 0 12px 0;
@@ -91,7 +91,7 @@ form input[type="text"] {
   transition: border 0.2s;
   font-family: 'Roboto', Arial, sans-serif;
 }
-form input[type="text"]:focus {
+.modalContent-CriarAmbiente form input[type="text"]:focus {
   outline: none;
 }
 

@@ -1,8 +1,7 @@
-import Gradiente from "../../../assets/Gradiente-tela-principal.png";
 import { useState } from "react";
 import Login from '../Login/Login.jsx';
 import Register from '../Register/Register.jsx';
-import Imagem from '../../../assets/Medicos-tela-principal.png'
+import Imagem from '../../assets/Medicos-tela-principal.png'
 import './Landing.css'
 
 function Landing() {
@@ -25,9 +24,6 @@ function Landing() {
         <img src={Imagem} alt="" />
       </div>
 
-      <div className='segunda-principal'>
-        <img src={Gradiente} alt="" />
-      </div>
 
       <Login isOpen={modalOpen}
        onClose={() => setModalOpen(false)}
