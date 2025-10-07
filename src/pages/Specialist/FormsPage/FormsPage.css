@@ -1,3 +1,6 @@
+/* ...existing code... */
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap');
+
 html, body {
   margin: 0;
   padding: 0;
@@ -17,15 +20,154 @@ html, body {
 }
 
 .main-wrapper {
-  padding: 10px;
+  width: 1100px;
+  max-width: 98vw;
+  display: flex;
+  gap: 24px;
+  padding: 20px;
+  height: auto;
+  box-shadow: 0 0 3px rgba(16,24,40,0.3);
+  border-radius: 12px;
+  background: #fff;
+  box-sizing: border-box;
+}
+
+/* espaço esquerdo - área de imagens */
+.space-for-images {
+  flex: 0 0 650px;
+  max-width: 60vw;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 14px;
+  box-sizing: border-box;
+}
+
+.space-for-images .images-title {
+  margin: 0;
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: #1f2937;
+  letter-spacing: 0.2px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+/* destaque pequeno à esquerda do título */
+.space-for-images .images-title::before {
+  content: "";
+  width: 8px;
+  height: 8px;
+  border-radius: 2px;
+  background: linear-gradient(90deg,#6C63FF,#8577FF);
+  display: inline-block;
+}
+
+/* área da imagem fica quadrada usando aspect-ratio */
+.images-area {
+  width: 500px;
+  aspect-ratio: 1 / 1;         /* garante quadrado */
+  background-color: #f0f2f7;
   display: flex;
   justify-content: center;
   align-items: center;
-  width: 900px;
-  height: 500px;
-  box-shadow: 0 0 2px rgba(0,0,0, 0.4);
+  border-radius: 10px;
+  overflow: hidden;
+  position: relative;
+  box-shadow: inset 0 1px 0 rgba(255,255,255,0.6);
+  margin-left: 50px;
+}
+
+/* conteúdo interno quando não há imagens */
+.images-area p {
+  margin: 0;
+  color: #6b7280;
+  font-size: 1rem;
+}
+
+/* quando houver thumbnails use this class for img */
+.images-area img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+/* paginação (placeholder) */
+.images-pagination {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 12px;
+  padding: 8px 4px;
 }
 
 .forms-direita {
-  margin-left: auto; /* empurra o componente para a extrema direita */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-right: 20px;
+}
+
+.page-btn {
+  background: #6C63FF;
+  color: white;
+  border: none;
+  padding: 8px 12px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 700;
+  box-shadow: 0 4px 10px rgba(108,99,255,0.12);
+}
+.page-btn:disabled {
+  background: #d1cfff;
+  cursor: not-allowed;
+  box-shadow: none;
+}
+
+.page-info {
+  color: #374151;
+  font-weight: 600;
+}
+
+
+/* responsividade: duas colunas em larguras médias, uma coluna em pequenas */
+@media (max-width: 1000px) {
+  .main-wrapper {
+    flex-direction: column;
+    gap: 16px;
+    padding: 16px;
+  }
+  .space-for-images {
+    width: 100%;
+    flex: none;
+    min-width: unset;
+  }
+  .forms-direita {
+    width: 100%;
+    justify-content: stretch;
+    align-items: stretch;
+  }
+  .images-title {
+    font-size: 1.1rem;
+  }
+  .page-btn {
+    padding: 7px 10px;
+  }
+}
+
+@media (max-width: 600px) {
+  .geral { padding: 12px; }
+  .main-wrapper { padding: 12px; }
+  .space-for-images { padding: 8px; gap: 8px; }
+  .images-title { font-size: 1rem; }
+  .images-area { aspect-ratio: 1 / 1; border-radius: 8px; }
+  .page-btn { padding: 6px 8px; font-size: 14px; }
+}
+
+/* evita overflow horizontal em casos extremos */
+@media (max-height: 420px) {
+  .main-wrapper { max-height: 95vh; overflow-y: auto; }
 }

@@ -10,15 +10,9 @@ function Landing() {
 
   return (
     <>
-      <nav className='Navbar1'>
-          <a href="Quem somos">Quem somos</a>
-          <a href="Artigos">Artigos Públicados</a>
-      </nav>
-
       <div className={`principal ${modalOpen ? 'blurred' : ''}`}>
         <div className='text'>
-          <h1>Plataforma de Análise de Imagens Renais para Treinamento e Diagnóstico</h1>
-          <p>A inovação médica começa aqui</p>
+          <h1>Plataforma de rotulação de imagens histopatologicas renais</h1>
           <button className='button' onClick={() => setModalOpen(true)}>Entrar</button>
         </div>
         <img src={Imagem} alt="" />
