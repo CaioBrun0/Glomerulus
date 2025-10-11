@@ -11,16 +11,57 @@ function ModalGreenList({ onClose }) {
   const [email, setEmail] = useState("");
   const [action, setAction] = useState(""); // "add" ou "remove"
 
+// ...existing code...
   function handleSubmit(e) {
     e.preventDefault();
-    // Aqui você pode enviar os dados para a API ou tratar como quiser
-    console.log({
-      email,
-      tipo: selected, // 1 ou 2
-      acao: action    // "add" ou "remove"
-    });
-    // Limpe o estado ou feche o modal se desejar
-  }
+
+    // validação mínima
+    if (!email) {
+      alert("Informe um email.");
+      return;
+    }
+    if (!selected) {
+      alert("Escolha o tipo de usuário (Especialista ou Administrador).");
+      return;
+    }
+
+    // Checa se usuário atual é adm (opcional, para UX)
+    const currentType = Number(localStorage.getItem("user_type"));
+    if (currentType && currentType !== 2) {
+      alert("Ação permitida somente para administradores.");
+      return;
+    }
+
+    const payload = { email: email.trim(), id_tipo: Number(selected) };
+
+  // ...existing code...
+  // changed code: envio para /whitelist/ usando cookie HttpOnly (sem Authorization)
+  (async () => {
+    try {
+      const res = await fetch("http://localhost:8000/whitelist/", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        credentials: "include", // envia cookie HttpOnly
+        body: JSON.stringify(payload)
+      });
+
+      if (res.status === 201) {
+        const created = await res.json();
+        alert(`Email ${created.email} adicionado com sucesso.`);
+        setEmail("");
+        setSelected(null);
+        setAction("");
+        onClose();
+        return;
+      }
+      // ... tratamento de erro (mantém o código existente) ...
+    } catch (err) {
+      console.error("Erro na requisição /whitelist:", err);
+      alert("Erro ao conectar com o servidor.");
+    }
+  })();
+}
+// ...existing code...
 
   return (
     <div className="modalOverlay" onClick={onClose}>
