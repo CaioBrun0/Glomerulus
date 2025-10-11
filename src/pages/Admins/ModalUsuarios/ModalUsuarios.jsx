@@ -22,7 +22,6 @@ function ModalUsuarios({ onClose }) {
             <InfoBoxEspecialista name={"Thiago Menezes"} email={"thiagoMene@gmail.com"} />
             <InfoBoxAdmin name={"Michele Lobato"} email={"LobatoM@gmail.com"} />
             <InfoBoxEspecialista name={"Juliana Serna"} email={"juliSerna12@gmail.com"} /> 
-            
         </div>
         
       </div>
