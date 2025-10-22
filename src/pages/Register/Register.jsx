@@ -1,9 +1,9 @@
 import './Register.css';
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 function Register({ isOpen, onClose, onOpenLogin }) {
-  if (!isOpen) return null;
-
+  const navigate = useNavigate();
   const [formData, setFormData] = useState({
     nome: '',
     email: '',
@@ -12,8 +12,10 @@ function Register({ isOpen, onClose, onOpenLogin }) {
     telefone: '',
     cpf: '',
   });
-
+  
   const [error, setError] = useState('');
+  if (!isOpen) return null;
+
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -67,7 +69,7 @@ function Register({ isOpen, onClose, onOpenLogin }) {
     };
 
     try {
-      const response = await fetch("http://localhost:8000/auth/cadastro-convencional", {
+      const response = await fetch("http://localhost:8000/auth/cadastro", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(payload)
@@ -78,7 +80,7 @@ function Register({ isOpen, onClose, onOpenLogin }) {
         localStorage.setItem("token", data.access_token);
         alert("Cadastro realizado com sucesso!");
         onClose();
-        onOpenLogin();
+        Navigate("/HomePage");
       } else {
         setError(data.detail || "Erro ao cadastrar.");
       }
