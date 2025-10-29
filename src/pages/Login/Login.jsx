@@ -1,12 +1,13 @@
 import './Login.css';
 import { useNavigate } from 'react-router-dom';
+import { useAuth } from '../../routes/context/AuthContext.jsx'; // <--- IMPORTE O useAuth
 
 function Login({ isOpen, onClose, onOpenRegister }) {
+  const navigate = useNavigate();
+  const auth = useAuth(); // <--- CHAME O HOOK
+
   if (!isOpen) return null;
 
-  const navigate = useNavigate();
-
-  // ...existing code...
   const handleSubmit = async (e) => {
     e.preventDefault();
     const email = e.target[0].value;
@@ -30,25 +31,31 @@ function Login({ isOpen, onClose, onOpenRegister }) {
         return;
       }
 
-      // O user_type já vem na resposta do login, não precisamos de outra chamada.
       const data = await response.json();
-      const userType = data?.user_type;
+      const token = data?.access_token;
+      const userType = data?.user_type; // O user_type ainda vem aqui
 
-      if (userType !== undefined && userType !== null) {
-        // Opcional: localStorage pode ser desnecessário se RotaProtegida sempre validar no backend.
-        // Mas podemos manter por enquanto.
-        localStorage.setItem("user_type", String(userType));
-      }
+      if (token) {
+        // --- MUDANÇA PRINCIPAL AQUI ---
+        // 1. Chame a função login do contexto com o TOKEN
+        // (O auth.login vai descodificar e guardar no estado global)
+        auth.login(token); 
+        
+        // 2. Feche o modal
+        onClose();
 
-      onClose();
-      const tipoNum = Number(userType);
-      if (tipoNum === 2) {
-        navigate("/HomePageAdmin");
-      } else if (tipoNum === 1) {
-        navigate("/HomePage");
+        // 3. Navegue com base no user_type
+        const tipoNum = Number(userType);
+        if (tipoNum === 2) {
+          navigate("/HomePageAdmin");
+        } else if (tipoNum === 1) {
+          navigate("/HomePage");
+        } else {
+          navigate("/");
+        }
+        // --- FIM DA MUDANÇA ---
       } else {
-        // Fallback caso userType não seja definido
-        navigate("/");
+        alert("Token não recebido do servidor.");
       }
     } catch (err) {
       console.error("Erro no login:", err);
@@ -75,3 +82,4 @@ function Login({ isOpen, onClose, onOpenRegister }) {
 }
 
 export default Login;
+

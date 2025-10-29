@@ -11,8 +11,6 @@ import CardDashboard from "../../../components/CardsAdmin/CardDashboard/CardDash
 import CardGerenciarUsuarios from "../../../components/CardsAdmin/CardGerenciarUsuarios/CardGerenciarUsuarios.jsx";
 import ModalUsuarios from "../../../pages/Admins/ModalUsuarios/ModalUsuarios.jsx";
 
-
-
 function HomePageAdmin() {
     const [modalAberto, setModalAberto] = useState(null); 
     const navigate = useNavigate();
