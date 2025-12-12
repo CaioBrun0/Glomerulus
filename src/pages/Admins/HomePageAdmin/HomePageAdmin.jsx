@@ -1,7 +1,8 @@
 import "./HomePageAdmin.css";
-import { useState, useEffect } from "react"; // 1. Importar useEffect
+// IMPORTANTE: Adicionar useEffect
+import { useState, useEffect } from "react"; 
 import { useNavigate } from "react-router-dom";
-import { useAuth } from "../../../routes/context/AuthContext.jsx"; // 2. Importar useAuth
+import { useAuth } from "../../../routes/context/AuthContext.jsx";
 import ImgNav from "../../../assets/navAdmin.png";
 import CardGreenList from "../../../components/CardsAdmin/CardgreenList/CardgreenList.jsx";
 import ModalGreenList from "../../../pages/Admins/ModalGreenList/ModalGreenList.jsx";
@@ -15,97 +16,100 @@ import ModalUsuarios from "../../../pages/Admins/ModalUsuarios/ModalUsuarios.jsx
 function HomePageAdmin() {
     const [modalAberto, setModalAberto] = useState(null); 
     const navigate = useNavigate();
-    const auth = useAuth(); // 3. Usar o hook de autenticação
+    const auth = useAuth(); 
+    
+    // NOVO: Estados para dados reais
+    const [ambientes, setAmbientes] = useState({ ativos: [], inativos: [] });
+    const [loadingAmbientes, setLoadingAmbientes] = useState(true);
+    const [errorAmbientes, setErrorAmbientes] = useState(null);
 
-    // 4. Estados para os dados da API, loading e erros
-    const [ambientesAtivos, setAmbientesAtivos] = useState([]);
-    const [ambientesInativos, setAmbientesInativos] = useState([]);
-    const [isLoading, setIsLoading] = useState(true);
-    const [error, setError] = useState(null);
+    // REMOVIDO: Simulação dos dados vindos do backend:
+    // REMOVIDO: const ambientesAtivos = [...]
+    // REMOVIDO: const ambientesInativos = [...]
 
-    // 5. useEffect para buscar os dados quando o componente montar
-    useEffect(() => {
-        async function fetchAmbientes() {
-            setIsLoading(true);
-            setError(null);
-            try {
-                // O endpoint /ambientes/ requer autenticação de admin (require_admin)
-                // Usamos credentials: "include" para enviar o cookie HttpOnly
-                const response = await fetch("http://localhost:8000/ambientes/", {
-                    method: "GET",
-                    credentials: "include"
-                });
+    // NOVO: Função para buscar ambientes do backend
+    const fetchAmbientes = async () => {
+        setLoadingAmbientes(true);
+        setErrorAmbientes(null);
+        try {
+            const response = await fetch("http://localhost:8000/ambientes/", {
+                method: "GET",
+                credentials: "include" // CRÍTICO: Garante que o cookie HttpOnly seja enviado
+            });
 
-                if (!response.ok) {
-                    if (response.status === 401 || response.status === 403) {
-                        throw new Error("Não autorizado. Verifique se você é um administrador.");
-                    }
-                    throw new Error("Falha ao carregar os dados dos ambientes.");
+            if (!response.ok) {
+                let detail = "Falha ao carregar ambientes.";
+                if (response.status === 401 || response.status === 403) {
+                     detail = "Não autorizado. Verifique se você é um administrador.";
                 }
-
-                const data = await response.json(); // data é list[AmbienteOut]
-                
-                // 6. Filtrar os ambientes com base na propriedade 'ativo'
-                const ativos = data.filter(amb => amb.ativo === true);
-                const inativos = data.filter(amb => amb.ativo === false);
-
-                // 7. Atualizar os estados
-                setAmbientesAtivos(ativos);
-                setAmbientesInativos(inativos);
-
-            } catch (err) {
-                setError(err.message);
-                console.error("Erro ao buscar ambientes:", err);
-            } finally {
-                setIsLoading(false);
+                throw new Error(detail);
             }
+
+            const data = await response.json();
+
+            // Lógica de filtragem e adaptação dos dados da API
+            const ativos = data.filter(amb => amb.ativo);
+            const inativos = data.filter(amb => !amb.ativo);
+
+            // Adaptação dos dados para o formato esperado pelo CardAmbiente
+            setAmbientes({ 
+                ativos: ativos.map(a => ({ 
+                    id: a.id_amb, 
+                    type: a.titulo_amb, 
+                    amount: a.ids_conjuntos ? a.ids_conjuntos.length : 0 
+                })),
+                inativos: inativos.map(i => ({ 
+                    id: i.id_amb, 
+                    type: i.titulo_amb, 
+                    amount: i.ids_conjuntos ? i.ids_conjuntos.length : 0
+                }))
+            });
+
+        } catch (err) {
+            setErrorAmbientes(err.message);
+            console.error("Erro ao buscar ambientes:", err); // Mantém o log
+        } finally {
+            setLoadingAmbientes(false);
         }
-
+    };
+    
+    // NOVO: useEffect para chamar a função de fetch na montagem do componente
+    useEffect(() => {
         fetchAmbientes();
-    }, []); // O array vazio [] garante que isso rode apenas uma vez
+    }, []);
 
-    // 8. Função de logout corrigida para usar o AuthContext
     async function handleLogout() {
       try {
+        // 1. Tenta invalidar cookie HttpOnly no backend
         await fetch("http://localhost:8000/auth/logout", {
           method: "POST",
           credentials: "include"
         });
       } catch (err) {
-        console.warn("Logout request falhou (ignorado):", err);
+        console.warn("Logout request falhou:", err);
       }
-      auth.logout(); // Limpa o estado global e o token
-      navigate("/"); // Redireciona
-    } 
-
-    // 9. Renderização condicional para loading e erro
-    const renderContent = () => {
-        if (isLoading) {
-            return <div className="loading-message">Carregando ambientes...</div>;
-        }
-        if (error) {
-            return <div className="error-message">Erro: {error}</div>;
-        }
-        return (
-            <div className="cardArea"> 
-                <CardGreenList onOpen={() => setModalAberto('greenList')} />
-                <CardAmbientes onOpen={() => setModalAberto('ambientes')} />
-                <CardGerenciarUsuarios onOpen={() => setModalAberto('usuarios')} />
-                <CardDashboard onOpen={() => setModalAberto('dashboard')} />
-            </div>
-        );
-    };
+      
+      // 2. Limpa dados locais (payload persistente) via AuthContext
+      auth.logout(); 
+      
+      // 3. Redireciona
+      navigate("/");
+    }
 
     return (
     <>
         <div className="navHomeAdmin">
             <img src={ImgNav} alt="" />
             <h1>Bem Vindo, Administrador</h1>
-            {/* O botão de logout agora usa a função corrigida */}
             <button className="logout-btn" onClick={handleLogout}>Sair</button>
         </div>
 
-        {renderContent()} {/* Mostra o loading, erro ou os cards */}
+        <div className="cardArea"> 
+            <CardGreenList onOpen={() => setModalAberto('greenList')} />
+            <CardAmbientes onOpen={() => setModalAberto('ambientes')} />
+            <CardGerenciarUsuarios onOpen={() => setModalAberto('usuarios')} />
+            <CardDashboard onOpen={() => setModalAberto('dashboard')} />
+        </div>
 
         {modalAberto === 'greenList' && (
             <ModalGreenList onClose={() => setModalAberto(null)} />
@@ -114,9 +118,12 @@ function HomePageAdmin() {
         {modalAberto === 'ambientes' && (
             <ModalAmbientes onClose={() => setModalAberto(null)}
             onCriarAmbiente={() => setModalAberto('criarAmbiente')}
-            // Os dados agora vêm do estado (API) e não da simulação
-            ambientesAtivos={ambientesAtivos}
-            ambientesInativos={ambientesInativos} />
+            // Passa os dados e o estado de carregamento/erro
+            ambientesAtivos={ambientes.ativos} 
+            ambientesInativos={ambientes.inativos} 
+            loading={loadingAmbientes}
+            error={errorAmbientes}
+            />
         )}
         {modalAberto === 'usuarios' && (
             <ModalUsuarios onClose={() => setModalAberto(null)} />
@@ -126,7 +133,9 @@ function HomePageAdmin() {
             onClose={() => setModalAberto('ambientes')}
         />
         )}
+
     </>
+    
     )
 }
 

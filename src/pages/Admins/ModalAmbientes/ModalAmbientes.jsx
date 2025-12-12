@@ -2,9 +2,40 @@ import { useState } from "react";
 import "./ModalAmbientes.css";
 import CardAmbiente from "../../../components/cardAmbiente/cardAmbiente.jsx";
 
-function ModalAmbientes({ onClose, onCriarAmbiente, ambientesAtivos = [], ambientesInativos = [] }) {
+// 1. Adicionar loading e error aos props
+function ModalAmbientes({ onClose, onCriarAmbiente, ambientesAtivos = [], ambientesInativos = [], loading, error }) {
   const [aba, setAba] = useState("ativos");
+  
+  // NOVO: Função para renderizar o conteúdo da aba
+  const renderAmbienteContent = () => {
+    // 2. Lógica de Loading
+    if (loading) {
+        return <p style={{ gridColumn: '1 / -1', color: "#6C63FF", fontWeight: 'bold' }}>Carregando ambientes...</p>;
+    }
 
+    // 3. Lógica de Erro
+    if (error) {
+        return <p style={{ gridColumn: '1 / -1', color: "red", fontWeight: 'bold' }}>Erro: {error}</p>;
+    }
+    
+    const ambientesAtuais = aba === "ativos" ? ambientesAtivos : ambientesInativos;
+
+    // 4. Lógica de Conteúdo Vazio
+    if (ambientesAtuais.length === 0) {
+        return <p style={{ gridColumn: '1 / -1' }}>Nenhum ambiente {aba} encontrado.</p>;
+    }
+
+    // 5. Renderização dos Cards
+    return ambientesAtuais.map((amb, idx) => (
+        <CardAmbiente
+          key={amb.id || idx}
+          type={amb.type}
+          amount={amb.amount}
+          onClick={() => {/* ação ao clicar no card, se desejar */}}
+        />
+    ));
+  };
+  
   return (
     <div className="modalOverlay-Ambientes" onClick={onClose}>
       <div className="modalContent-Ambientes" onClick={e => e.stopPropagation()}>
@@ -39,24 +70,8 @@ function ModalAmbientes({ onClose, onCriarAmbiente, ambientesAtivos = [], ambien
             : "Aqui você encontrará os ambientes inativos"}
         </h2>
 
-        
         <div className="cardsInfoBox-Ambientes" style={{display: "grid", gridTemplateColumns: "1fr 1fr", gap: "20px", maxHeight: "400px", overflowY: "auto", marginTop: "24px"}}>
-          {(aba === "ativos" ? ambientesAtivos : ambientesInativos).length === 0 ? (
-            <p>Nenhum ambiente {aba} encontrado.</p>
-          ) : (
-            (aba === "ativos" ? ambientesAtivos : ambientesInativos).map((amb) => (
-              // --- CORREÇÃO AQUI ---
-              // Mapeando os dados da API para os props do CardAmbiente
-              <CardAmbiente
-                key={amb.id_amb} // Usando a chave da API (id_amb)
-                type={amb.titulo_amb} // Usando o título da API (titulo_amb)
-                amount={0} // API não fornece 'amount', usamos 0 como placeholder
-                descricao={amb.descricao} // Passando a descrição
-                onClick={() => {/* ação ao clicar no card, se desejar */}}
-              />
-              // --- FIM DA CORREÇÃO ---
-            ))
-          )}
+          {renderAmbienteContent()} 
         </div>
       </div>
     </div>

@@ -3,8 +3,7 @@ import React, { createContext, useState, useEffect, useContext } from 'react';
 // 1. Criar o Contexto
 const AuthContext = createContext(null);
 
-// 2. Helper para descodificar o JWT
-// (Esta função simples lê o payload de um JWT sem verificar a assinatura)
+// 2. Helper para descodificar o JWT (permanece igual)
 function decodeJwt(token) {
   if (!token) return null;
   try {
@@ -25,101 +24,75 @@ function decodeJwt(token) {
   }
 }
 
-// Função auxiliar para obter claims (tipo/nome/exp) da sessão
-function getAuthClaimsFromSession() {
-    // Tenta obter as claims salvas na sessão (limpa ao fechar a aba/navegador)
-    const claimsStr = sessionStorage.getItem("auth_claims");
-    if (claimsStr) {
-        try {
-            const claims = JSON.parse(claimsStr);
-            // Verifica se o tempo de expiração do JWT (exp) ainda é válido
-            // claims.exp é em segundos, Date.now() é em milissegundos
-            if (claims.exp * 1000 > Date.now()) {
-                return claims;
-            } else {
-                sessionStorage.removeItem("auth_claims"); // Limpa expirado
-                return null;
-            }
-        } catch(e) {
-            sessionStorage.removeItem("auth_claims");
-            return null;
+// NOVO HELPER: Para carregar o payload persistente (não o token)
+const loadState = () => {
+    const payloadJson = localStorage.getItem("user_payload");
+    if (!payloadJson) return null;
+    
+    try {
+        const decoded = JSON.parse(payloadJson);
+        // Verifica a expiração salva no payload
+        if (decoded && decoded.exp * 1000 > Date.now()) {
+            return decoded;
         }
+        localStorage.removeItem("user_payload"); // Limpa se expirou
+        return null;
+    } catch (e) {
+        localStorage.removeItem("user_payload");
+        return null;
     }
-    return null;
-}
-
+};
 
 // 3. Criar o Provedor
 export function AuthProvider({ children }) {
   const [authStatus, setAuthStatus] = useState({
-    isLoading: true, // Começa carregando
+    isLoading: true,
     isAuthenticated: false,
     userType: null,
     userName: null,
   });
 
-  // 4. Efeito para verificar o status no sessionStorage QUANDO A APP CARREGA
+  // 4. Efeito para verificar o estado no localStorage
   useEffect(() => {
-    // LER CLAIMS APENAS DO sessionStorage
-    const claims = getAuthClaimsFromSession();
+    const decoded = loadState(); // Lê o payload persistente
     
-    // Garante que o localStorage é limpo (código obsoleto)
-    localStorage.removeItem("access_token");
-
-    if (claims) {
+    if (decoded) {
       setAuthStatus({
         isLoading: false,
         isAuthenticated: true,
-        userType: claims.userType, 
-        userName: claims.userName, 
+        userType: decoded.user_type_id,
+        userName: decoded.name,
       });
     } else {
       setAuthStatus({ isLoading: false, isAuthenticated: false, userType: null, userName: null });
     }
-  }, []); 
+  }, []);
 
   // 5. Função para o Login/Register usar
   const login = (token) => {
     const decoded = decodeJwt(token);
     if (decoded) {
-      // NUNCA MAIS SALVA O TOKEN. SALVAR APENAS OS CLAIMS.
-      
-      const claimsToStore = {
-        // user_type_id (2 para Admin, 1 para Convencional)
-        userType: decoded.user_type_id,
-        // name (Nome completo)
-        userName: decoded.name,
-        // exp (Timestamp de expiração do JWT)
-        exp: decoded.exp
-      };
-
-      sessionStorage.setItem("auth_claims", JSON.stringify(claimsToStore));
-      
-      // Remove token obsoleto
-      localStorage.removeItem("access_token"); 
-
+      // **MUDANÇA CRÍTICA:** Armazena APENAS o payload, NÃO o token
+      localStorage.setItem("user_payload", JSON.stringify(decoded));
       setAuthStatus({
         isLoading: false,
         isAuthenticated: true,
-        userType: claimsToStore.userType,
-        userName: claimsToStore.userName,
+        userType: decoded.user_type_id,
+        userName: decoded.name,
       });
     }
   };
 
   // 6. Função para o Logout usar
   const logout = () => {
-    // Limpar storage
-    sessionStorage.removeItem("auth_claims");
-    localStorage.removeItem("access_token"); 
-    
+    // **MUDANÇA CRÍTICA:** Remove APENAS o payload persistente
+    localStorage.removeItem("user_payload"); 
     setAuthStatus({
       isLoading: false,
       isAuthenticated: false,
       userType: null,
       userName: null,
     });
-    // O componente de Logout deve tratar do redirecionamento para "/"
   };
 
   const value = { ...authStatus, login, logout };
@@ -131,7 +104,7 @@ export function AuthProvider({ children }) {
   );
 }
 
-// 7. Hook customizado (igual ao de antes)
+// 7. Hook customizado (permanece igual)
 export function useAuth() {
   const context = useContext(AuthContext);
   if (context === null) {

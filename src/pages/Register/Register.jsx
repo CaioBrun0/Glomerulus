@@ -66,6 +66,7 @@ function Register({ isOpen, onClose, onOpenLogin }) {
       const response = await fetch("http://localhost:8000/auth/cadastro", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
+        credentials: "include", // <--- ADICIONADO: CRÍTICO para receber o cookie HttpOnly
         body: JSON.stringify(payload)
       });
 
