@@ -1,11 +1,33 @@
 // Menu.jsx
 import './Menu.css';
 import AdmsInfo from '../../pages/Specialist/AdmInfo/AdmInfo';
-import {useState} from 'react';
-
+import { useState } from 'react';
+import { useNavigate } from 'react-router-dom'; // 1. Importar useNavigate
+import { useAuth } from '../../routes/context/AuthContext.jsx'; // 2. Importar useAuth
 
 function Menu() {
-  const [viewModal, setViewModal] = useState(false)
+  const [viewModal, setViewModal] = useState(false);
+  const navigate = useNavigate(); // 3. Inicializar o navigate
+  const auth = useAuth(); // 4. Obter o contexto de autenticação
+
+  async function handleLogout() {
+    try {
+      // 1. Tenta invalidar o cookie no backend.
+      // Se der 401 (já expirado), o catch vai lidar com isso, o que é OK.
+      await fetch("http://localhost:8000/auth/logout", {
+        method: "POST",
+        credentials: "include"
+      });
+    } catch (err) {
+      console.warn("Falha na requisição de logout (ignorado):", err);
+    }
+
+    // 2. Limpa o estado global e o localStorage (forma centralizada)
+    auth.logout();
+
+    // 3. Redireciona para a landing page (agora 'navigate' está definido)
+    navigate("/");
+  }
 
   return (
     <div className="princ">
@@ -53,10 +75,10 @@ function Menu() {
         </div>
       </div>
 
-      {/* OUT */}
+            {/* OUT */}
       <div className='icon-wrapper' id='icon-out'>
-        <svg className='icon out' xmlns="http://www.w3.org/2000/svg" width="36" height="33" viewBox="0 0 36 33" fill="none">
-            <path d="M14.8661 0V32.635L26.2768 29.5851V3.05003L14.8661 0ZM27.7182 1.92457L27.7232 2.09118V4.21731H29.0089V1.92615L27.7182 1.92457ZM6.99107 1.92615V10.3225H8.4375V3.21493H13.4196V1.92615H6.99107ZM27.7232 5.50609V6.65167H29.0089V5.50609H27.7232ZM27.7232 7.94044V24.8377H29.0089V7.94044H27.7232ZM8.4375 12.1452V14.6707H0.723214V17.9643H8.4375V20.4898L13.1202 16.3175L8.4375 12.1452ZM17.0357 14.5991C17.5682 14.5991 18 15.3685 18 16.3175C18 17.2665 17.5682 18.0359 17.0357 18.0359C16.5032 18.0359 16.0714 17.2665 16.0714 16.3175C16.0714 15.3685 16.5032 14.5991 17.0357 14.5991ZM8.4375 22.3125H6.99107V30.0645H8.4375V22.3125ZM27.7232 26.1265V27.1289H29.0089V26.1265H27.7232ZM27.7232 28.4177V30.0645H29.0089V28.4177H27.7232ZM0 31.7112V33H13.4196V31.7112H0ZM23.356 31.7112L18.5345 33H36V31.7112H23.356Z" fill="black"/>
+        <svg onClick={handleLogout} className='icon out' xmlns="http://www.w3.org/2000/svg" width="36" height="33" viewBox="0 0 36 33" fill="none">
+          <path d="M14.8661 0V32.635L26.2768 29.5851V3.05003L14.8661 0ZM27.7182 1.92457L27.7232 2.09118V4.21731H29.0089V1.92615L27.7182 1.92457ZM6.99107 1.92615V10.3225H8.4375V3.21493H13.4196V1.92615H6.99107ZM27.7232 5.50609V6.65167H29.0089V5.50609H27.7232ZM27.7232 7.94044V24.8377H29.0089V7.94044H27.7232ZM8.4375 12.1452V14.6707H0.723214V17.9643H8.4375V20.4898L13.1202 16.3175L8.4375 12.1452ZM17.0357 14.5991C17.5682 14.5991 18 15.3685 18 16.3175C18 17.2665 17.5682 18.0359 17.0357 18.0359C16.5032 18.0359 16.0714 17.2665 16.0714 16.3175C16.0714 15.3685 16.5032 14.5991 17.0357 14.5991ZM8.4375 22.3125H6.99107V30.0645H8.4375V22.3125ZM27.7232 26.1265V27.1289H29.0089V26.1265H27.7232ZM27.7232 28.4177V30.0645H29.0089V28.4177H27.7232ZM0 31.7112V33H13.4196V31.7112H0ZM23.356 31.7112L18.5345 33H36V31.7112H23.356Z" fill="black" />
         </svg>
         {/* <span className='icon-label'>Sair</span> */}
       </div>
@@ -65,7 +87,6 @@ function Menu() {
 }
 
 export default Menu;
-
 
 
 

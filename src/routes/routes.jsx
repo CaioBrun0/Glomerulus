@@ -7,7 +7,7 @@ import Login from '../pages/Login/Login.jsx';
 import Register from '../pages/Register/Register.jsx';
 import HomePage from '../pages/Specialist/HomePage/Home.jsx';
 import RotaProtegida from './RotaProtegida.jsx';
-import FormsPage from '../pages/Specialist/FormsPage/FormsPage.jsx';
+import FormsPage from '../pages/Specialist/FormsPage/FormsPage.jsx'; 
 
 function Rotas() {
   return (

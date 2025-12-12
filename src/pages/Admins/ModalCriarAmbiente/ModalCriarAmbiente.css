@@ -185,3 +185,44 @@ form button[type="submit"]:hover {
     height: 48px;
   }
 }
+
+/* ...existing code... */
+/* pequenas adições para o toggle e NextCloud grid (adicionais ao arquivo existente) */
+
+.btn-toggle {
+  background: #f3f4f6;
+  color: #111827;
+  border: 1px solid #e6e9ef;
+  padding: 8px 12px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 700;
+}
+.btn-toggle-active {
+  background: linear-gradient(90deg,#6C63FF,#8577ff);
+  color: #fff;
+  padding: 8px 12px;
+  border-radius: 8px;
+  border: none;
+  cursor: pointer;
+  font-weight: 700;
+}
+
+.conjuntosGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+  gap: 12px;
+  margin-top: 8px;
+}
+.conjuntoCard {
+  border: 1px solid #e6e9ef;
+  padding: 8px;
+  border-radius: 8px;
+  background: #fff;
+  cursor: pointer;
+  transition: transform .12s ease, box-shadow .12s ease, border-color .12s;
+  text-align: left;
+}
+.conjuntoCard:hover { transform: translateY(-4px); box-shadow: 0 8px 20px rgba(16,24,40,0.06); }
+.conjuntoCard.selected { border-color: #6C63FF; box-shadow: 0 8px 26px rgba(108,99,255,0.12); }
+/* ...existing code... */

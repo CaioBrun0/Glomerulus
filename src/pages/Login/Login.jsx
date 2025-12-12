@@ -82,4 +82,3 @@ function Login({ isOpen, onClose, onOpenRegister }) {
 }
 
 export default Login;
-
