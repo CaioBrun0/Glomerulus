@@ -1,10 +1,12 @@
 import { useState } from "react";
 import "./ModalAmbientes.css";
 import CardAmbiente from "../../../components/cardAmbiente/cardAmbiente.jsx";
+import ModalDetalhesAmbiente from "../ModalDetalhesAmbientes/ModalDetalhesAmbientes.jsx";
 
 // 1. Adicionar loading e error aos props
-function ModalAmbientes({ onClose, onCriarAmbiente, ambientesAtivos = [], ambientesInativos = [], loading, error }) {
+function ModalAmbientes({ onClose, onCriarAmbiente, ambientesAtivos = [], ambientesInativos = [], loading, error, onRefresh }) {
   const [aba, setAba] = useState("ativos");
+  const [ambienteSelecionado, setAmbienteSelecionado] = useState(null);
   
   // NOVO: Função para renderizar o conteúdo da aba
   const renderAmbienteContent = () => {
@@ -27,13 +29,13 @@ function ModalAmbientes({ onClose, onCriarAmbiente, ambientesAtivos = [], ambien
 
     // 5. Renderização dos Cards
     return ambientesAtuais.map((amb, idx) => (
-        <CardAmbiente
-          key={amb.id || idx}
-          type={amb.type}
-          amount={amb.amount}
-          onClick={() => {/* ação ao clicar no card, se desejar */}}
-        />
-    ));
+    <CardAmbiente
+      key={amb.id || idx}
+      type={amb.type}
+      amount={amb.amount}
+      onClick={() => setAmbienteSelecionado(amb.id)} // ADICIONADO
+    />
+));
   };
   
   return (
@@ -73,6 +75,15 @@ function ModalAmbientes({ onClose, onCriarAmbiente, ambientesAtivos = [], ambien
         <div className="cardsInfoBox-Ambientes" style={{display: "grid", gridTemplateColumns: "1fr 1fr", gap: "20px", maxHeight: "400px", overflowY: "auto", marginTop: "24px"}}>
           {renderAmbienteContent()} 
         </div>
+
+        {ambienteSelecionado && (
+          <ModalDetalhesAmbiente 
+            ambienteId={ambienteSelecionado} 
+            statusInicial={aba}
+            onClose={() => setAmbienteSelecionado(null)}
+            onRefresh={onRefresh} // Passe uma função que recarrega a lista do HomePageAdmin
+          />
+        )}
       </div>
     </div>
   );

@@ -19,8 +19,8 @@ function ModalCriarAmbiente({ onClose, onSelectConjunto }) {
   const API_BASE = import.meta.env.VITE_API_BASE ?? "http://localhost:8000";
   const CONJUNTOS_ENDPOINT = `${API_BASE}/test/conjuntos`;
   const IMAGENS_ENDPOINT = (id) => `${API_BASE}/test/conjuntos/${id}/imagens?page=1&page_size=1`;
-  const IMPORT_FROM_NC = `${API_BASE}/ambientes/from-nextcloud`; // ajuste se backend diferente
-  const CREATE_AMBIENTE_ENDPOINT = `${API_BASE}/ambientes`; // ajuste se necessário
+  const IMPORT_FROM_NC = `${API_BASE}/ambientes/importar`;
+  const CREATE_AMBIENTE_ENDPOINT = `${API_BASE}/ambientes/`; // ajuste se necessário
 
   useEffect(() => {
     let mounted = true;
@@ -97,11 +97,17 @@ function ModalCriarAmbiente({ onClose, onSelectConjunto }) {
         return;
       }
       try {
-        const payload = { id_cnj: selectedConjunto, titulo, descricao, tipos: perguntas };
+        const payload = { 
+          titulo_amb: titulo,
+          descricao_questionario: descricao,
+          titulo_questionario: titulo, // Ou outro campo de título do questionário
+          ids_conjuntos: [selectedConjunto], // O backend espera uma lista (Array)
+          opcoes: perguntas 
+        };
         const res = await fetch(IMPORT_FROM_NC, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          credentials: "include", // backend deve usar cookie HttpOnly
+          credentials: "include",
           body: JSON.stringify(payload)
         });
         if (!res.ok) {
@@ -132,7 +138,7 @@ function ModalCriarAmbiente({ onClose, onSelectConjunto }) {
 
       const res = await fetch(CREATE_AMBIENTE_ENDPOINT, {
         method: "POST",
-        credentials: "include", // ou omit se usar Bearer token
+        credentials: "include", 
         body: formData
       });
 
@@ -172,6 +178,7 @@ function ModalCriarAmbiente({ onClose, onSelectConjunto }) {
             <label>Descrição curta:</label>
             <textarea
               value={descricao}
+              type="text"
               onChange={e => setDescricao(e.target.value)}
               maxLength={120}
               rows={2}
@@ -183,7 +190,7 @@ function ModalCriarAmbiente({ onClose, onSelectConjunto }) {
                 fontSize: "15px",
                 borderRadius: "8px",
                 border: "1px solid #ccc",
-                resize: "none"
+                resize: "none",
               }}
             />
 
@@ -208,13 +215,7 @@ function ModalCriarAmbiente({ onClose, onSelectConjunto }) {
             <div style={{ marginTop: 8 }}>
               <label style={{ display: "block", marginBottom: 6 }}>Fonte das imagens:</label>
               <div style={{ display: "flex", gap: 8 }}>
-                <button
-                  type="button"
-                  className={!useNextcloud ? "btn-toggle-active" : "btn-toggle"}
-                  onClick={() => setUseNextcloud(false)}
-                >
-                  Upload local
-                </button>
+                
                 <button
                   type="button"
                   className={useNextcloud ? "btn-toggle-active" : "btn-toggle"}

@@ -23,10 +23,6 @@ function HomePageAdmin() {
     const [loadingAmbientes, setLoadingAmbientes] = useState(true);
     const [errorAmbientes, setErrorAmbientes] = useState(null);
 
-    // REMOVIDO: Simulação dos dados vindos do backend:
-    // REMOVIDO: const ambientesAtivos = [...]
-    // REMOVIDO: const ambientesInativos = [...]
-
     // NOVO: Função para buscar ambientes do backend
     const fetchAmbientes = async () => {
         setLoadingAmbientes(true);
@@ -123,6 +119,7 @@ function HomePageAdmin() {
             ambientesInativos={ambientes.inativos} 
             loading={loadingAmbientes}
             error={errorAmbientes}
+            onRefresh={fetchAmbientes}
             />
         )}
         {modalAberto === 'usuarios' && (

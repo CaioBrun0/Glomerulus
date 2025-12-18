@@ -114,7 +114,7 @@ function Register({ isOpen, onClose, onOpenLogin }) {
       <div className='modal-content-login-register' onClick={e => e.stopPropagation()}>
         <h2>Cadastro</h2>
         <form onSubmit={handleRegisterSubmit}>
-          <input name="nome" placeholder='Nome Completo' type="text" value={formData.nome} onChange={handleChange} />
+          <input name="nome" placeholder='Primeiro e último nome' type="text" value={formData.nome} onChange={handleChange} />
           <input name="email" placeholder='Email' type="email" value={formData.email} onChange={handleChange} />
           <input name="senha" placeholder='Senha' type="password" value={formData.senha} onChange={handleChange} />
           <input name="repeteSenha" placeholder='Repita a Senha' type="password" value={formData.repeteSenha} onChange={handleChange} />

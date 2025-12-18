@@ -26,6 +26,9 @@
   font-family: 'Roboto', Arial, sans-serif;
   position: relative;
   animation: modalFadeIn 0.3s;
+  max-height: calc(100vh - 48px); /* deixa espaço para overlay e evita sair da tela */
+  overflow-y: auto;               /* scroll interno quando o conteúdo crescer */
+  -webkit-overflow-scrolling: touch; /* rolagem suave em iOS */
 }
 
 
@@ -213,6 +216,10 @@ form button[type="submit"]:hover {
   grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
   gap: 12px;
   margin-top: 8px;
+
+  max-height: 45vh;     /* altura máxima da grid antes de ativar scroll */
+  overflow-y: auto;     /* scroll específico para a grid */
+  padding-right: 8px;
 }
 .conjuntoCard {
   border: 1px solid #e6e9ef;
