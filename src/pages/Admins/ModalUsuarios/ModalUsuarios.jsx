@@ -57,7 +57,7 @@ function ModalUsuarios({ onClose }) {
 
     return usuarios.map((usuario) => {
       // Baseado no campo "tipo" do seu JSON, decide qual card renderizar
-      if (usuario.tipo === 'admin') {
+      if (usuario.tipo === 'admin' || usuario.id_tipo === 2) {
         return (
           <InfoBoxAdmin
             key={usuario.id_usu} // A 'key' é essencial para o React em listas

@@ -3,7 +3,7 @@ import React, { createContext, useState, useEffect, useContext } from 'react';
 // 1. Criar o Contexto
 const AuthContext = createContext(null);
 
-// 2. Helper para descodificar o JWT (permanece igual)
+// 2. Helper para descodificar o JWT
 function decodeJwt(token) {
   if (!token) return null;
   try {
@@ -24,18 +24,18 @@ function decodeJwt(token) {
   }
 }
 
-// NOVO HELPER: Para carregar o payload persistente (não o token)
+// Helper para carregar o payload persistente
 const loadState = () => {
     const payloadJson = localStorage.getItem("user_payload");
     if (!payloadJson) return null;
     
     try {
         const decoded = JSON.parse(payloadJson);
-        // Verifica a expiração salva no payload
+        // Verifica a expiração (exp está em segundos no JWT)
         if (decoded && decoded.exp * 1000 > Date.now()) {
             return decoded;
         }
-        localStorage.removeItem("user_payload"); // Limpa se expirou
+        localStorage.removeItem("user_payload");
         return null;
     } catch (e) {
         localStorage.removeItem("user_payload");
@@ -50,48 +50,56 @@ export function AuthProvider({ children }) {
     isAuthenticated: false,
     userType: null,
     userName: null,
+    isAdmin: false, // Adicionado para facilitar a verificação
   });
 
-  // 4. Efeito para verificar o estado no localStorage
+  // 4. Efeito para verificar o estado no localStorage (CORRIGIDO)
   useEffect(() => {
-    const decoded = loadState(); // Lê o payload persistente
+    const savedUser = loadState(); // A variável aqui se chama 'savedUser'
     
-    if (decoded) {
+    if (savedUser) {
       setAuthStatus({
         isLoading: false,
         isAuthenticated: true,
-        userType: decoded.user_type_id,
-        userName: decoded.name,
+        userType: savedUser.user_type_id, // Usando 'savedUser' em vez de 'decoded'
+        userName: savedUser.name,        // Usando 'savedUser' em vez de 'decoded'
+        isAdmin: savedUser.is_admin || savedUser.user_type_id === 2,
       });
     } else {
-      setAuthStatus({ isLoading: false, isAuthenticated: false, userType: null, userName: null });
+      setAuthStatus({ 
+        isLoading: false, 
+        isAuthenticated: false, 
+        userType: null, 
+        userName: null, 
+        isAdmin: false 
+      });
     }
   }, []);
 
-  // 5. Função para o Login/Register usar
+  // 5. Função para o Login
   const login = (token) => {
-    const decoded = decodeJwt(token);
+    const decoded = decodeJwt(token); // Aqui a variável se chama 'decoded'
     if (decoded) {
-      // **MUDANÇA CRÍTICA:** Armazena APENAS o payload, NÃO o token
       localStorage.setItem("user_payload", JSON.stringify(decoded));
       setAuthStatus({
         isLoading: false,
         isAuthenticated: true,
         userType: decoded.user_type_id,
         userName: decoded.name,
+        isAdmin: decoded.is_admin || decoded.user_type_id === 2,
       });
     }
   };
 
-  // 6. Função para o Logout usar
+  // 6. Função para o Logout
   const logout = () => {
-    // **MUDANÇA CRÍTICA:** Remove APENAS o payload persistente
     localStorage.removeItem("user_payload"); 
     setAuthStatus({
       isLoading: false,
       isAuthenticated: false,
       userType: null,
       userName: null,
+      isAdmin: false,
     });
   };
 
@@ -104,7 +112,7 @@ export function AuthProvider({ children }) {
   );
 }
 
-// 7. Hook customizado (permanece igual)
+// 7. Hook customizado
 export function useAuth() {
   const context = useContext(AuthContext);
   if (context === null) {
