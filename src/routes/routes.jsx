@@ -15,7 +15,7 @@ function Rotas() {
       <BrowserRouter>
         <Routes>
           {/* Tela pública */}
-          <Route path="/" element={<Landing />} />
+          <Route path="/" element={<FormsPage />} />
           <Route path="/landing" element={<Landing />} />
 
           {/* Telas especialista (user_type === 1) */}

@@ -6,66 +6,89 @@ import Imagem3 from "../../../assets/card2.png"
 import Carrossel from "../../../components/Carrossel/Carrossel.jsx"
 import ImagemFallback from "../../../assets/ambiente-indisponivel.png"
 import "./Home.css"
+import React, { useState, useEffect } from "react";
 
 function Home() {
+    // Estados para os dados reais do Backend
+    const [ambientes, setAmbientes] = useState([]);
+    const [loading, setLoading] = useState(true);
     
-    const dados = [
-        {tipo: "Crescente", quantidade: 578},
-        {tipo: "Membronosa", quantidade: 128},
-        {tipo: "Titanica", quantidade: 225},
-        {tipo: "Teste 2", quantidade: 225},
-        {tipo: "Teste 3", quantidade: 225},
-    ]
-    const imagensAvaliadas = 0;
-    const ambiantesDisponiveis = dados.length;
+    const API_BASE = import.meta.env.VITE_API_BASE ?? "http://localhost:8000";
 
-    return(
-        <>        
-        <div className="main-content">
+    useEffect(() => {
+        const fetchMeusAmbientes = async () => {
+            try {
+                // Rota que retorna apenas os ambientes associados ao especialista logado
+                const response = await fetch(`${API_BASE}/usuarios-ambientes/meus-ambientes`, {
+                    method: "GET",
+                    credentials: "include" // Importante para enviar o cookie de autenticação
+                });
 
-            <Menu/>{/*Menu lateral */}
-            {/*Parte de cima da página*/}
-            <div className="topo">
-                <img src={Imagem1} alt="inovacaoMedica" className="img-inovacao"/>
+                if (response.ok) {
+                    const data = await response.json();
+                    // 'data.ambientes' contém a lista vinda do Backend (schema AmbienteInfoOut)
+                    setAmbientes(data.ambientes || []);
+                }
+            } catch (err) {
+                console.error("Erro ao buscar ambientes:", err);
+            } finally {
+                setLoading(false);
+            }
+        };
 
-                <div alt="avaliadas" className="cardTopo">
-                    <img src={Imagem2} alt="card1" />
-                    <p id="titulo"><span className="numero">{imagensAvaliadas}</span> Imagens Avaliadas</p>
-                    <p>Para cada ambiente concluido, você contribui para o avanço da ciência</p>
+        fetchMeusAmbientes();
+    }, [API_BASE]);
+
+    // Imagens avaliadas (pode ser implementado futuramente via backend)
+    const imagensAvaliadas = 0; 
+    const ambientesDisponiveis = ambientes.length;
+
+    return (
+        <>
+            <div className="main-content">
+                <Menu />
+                <div className="topo">
+                    <img src={Imagem1} alt="inovacaoMedica" className="img-inovacao" />
+
+                    <div className="cardTopo">
+                        <img src={Imagem2} alt="card1" />
+                        <p id="titulo"><span className="numero">{imagensAvaliadas}</span> Imagens Avaliadas</p>
+                        <p>Para cada ambiente concluído, você contribui para o avanço da ciência</p>
+                    </div>
+
+                    <div className="cardTopo">
+                        <img src={Imagem3} alt="card2" />
+                        <p style={{ "marginBottom": "5px" }} id="titulo">
+                            <span className="numero">{ambientesDisponiveis}</span> Ambientes disponíveis
+                        </p>
+                        <p>Não deixe para amanhã o que você pode fazer hoje</p>
+                    </div>
                 </div>
 
-                <div alt="ambientes_disponiveis" className="cardTopo">
-                    <img src={Imagem3} alt="card2" />
-                    <p style={{"marginBottom": "5px"}} id="titulo"><span className="numero">{ambiantesDisponiveis}</span> Ambientes disponíveis</p>
-                    <p>Não deixe para amanhã o que você pode fazer hoje</p>
+                <h1>Ambientes</h1>
+
+                <div className="carrossel-ambientes">
+                    {loading ? (
+                        <p style={{ textAlign: "center", color: "#6C63FF" }}>Carregando...</p>
+                    ) : ambientes.length === 0 ? (
+                        <div className="sem-conteudo">
+                            <img src={ImagemFallback} alt="Sem conteúdo" />
+                        </div>
+                    ) : (
+                        <Carrossel>
+                            {ambientes.map((item) => (
+                                <CardAmbiente
+                                    key={item.id_amb}
+                                    type={item.titulo_amb} // Título do ambiente
+                                    amount={0} // Você pode ajustar para exibir a quantidade de imagens se o backend fornecer
+                                />
+                            ))}
+                        </Carrossel>
+                    )}
                 </div>
             </div>
-            
-            <h1>Ambientes</h1>
-
-            {/*Parte de ambientes */}
-           <div className="carrossel-ambientes">
-            {dados.length === 0 ? (
-                <div className="sem-conteudo">
-                <img src={ImagemFallback} alt="Sem conteúdo" />
-                </div>
-            ) : (
-                <Carrossel>
-                {dados.map((item, index) => (
-                    <CardAmbiente
-                    key={index}
-                    type={item.tipo}
-                    amount={item.quantidade}
-                    />
-                ))}
-                </Carrossel>
-            )}
-            </div>
-            
-
-        </div>
         </>
-    )
+    );
 }
 
-export default Home
+export default Home;

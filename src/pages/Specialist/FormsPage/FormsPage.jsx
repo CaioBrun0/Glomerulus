@@ -1,4 +1,3 @@
-// ...existing code...
 import './FormsPage.css'
 import Menu from '../../../components/Menu/Menu.jsx';
 import FormsAmbiente from '../../../components/FormsAmbiente/FormsAmbiente.jsx';
@@ -32,4 +31,3 @@ function FormsPage(){
 }
 
 export default FormsPage;
-// ...existing code...
