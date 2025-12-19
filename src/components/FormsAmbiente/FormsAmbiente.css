@@ -1,37 +1,195 @@
+:root{
+  --bg-card: #ffffff;
+  --muted: #6b7280;
+  --primary: #6C63FF;
+  --primary-2: #8577ff;
+  --accent-shadow: rgba(108,99,255,0.12);
+  --radius: 12px;
+  --gap: 12px;
+  --pad: 18px;
+  font-family: "Roboto", Arial, sans-serif;
+}
+
+/* container principal */
 .forms-base {
-    width: 350px;
-    height: 485px;
-    background-color: rgb(255, 255, 255);
-    box-shadow: 0 0 2px rgba(0,0,0,0.5);
-    border-radius: 16px;
-    color: black;
+  width: 380px;
+  height: 500px;
+  background-color: #fafaff;
+  box-shadow: 0 2px 2px rgba(1, 1, 2, 0.06);
+  border-radius: var(--radius);
+  color: #111827;
+  overflow: hidden;
+  box-sizing: border-box;
+  border: 1px solid rgba(16,24,40,0.04);
 }
 
-.forms-base button[type="submit"]  {
-    width: 180px;
-    margin-left: 88px;
-    margin-top: 5px;
-    background-color: #6C63FF;
-    color: white;
-    border: none;
-    padding: 0.8rem;
-    border-radius: 30px;
-    cursor: pointer;
-}
-.forms-base button:hover  {
-    transform: scale(1.02);
-}
-
+/* header */
 .forms-base h2 {
-    font-size: 17px;
+  margin: 0;
+  padding: 14px var(--pad);
+  font-size: 23px;
+  color: white;
+  background: linear-gradient(90deg, var(--primary), var(--primary-2));
+  text-align: center;
+  font-weight: 800;
+  letter-spacing: 0.2px;
+}
+
+/* corpo do form com padding consistente e scroll se necessário */
+.forms-base form {
+  padding: var(--pad);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: var(--gap);
+}
+
+/* labels e textos */
+.forms-base p {
+  margin: 0;
+  font-weight: 700;
+  color: #111827;
+  font-size: 0.95rem;
+}
+
+/* área das opções radio */
+.forms-control {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+/* cada opção - cartão clicável */
+.forms-control label {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 12px;
+  border-radius: 10px;
+  cursor: pointer;
+  background: #fbfbff;
+  border: 3px solid rgba(16,24,40,0.04);
+  transition: box-shadow .14s ease, transform .08s ease, border-color .12s ease;
+}
+
+/* hover */
+.forms-control label:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(16,24,40,0.04);
+}
+
+/* input radio visual (esconde padrão) */
+.forms-control input[type="radio"] {
+  appearance: none;
+  -webkit-appearance: none;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  border: 2px solid #d1d5db;
+  display: inline-block;
+  position: relative;
+  cursor: pointer;
+  flex: 0 0 auto;
+  outline: none;
+  transition: border-color .12s ease, background .12s ease;
+}
+
+/* estado checked com indicador */
+.forms-control input[type="radio"]:checked {
+  border-color: var(--primary);
+  background: linear-gradient(90deg,var(--primary),var(--primary-2));
+  box-shadow: 0 4px 12px var(--accent-shadow);
+}
+
+/* texto da opção */
+.forms-control span {
+  color: #111827;
+  font-weight: 600;
+  font-size: 0.95rem;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* Troque radio por checkbox na estilização visual */
+.forms-control input[type="checkbox"] {
+    appearance: none;
+    -webkit-appearance: none;
+    width: 18px;
+    height: 18px;
+    border-radius: 4px; /* Checkboxes costumam ser quadrados com cantos arredondados */
+    border: 2px solid #d1d5db;
+    display: inline-block;
+    position: relative;
+    cursor: pointer;
+    flex: 0 0 auto;
+    outline: none;
+    transition: border-color .12s ease, background .12s ease;
+}
+
+.forms-control input[type="checkbox"]:checked {
+    border-color: var(--primary);
+    background: linear-gradient(90deg,var(--primary),var(--primary-2));
+    box-shadow: 0 4px 12px var(--accent-shadow);
+}
+
+/* Indicador de "visto" no checkbox (opcional) */
+.forms-control input[type="checkbox"]:checked::after {
+    content: '✓';
+    position: absolute;
     color: white;
-    background-color: #6C63FF;
-    text-align: center;
-    border-radius: 16px;
-    padding: 6px;
+    font-size: 12px;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
 }
 
-.forms-control{
-    padding: 4px;
+/* botão submit estilizado */
+.forms-base button[type="submit"] {
+  width: 100%;
+  background: linear-gradient(90deg,var(--primary),var(--primary-2));
+  color: white;
+  border: none;
+  padding: 12px;
+  border-radius: 10px;
+  cursor: pointer;
+  font-weight: 800;
+  font-size: 18px;
+  box-shadow: 0 10px 30px rgba(108,99,255,0.12);
+  transition: transform .08s ease, opacity .12s ease;
 }
 
+/* estado desabilitado */
+.forms-base button[disabled] {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+}
+
+/* hover do botão */
+.forms-base button[type="submit"]:hover:not([disabled]) {
+  transform: translateY(-2px);
+}
+
+/* responsividade: ajustar largura em telas pequenas */
+@media (max-width: 520px) {
+  .forms-base { max-width: 100%; border-radius: 10px; }
+  .forms-base form { padding: 14px; gap: 10px; }
+  .forms-control label { padding: 10px; }
+  .forms-control span { font-size: 0.92rem; }
+  .forms-base h2 { font-size: 16px; padding: 12px; }
+}
+
+/* acessibilidade: foco visível */
+.forms-control input[type="radio"]:focus-visible {
+  box-shadow: 0 0 0 4px rgba(108,99,255,0.12);
+  border-color: var(--primary);
+}
+
+/* pequena melhora visual para o container do formulário quando necessário */
+.forms-base .note {
+  color: var(--muted);
+  font-size: 0.9rem;
+  margin-top: 6px;
+}

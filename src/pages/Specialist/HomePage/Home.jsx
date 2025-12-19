@@ -6,12 +6,14 @@ import Imagem3 from "../../../assets/card2.png"
 import Carrossel from "../../../components/Carrossel/Carrossel.jsx"
 import ImagemFallback from "../../../assets/ambiente-indisponivel.png"
 import "./Home.css"
+import { useNavigate } from "react-router-dom";
 import React, { useState, useEffect } from "react";
 
 function Home() {
     // Estados para os dados reais do Backend
     const [ambientes, setAmbientes] = useState([]);
     const [loading, setLoading] = useState(true);
+    const navigate = useNavigate();
     
     const API_BASE = import.meta.env.VITE_API_BASE ?? "http://localhost:8000";
 
@@ -81,6 +83,7 @@ function Home() {
                                     key={item.id_amb}
                                     type={item.titulo_amb} // Título do ambiente
                                     amount={0} // Você pode ajustar para exibir a quantidade de imagens se o backend fornecer
+                                    onClick={() => navigate(`/FormsPage/${item.id_amb}`)}
                                 />
                             ))}
                         </Carrossel>

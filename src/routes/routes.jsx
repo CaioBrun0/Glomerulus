@@ -15,7 +15,7 @@ function Rotas() {
       <BrowserRouter>
         <Routes>
           {/* Tela pública */}
-          <Route path="/" element={<FormsPage />} />
+          <Route path="/" element={<Landing />} />
           <Route path="/landing" element={<Landing />} />
 
           {/* Telas especialista (user_type === 1) */}
@@ -39,7 +39,14 @@ function Rotas() {
           />
 
           {/* exemplo adicional */}
-          <Route path="/forms" element={<FormsPage />} />
+          <Route 
+              path="/FormsPage/:id" 
+              element={
+                  <RotaProtegida tipoNecessario={1}>
+                      <FormsPage />
+                  </RotaProtegida>
+              } 
+          />
 
           {/* fallback */}
           <Route path="*" element={<Landing />} />

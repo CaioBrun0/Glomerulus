@@ -132,6 +132,32 @@ html, body {
   font-weight: 600;
 }
 
+.forms-image-container {
+    flex: 1;
+    background: #f4f4f9;
+    border-radius: 12px;
+    padding: 15px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 450px;
+    box-shadow: inset 0 0 10px rgba(0,0,0,0.05);
+}
+
+.responsive-img {
+    max-width: 100%;
+    max-height: 75vh; /* Garante que a imagem caiba na tela sem scroll excessivo */
+    object-fit: contain; /* Mantém a proporção sem cortar */
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+}
+
+.forms-workspace {
+    display: flex;
+    gap: 30px;
+    align-items: flex-start;
+    padding: 20px 0;
+}
 
 /* responsividade: duas colunas em larguras médias, uma coluna em pequenas */
 @media (max-width: 1000px) {
