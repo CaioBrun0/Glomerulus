@@ -172,7 +172,7 @@ function ModalCriarAmbiente({ onClose, onSelectConjunto }) {
               value={titulo}
               onChange={e => setTitulo(e.target.value)}
               required
-              style={{ width: "100%", padding: "8px" }}
+              style={{ width: "100%", padding: "10px 12px", margin: "6px 0 12px 0" }}
             />
 
             <label>Descrição curta:</label>
@@ -184,13 +184,15 @@ function ModalCriarAmbiente({ onClose, onSelectConjunto }) {
               rows={2}
               style={{
                 width: "100%",
-                backgroundColor: "#f7f7fb",
-                color: "#333",
-                padding: "8px",
-                fontSize: "15px",
+                padding: "10px 12px",
+                margin: "6px 0 12px 0",
+                border: "1.5px solid #e0e0e0",
                 borderRadius: "8px",
-                border: "1px solid #ccc",
+                fontSize: "1rem",
+                background: "#f7f7fb",
+                color: "#222",
                 resize: "none",
+                fontFamily: "'Roboto', Arial, sans-serif",
               }}
             />
 
