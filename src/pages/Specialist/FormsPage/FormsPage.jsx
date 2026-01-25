@@ -5,60 +5,60 @@ import FormsAmbiente from "../../../components/FormsAmbiente/FormsAmbiente.jsx";
 import "./FormsPage.css";
 
 function FormsPage() {
-    const { id } = useParams(); // id_amb
+    const { id } = useParams(); 
     const [imagens, setImagens] = useState([]);
     const [indexAtual, setIndexAtual] = useState(0);
     const [loading, setLoading] = useState(true);
     const API_BASE = import.meta.env.VITE_API_BASE ?? "http://localhost:8000";
 
-    useEffect(() => {
-        const carregarDadosEImagens = async () => {
-            try {
-                setLoading(true);
-                
-                // 1. Buscamos o ID do conjunto através de uma rota que filtre por ambiente
-                // Já que /test/conjuntos não traz o id_amb, vamos tentar filtrar na URL
-                const resConj = await fetch(`${API_BASE}/test/conjuntos?id_amb=${id}`, { 
-                    credentials: "include" 
-                });
-                const dataConj = await resConj.json();
-                const listaConjuntos = Array.isArray(dataConj) ? dataConj : (dataConj.conjuntos || []);
+    // Função para carregar a fila de trabalho
+    const carregarFila = async () => {
+        try {
+            setLoading(true);
+            // USA A ROTA OFICIAL DE CLASSIFICAÇÃO
+            const response = await fetch(`${API_BASE}/classificacoes/ambiente/${id}/inicializar`, { 
+                credentials: "include" 
+            });
 
-                // 2. Se a lista veio vazia ou não achou, tentamos a "tentativa cega":
-                // Usar o ID do ambiente diretamente na rota de imagens do conjunto
-                // Muitos backends permitem buscar imagens de um ambiente usando essa rota
-                let idParaBusca = listaConjuntos[0]?.id_cnj || id;
-
-                console.log("Tentando buscar imagens com o ID:", idParaBusca);
-
-                const resImgs = await fetch(`${API_BASE}/test/conjuntos/${idParaBusca}/imagens?page=1&page_size=200`, { 
-                    credentials: "include" 
-                });
-
-                if (resImgs.ok) {
-                    const dataImgs = await resImgs.json();
-                    if (dataImgs.imagens && dataImgs.imagens.length > 0) {
-                        setImagens(dataImgs.imagens);
-                    } else {
-                        console.warn("Nenhuma imagem retornada para este ID.");
-                    }
-                }
-            } catch (err) {
-                console.error("Erro fatal ao carregar:", err);
-            } finally {
-                setLoading(false);
+            if (response.ok) {
+                const data = await response.json();
+                // A rota oficial retorna um objeto { imagens: [...], total: ... }
+                setImagens(data.imagens || []);
+                setIndexAtual(0); // Sempre começa da primeira da fila
+            } else {
+                console.error("Erro ao carregar fila");
             }
-        };
+        } catch (err) {
+            console.error("Erro fatal:", err);
+        } finally {
+            setLoading(false);
+        }
+    };
 
-        carregarDadosEImagens();
+    useEffect(() => {
+        carregarFila();
     }, [id, API_BASE]);
 
     const imagemAtual = imagens[indexAtual];
 
+    // Adaptação para a URL do Proxy que vem do backend oficial
     const getUrlImagem = (img) => {
-        if (!img || !img.caminho_img) return "";
-        // Usa a rota do Swagger: /nextcloud/images/{file_path}
-        return `${API_BASE}/nextcloud/images/${encodeURIComponent(img.caminho_img)}`;
+        if (!img) return "";
+        // A rota oficial já manda o 'download_url' pronto (ex: /nextcloud/images/...)
+        if (img.download_url) return `${API_BASE}${img.download_url}`;
+        return "";
+    };
+
+    const handleSucesso = () => {
+        // Lógica de Fila:
+        // Se ainda tem imagens carregadas na memória, passa para a próxima
+        if (indexAtual < imagens.length - 1) {
+            setIndexAtual(prev => prev + 1);
+        } else {
+            // Se acabaram as 20 imagens locais, busca o próximo lote no servidor
+            alert("Lote finalizado! Carregando próximas...");
+            carregarFila();
+        }
     };
 
     return (
@@ -66,48 +66,71 @@ function FormsPage() {
             <Menu />
             <div className="main-wrapper">
                 <div className="space-for-images">
-                    <h1 className="images-title">Classificação de Imagem</h1>
+                    <h1 className="images-title">Fila de Classificação</h1>
                     
-                    <div className="images-area">
+                    {/* CORREÇÃO 2: Adicionei flexDirection: "column" para o texto ficar EMBAIXO da imagem */}
+                    <div className="images-area" style={{ display: "flex", flexDirection: "column", justifyContent: "center" }}>
                         {loading ? (
-                            <p>Carregando imagens...</p>
+                            <p>Buscando tarefas...</p>
                         ) : imagemAtual ? (
-                            <img 
-                                src={getUrlImagem(imagemAtual)} 
-                                alt="Glomérulo"
-                                className="responsive-img"
-                                onError={(e) => { 
-                                    console.error("Erro ao baixar arquivo:", e.target.src);
-                                    e.target.src = "/src/assets/ambiente-indisponivel.png"; 
-                                }}
-                            />
+                            <>
+                                <img 
+                                    src={getUrlImagem(imagemAtual)} 
+                                    alt={imagemAtual.nome_img}
+                                    className="responsive-img"
+                                    // Garante que a imagem não estique demais na altura
+                                    style={{ maxHeight: "60vh", objectFit: "contain" }}
+                                    onError={(e) => e.target.src = "/src/assets/ambiente-indisponivel.png"}
+                                />
+                                <p style={{ marginTop: 10, color: "#666", fontWeight: "bold" }}>
+                                    {imagemAtual.nome_img}
+                                </p>
+                            </>
                         ) : (
-                            <p>Nenhuma imagem disponível neste ambiente.</p>
+                            <div style={{textAlign: "center"}}>
+                                <h3>Tudo pronto!</h3>
+                                <p>Você não possui imagens pendentes neste ambiente.</p>
+                                <button onClick={carregarFila} style={{marginTop: 20, cursor: "pointer"}}>
+                                    Verificar novamente
+                                </button>
+                            </div>
                         )}
                     </div>
 
+                    {/* CORREÇÃO 1: Botões de Navegação Restaurados */}
                     <div className="images-pagination">
-                        <button className="page-btn" onClick={() => setIndexAtual(i => i - 1)} disabled={indexAtual === 0}>
+                        <button 
+                            className="page-btn" 
+                            onClick={() => setIndexAtual(i => i - 1)} 
+                            disabled={indexAtual === 0 || loading}
+                        >
                             Anterior
                         </button>
+                        
                         <span className="page-info">
                             {imagens.length > 0 ? `${indexAtual + 1} de ${imagens.length}` : "0/0"}
                         </span>
-                        <button className="page-btn" onClick={() => setIndexAtual(i => i + 1)} disabled={indexAtual >= imagens.length - 1 || imagens.length === 0}>
+                        
+                        <button 
+                            className="page-btn" 
+                            onClick={() => setIndexAtual(i => i + 1)} 
+                            // Desativa se for a última imagem do lote
+                            disabled={indexAtual >= imagens.length - 1 || loading}
+                        >
                             Próxima
                         </button>
                     </div>
                 </div>
 
                 <div className="forms-direita">
-                    <FormsAmbiente 
-                        ambienteId={id} 
-                        imagemId={imagemAtual?.id_img}
-                        onSucesso={() => {
-                            if (indexAtual < imagens.length - 1) setIndexAtual(prev => prev + 1);
-                            else alert("Ambiente finalizado!");
-                        }}
-                    />
+                    {/* Só mostra o form se houver imagem */}
+                    {imagemAtual && (
+                        <FormsAmbiente 
+                            ambienteId={id} 
+                            imagemId={imagemAtual?.content_hash}
+                            onSucesso={handleSucesso}
+                        />
+                    )}
                 </div>
             </div>
         </div>
