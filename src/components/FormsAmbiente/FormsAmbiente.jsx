@@ -34,7 +34,7 @@ function FormsAmbiente({ ambienteId, imagemId, onSucesso }) {
 
     const handleConfirmar = async (e) => {
         e.preventDefault();
-        // Se imagemId não existir, vamos avisar mas não travar o botão para você testar
+        
         if (!imagemId) {
             console.error("Erro: imagemId está nulo!");
             alert("Aguarde a imagem carregar totalmente.");
@@ -43,24 +43,35 @@ function FormsAmbiente({ ambienteId, imagemId, onSucesso }) {
 
         setEnviando(true);
         try {
-            // Enviamos uma classificação para cada opção selecionada
+            // O Backend espera uma requisição para cada opção selecionada
             const promessas = selecao.map(id_opc => 
-                fetch(`${API_BASE}/classificacoes/`, {
+                // CORREÇÃO 1: A URL agora inclui o ID do ambiente e a ação 'classificar'
+                fetch(`${API_BASE}/classificacoes/ambiente/${ambienteId}/classificar`, {
                     method: "POST",
                     headers: { "Content-Type": "application/json" },
                     body: JSON.stringify({
-                        id_img: imagemId,
+                        // CORREÇÃO 2: O backend espera 'content_hash', não 'id_img'
+                        content_hash: imagemId, 
                         id_opc: id_opc
                     }),
                     credentials: "include"
                 })
             );
 
-            await Promise.all(promessas);
+            // Aguarda todas as requisições terminarem
+            const respostas = await Promise.all(promessas);
+
+            // Verifica se alguma deu erro (status diferente de 200/201)
+            const algumErro = respostas.find(res => !res.ok);
+            if (algumErro) {
+                throw new Error("Falha em uma das requisições");
+            }
+
             setSelecao([]); 
             onSucesso();
         } catch (err) {
-            alert("Erro ao salvar.");
+            console.error(err);
+            alert("Erro ao salvar classificação.");
         } finally {
             setEnviando(false);
         }

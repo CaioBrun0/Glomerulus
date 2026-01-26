@@ -8,6 +8,7 @@ import Register from '../pages/Register/Register.jsx';
 import HomePage from '../pages/Specialist/HomePage/Home.jsx';
 import RotaProtegida from './RotaProtegida.jsx';
 import FormsPage from '../pages/Specialist/FormsPage/FormsPage.jsx'; 
+import HistoricPage from "../pages/Specialist/HistoricPage/HistoricPage.jsx";
 
 function Rotas() {
   return (
@@ -36,6 +37,15 @@ function Rotas() {
                 <HomePageAdmin />
               </RotaProtegida>
             }
+          />
+
+          <Route 
+            path="/historic" 
+            element={
+                <RotaProtegida tipoNecessario={1}>
+                    <HistoricPage />
+                </RotaProtegida>
+            } 
           />
 
           {/* exemplo adicional */}

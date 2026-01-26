@@ -9,24 +9,21 @@ function FormsPage() {
     const [imagens, setImagens] = useState([]);
     const [indexAtual, setIndexAtual] = useState(0);
     const [loading, setLoading] = useState(true);
+    const [buscandoAnteriores, setBuscandoAnteriores] = useState(false); // Novo estado
+    
     const API_BASE = import.meta.env.VITE_API_BASE ?? "http://localhost:8000";
 
-    // Função para carregar a fila de trabalho
     const carregarFila = async () => {
         try {
             setLoading(true);
-            // USA A ROTA OFICIAL DE CLASSIFICAÇÃO
             const response = await fetch(`${API_BASE}/classificacoes/ambiente/${id}/inicializar`, { 
                 credentials: "include" 
             });
 
             if (response.ok) {
                 const data = await response.json();
-                // A rota oficial retorna um objeto { imagens: [...], total: ... }
                 setImagens(data.imagens || []);
-                setIndexAtual(0); // Sempre começa da primeira da fila
-            } else {
-                console.error("Erro ao carregar fila");
+                setIndexAtual(0);
             }
         } catch (err) {
             console.error("Erro fatal:", err);
@@ -39,23 +36,74 @@ function FormsPage() {
         carregarFila();
     }, [id, API_BASE]);
 
+    // --- NOVA FUNÇÃO: Buscar imagens anteriores ---
+    const buscarAnteriores = async () => {
+        const imagemReferencia = imagens[0]; 
+        if (!imagemReferencia) return;
+
+        setBuscandoAnteriores(true);
+        try {
+            const response = await fetch(`${API_BASE}/classificacoes/ambiente/${id}/voltar`, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                    content_hash: imagemReferencia.content_hash
+                }),
+                credentials: "include"
+            });
+
+            if (response.ok) {
+                const data = await response.json();
+                const todasAnteriores = data.imagens || [];
+                
+                // === AQUI ESTÁ A CORREÇÃO ===
+                // Filtramos para manter apenas as que NÃO tem classificação (pendentes)
+                const pendentesAnteriores = todasAnteriores.filter(img => !img.classificacao);
+                
+                if (pendentesAnteriores.length > 0) {
+                    setImagens(prev => [...pendentesAnteriores, ...prev]);
+                    // Mantém o foco na imagem que você estava vendo
+                    setIndexAtual(prev => prev + pendentesAnteriores.length);
+                } else {
+                    // Se veio imagem, mas todas eram repetidas/feitas
+                    if (todasAnteriores.length > 0) {
+                        alert("As imagens anteriores já foram todas avaliadas. Tente buscar mais uma vez para ir mais longe.");
+                    } else {
+                        alert("Não há mais imagens anteriores.");
+                    }
+                }
+            }
+        } catch (err) {
+            console.error("Erro ao buscar anteriores:", err);
+        } finally {
+            setBuscandoAnteriores(false);
+        }
+    };
+
     const imagemAtual = imagens[indexAtual];
 
-    // Adaptação para a URL do Proxy que vem do backend oficial
     const getUrlImagem = (img) => {
         if (!img) return "";
-        // A rota oficial já manda o 'download_url' pronto (ex: /nextcloud/images/...)
-        if (img.download_url) return `${API_BASE}${img.download_url}`;
+        if (img.download_url) {
+             if (img.download_url.startsWith("http")) return img.download_url;
+             return `${API_BASE}${img.download_url}`;
+        }
+        if (img.caminho_img) {
+             try {
+                 const rawPath = decodeURIComponent(img.caminho_img);
+                 const safePath = rawPath.split('/').map(part => encodeURIComponent(part)).join('/');
+                 return `${API_BASE}/nextcloud/images/${safePath}`;
+             } catch (e) {
+                 return "";
+             }
+        }
         return "";
     };
 
     const handleSucesso = () => {
-        // Lógica de Fila:
-        // Se ainda tem imagens carregadas na memória, passa para a próxima
         if (indexAtual < imagens.length - 1) {
             setIndexAtual(prev => prev + 1);
         } else {
-            // Se acabaram as 20 imagens locais, busca o próximo lote no servidor
             alert("Lote finalizado! Carregando próximas...");
             carregarFila();
         }
@@ -68,7 +116,6 @@ function FormsPage() {
                 <div className="space-for-images">
                     <h1 className="images-title">Fila de Classificação</h1>
                     
-                    {/* CORREÇÃO 2: Adicionei flexDirection: "column" para o texto ficar EMBAIXO da imagem */}
                     <div className="images-area" style={{ display: "flex", flexDirection: "column", justifyContent: "center" }}>
                         {loading ? (
                             <p>Buscando tarefas...</p>
@@ -78,27 +125,46 @@ function FormsPage() {
                                     src={getUrlImagem(imagemAtual)} 
                                     alt={imagemAtual.nome_img}
                                     className="responsive-img"
-                                    // Garante que a imagem não estique demais na altura
                                     style={{ maxHeight: "60vh", objectFit: "contain" }}
                                     onError={(e) => e.target.src = "/src/assets/ambiente-indisponivel.png"}
                                 />
                                 <p style={{ marginTop: 10, color: "#666", fontWeight: "bold" }}>
                                     {imagemAtual.nome_img}
                                 </p>
+
+                                {/* Informação extra se a imagem já foi classificada (útil ao voltar) */}
+                                {imagemAtual.classificacao && (
+                                    <span style={{color: "green", fontSize: "0.8rem"}}>
+                                        (Já classificada: {imagemAtual.classificacao.texto_opcao})
+                                    </span>
+                                )}
                             </>
                         ) : (
                             <div style={{textAlign: "center"}}>
-                                <h3>Tudo pronto!</h3>
-                                <p>Você não possui imagens pendentes neste ambiente.</p>
-                                <button onClick={carregarFila} style={{marginTop: 20, cursor: "pointer"}}>
-                                    Verificar novamente
-                                </button>
+                                <h3>Tudo pronto por aqui!</h3>
+                                <p>Sem imagens pendentes à frente.</p>
+                                <div style={{display: "flex", gap: "10px", justifyContent: "center", marginTop: 20}}>
+                                    <button onClick={carregarFila} style={{cursor: "pointer"}}>
+                                        Verificar Novas
+                                    </button>
+                                    {/* Botão para buscar as esquecidas mesmo se a lista estiver vazia (mas precisa de lógica extra no backend para funcionar sem ref, então deixamos opcional aqui) */}
+                                </div>
                             </div>
                         )}
                     </div>
 
-                    {/* CORREÇÃO 1: Botões de Navegação Restaurados */}
                     <div className="images-pagination">
+                        {/* --- BOTÃO CARREGAR ANTERIORES --- */}
+                        <button 
+                            className="page-btn secondary"
+                            onClick={buscarAnteriores}
+                            disabled={loading || buscandoAnteriores || imagens.length === 0}
+                            style={{ marginRight: 'auto', fontSize: '0.8rem' }} // Joga para a esquerda
+                            title="Buscar imagens que ficaram para trás"
+                        >
+                            {buscandoAnteriores ? "..." : "⏪ Buscar Anteriores"}
+                        </button>
+
                         <button 
                             className="page-btn" 
                             onClick={() => setIndexAtual(i => i - 1)} 
@@ -114,7 +180,6 @@ function FormsPage() {
                         <button 
                             className="page-btn" 
                             onClick={() => setIndexAtual(i => i + 1)} 
-                            // Desativa se for a última imagem do lote
                             disabled={indexAtual >= imagens.length - 1 || loading}
                         >
                             Próxima
@@ -123,7 +188,6 @@ function FormsPage() {
                 </div>
 
                 <div className="forms-direita">
-                    {/* Só mostra o form se houver imagem */}
                     {imagemAtual && (
                         <FormsAmbiente 
                             ambienteId={id} 
