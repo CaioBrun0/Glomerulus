@@ -1,128 +1,221 @@
-.modalOverlay {
+/* --- OVERLAY --- */
+.modal-overlay-green {
   position: fixed;
   top: 0;
   left: 0;
-  width: 100vw;
-  height: 100vh;
-  background: rgba(0, 0, 0, 0.4);
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5); /* Fundo escuro */
+  backdrop-filter: blur(5px); /* Blur moderno */
   display: flex;
   align-items: center;
   justify-content: center;
   z-index: 1000;
+  animation: fadeIn 0.3s ease-out;
 }
 
-.modalContent {
+/* --- CARD DO MODAL --- */
+.modal-content-green {
   background: white;
-  color: black;
-  padding: 20px;
-  border-radius: 12px;
-  width: 400px;
-  text-align: center;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
-}
-
-.navGreenList {
+  width: 90%;
+  max-width: 480px;
+  border-radius: 24px;
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+  display: flex;
+  flex-direction: column;
   position: relative;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background-color: #6C63FF; /* Cor verde */
-  height: 50px;
-  color: white;
-  padding: 10px;
-  border-radius: 12px 8px 0 0;
-  margin: -20px -20px 20px -20px; /* Ajusta a margem para cobrir a borda do modal */
-  
+  overflow: hidden;
+  animation: scaleUp 0.3s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-.navGreenList button {
-  position: absolute;
-  top: 1px;
-  right: 1px;
-  background: transparent;
-  border: none;
-  font-size: 16px;
-  cursor: pointer;
+/* --- HEADER --- */
+.modal-header-green {
+    padding: 30px 30px 20px 30px;
+    background: white;
+    position: relative;
 }
 
-.navGreenList:hover button {
-  color: black;
+.modal-header-green h2 {
+    margin: 0;
+    font-size: 1.5rem;
+    color: #1a202c;
+    font-weight: 800;
 }
 
-.infoGreenContainer  {
-  margin-top: 10px;
-  font-size: 14px;
-  color: #333;
-  box-shadow: 0px 0px 2px rgba(0, 0, 0, 0.3);
+.modal-header-green p {
+    margin: 5px 0 0 0;
+    color: #718096;
+    font-size: 0.9rem;
 }
 
-.infoGreenContainer h2 {
-  margin: 23px 0 2px 0; /* margem superior menor e inferior pequena */
-  font-size: 20px;
+.btn-close-green {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    background: #f7fafc;
+    border: none;
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    font-size: 1.5rem;
+    color: #718096;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s;
 }
 
-.infoGreenContainer input {
-  margin-bottom: 1px; /* reduz o espaço após o input */
+.btn-close-green:hover {
+    background: #edf2f7;
+    color: #1a202c;
 }
 
-.buttonsFormsGreen {
-  display: flex;
-  justify-content: center;
-  gap: 12px; /* Espaçamento horizontal entre os botões */
-  padding-bottom: 15px;
-  margin: 0 0 0 0; /* reduz o espaço acima dos botões */
+/* --- BODY --- */
+.modal-body-green {
+    padding: 10px 30px 30px 30px;
+    display: flex;
+    flex-direction: column;
+    gap: 25px;
 }
 
-.buttonsFormsGreen button {
-  background-color: transparent;
-  box-shadow:  0px 0px 2px rgba(0, 0, 0, 0.3);
-  width: 140px;
-  color: #979798;
-  border: none;
-  padding: 10px 20px;
-  border-radius: 8px;
-  cursor: pointer;
-  font-size: 16px;
+/* Inputs */
+.input-block label, .type-selection-block label {
+    display: block;
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: #4A5568;
+    margin-bottom: 8px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
 }
 
-.buttonsFormsGreen button:hover,
-.buttonsFormsGreen button.active {
-  color: #6C63FF;
-  box-shadow: 0px 0px 3px #6C63FF;
-  font-weight: bold;
+.input-modern-green {
+    width: 100%;
+    padding: 14px 16px;
+    border: 2px solid #e2e8f0;
+    border-radius: 12px;
+    font-size: 1rem;
+    color: #2D3748;
+    transition: all 0.3s;
+    background: #f8fafc;
+    outline: none;
 }
 
-.buttonsFormsGreen button:focus {
-  outline: none;
-  box-shadow: 0px 0px 3px #6C63FF; /* mantém o box-shadow azul do hover/active */
+.input-modern-green:focus {
+    border-color: #6C63FF;
+    background: white;
+    box-shadow: 0 0 0 4px rgba(108, 99, 255, 0.1);
 }
 
-.buttonsSubGreen {
-  display: flex;
-  justify-content: center;
-  margin: 20px;
-  gap: 12px; /* Espaçamento horizontal entre os botões */
+/* Seleção de Tipo (Cards Lado a Lado) */
+.type-buttons-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr; /* Divide em 2 */
+    gap: 15px;
 }
 
-.buttonsSubGreen button {
-  background-color: transparent;
-  box-shadow:  0px 0px 2px rgba(0, 0, 0, 0.3);
-  width: 140px;
-  color: #979798;
-  border: none;
-  padding: 10px 20px;
-  border-radius: 8px;
-  cursor: pointer;
-  font-size: 16px;
+.type-card {
+    background: white;
+    border: 2px solid #e2e8f0;
+    border-radius: 12px;
+    padding: 15px;
+    cursor: pointer;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+    transition: all 0.2s;
 }
 
-.buttonsSubGreen button:first-child:hover {
-  background-color: #00cf07; /* Verde para "Adicionar" */
-  color: #fff;
+.type-card:hover {
+    border-color: #cbd5e0;
+    background: #f7fafc;
 }
 
-.buttonsSubGreen button:last-child:hover {
-  background-color: #f44336; /* Vermelho para "Remover" */
-  color: #fff;
+.type-card.active {
+    border-color: #6C63FF;
+    background: #f5f3ff;
 }
 
+.icon-box {
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.icon-box img { width: 32px; height: 32px; object-fit: contain; }
+
+.type-card span {
+    font-weight: 600;
+    color: #718096;
+    font-size: 0.9rem;
+}
+
+.type-card.active span {
+    color: #6C63FF;
+}
+
+/* --- FOOTER (Ações) --- */
+.modal-footer-green {
+    padding: 20px 30px;
+    background: #f9fafb;
+    border-top: 1px solid #edf2f7;
+    display: flex;
+    justify-content: space-between; /* Botões nas pontas */
+    align-items: center;
+}
+
+.btn-action-remove {
+    background: white;
+    border: 1px solid #feb2b2;
+    color: #e53e3e;
+    padding: 10px 20px;
+    border-radius: 10px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.btn-action-remove:hover {
+    background: #fff5f5;
+    border-color: #fc8181;
+}
+
+.btn-action-add {
+    background: #6C63FF;
+    border: none;
+    color: white;
+    padding: 12px 24px;
+    border-radius: 10px;
+    font-weight: 700;
+    cursor: pointer;
+    box-shadow: 0 4px 10px rgba(108, 99, 255, 0.3);
+    transition: all 0.2s;
+}
+
+.btn-action-add:hover {
+    background: #5a52d5;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 15px rgba(108, 99, 255, 0.4);
+}
+
+.btn-action-add:disabled, .btn-action-remove:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    transform: none;
+}
+
+/* Animações */
+@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+@keyframes scaleUp { from { transform: scale(0.95); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+
+/* Responsivo */
+@media (max-width: 480px) {
+    .modal-content-green { width: 95%; }
+    .type-buttons-row { grid-template-columns: 1fr; } /* Empilha no mobile */
+    .modal-footer-green { flex-direction: column-reverse; gap: 15px; }
+    .btn-action-add, .btn-action-remove { width: 100%; }
+}
