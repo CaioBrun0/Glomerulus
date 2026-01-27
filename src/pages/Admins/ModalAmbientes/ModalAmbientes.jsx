@@ -3,89 +3,122 @@ import "./ModalAmbientes.css";
 import CardAmbiente from "../../../components/cardAmbiente/cardAmbiente.jsx";
 import ModalDetalhesAmbiente from "../ModalDetalhesAmbientes/ModalDetalhesAmbientes.jsx";
 
-// 1. Adicionar loading e error aos props
 function ModalAmbientes({ onClose, onCriarAmbiente, ambientesAtivos = [], ambientesInativos = [], loading, error, onRefresh }) {
   const [aba, setAba] = useState("ativos");
   const [ambienteSelecionado, setAmbienteSelecionado] = useState(null);
   
-  // NOVO: Função para renderizar o conteúdo da aba
   const renderAmbienteContent = () => {
-    // 2. Lógica de Loading
+    // 1. Loading
     if (loading) {
-        return <p style={{ gridColumn: '1 / -1', color: "#6C63FF", fontWeight: 'bold' }}>Carregando ambientes...</p>;
+        return (
+            <div className="state-message">
+                <div className="spinner"></div>
+                <p>Carregando ambientes...</p>
+            </div>
+        );
     }
 
-    // 3. Lógica de Erro
+    // 2. Erro
     if (error) {
-        return <p style={{ gridColumn: '1 / -1', color: "red", fontWeight: 'bold' }}>Erro: {error}</p>;
+        return (
+            <div className="state-message error">
+                <p>Erro: {error}</p>
+            </div>
+        );
     }
     
     const ambientesAtuais = aba === "ativos" ? ambientesAtivos : ambientesInativos;
 
-    // 4. Lógica de Conteúdo Vazio
+    // 3. Vazio
     if (ambientesAtuais.length === 0) {
-        return <p style={{ gridColumn: '1 / -1' }}>Nenhum ambiente {aba} encontrado.</p>;
+        return (
+            <div className="state-message empty">
+                <p>Nenhum ambiente {aba} encontrado.</p>
+                {aba === 'ativos' && <small>Clique em "Novo Ambiente" para começar.</small>}
+            </div>
+        );
     }
 
-    // 5. Renderização dos Cards
-    return ambientesAtuais.map((amb, idx) => (
-    <CardAmbiente
-      key={amb.id || idx}
-      type={amb.type}
-      isAdmin={true}      // Ativa o modo Admin
-      ativo={true}        // Controla o Badge
-      amount={amb.amount}
-      onClick={() => setAmbienteSelecionado(amb.id)} // ADICIONADO
-    />
-));
+    // 4. Lista de Cards
+    return (
+        <div className="ambientes-grid">
+            {ambientesAtuais.map((amb, idx) => (
+                <CardAmbiente
+                    key={amb.id || idx}
+                    type={amb.type}
+                    isAdmin={true}
+                    ativo={true} // O card já trata isso visualmente
+                    total={amb.amount} // Ajuste se seu card usa 'total' ou 'amount'
+                    onClick={() => setAmbienteSelecionado(amb.id)}
+                />
+            ))}
+        </div>
+    );
   };
   
   return (
-    <div className="modalOverlay-Ambientes" onClick={onClose}>
-      <div className="modalContent-Ambientes" onClick={e => e.stopPropagation()}>
-        <nav className="navAmbientes">
-          <h1>Ambientes</h1>
-          <button onClick={onClose}>X</button>
-        </nav>
-
-        <div className="abasAmbientes">
-          <button
-            className={aba === "ativos" ? "abaAtiva" : ""}
-            onClick={() => setAba("ativos")}
-          >
-            Ativos
-          </button>
-          <button
-            className={aba === "inativos" ? "abaAtiva" : ""}
-            onClick={() => setAba("inativos")}
-          >
-            Inativos
-          </button>
-
-          <button id="criarAmbiente"  onClick={onCriarAmbiente}>
-            + Criar Ambiente
-          </button>
-
+    <div className="modal-overlay-ambientes" onClick={onClose}>
+      <div className="modal-content-ambientes" onClick={e => e.stopPropagation()}>
+        
+        {/* HEADER LIMPO */}
+        <div className="modal-header-ambientes">
+            <div>
+                <h2>Gerenciar Ambientes</h2>
+                <p>Visualize e edite os ambientes de rotulação.</p>
+            </div>
+            <button className="btn-close-ambientes" onClick={onClose}>&times;</button>
         </div>
 
-        <h2 style={{color:"#6C63FF", fontSize: "16px",fontFamily: "Roboto, arial, sans-serif"}}>
-          {aba === "ativos"
-            ? "Aqui você encontrará os ambientes ativos criados por você e por outros administradores"
-            : "Aqui você encontrará os ambientes inativos"}
-        </h2>
+        {/* BARRA DE FERRAMENTAS (ABAS + BOTÃO CRIAR) */}
+        <div className="toolbar-ambientes">
+            <div className="tabs-container">
+                <button 
+                    className={`tab-btn ${aba === "ativos" ? "active" : ""}`}
+                    onClick={() => setAba("ativos")}
+                >
+                    Ativos
+                </button>
+                <button 
+                    className={`tab-btn ${aba === "inativos" ? "active" : ""}`}
+                    onClick={() => setAba("inativos")}
+                >
+                    Inativos
+                </button>
+            </div>
 
-        <div className="cardsInfoBox-Ambientes" style={{display: "grid", gridTemplateColumns: "1fr 1fr", gap: "20px", maxHeight: "400px", overflowY: "auto", marginTop: "24px"}}>
-          {renderAmbienteContent()} 
+            <button className="btn-create-ambiente" onClick={onCriarAmbiente}>
+                + Novo Ambiente
+            </button>
         </div>
 
+        {/* CONTEÚDO (SCROLLÁVEL) */}
+        <div className="modal-body-ambientes">
+             <div className="section-title">
+                {aba === "ativos" 
+                    ? "Ambientes visíveis para especialistas" 
+                    : "Ambientes arquivados ou ocultos"}
+             </div>
+             
+             {renderAmbienteContent()}
+        </div>
+
+        {/* Footer com contador (Opcional) */}
+        <div className="modal-footer-ambientes">
+            <span>
+                Exibindo {aba === 'ativos' ? ambientesAtivos.length : ambientesInativos.length} ambientes
+            </span>
+        </div>
+
+        {/* SUB-MODAL DE DETALHES */}
         {ambienteSelecionado && (
           <ModalDetalhesAmbiente 
             ambienteId={ambienteSelecionado} 
             statusInicial={aba}
             onClose={() => setAmbienteSelecionado(null)}
-            onRefresh={onRefresh} // Passe uma função que recarrega a lista do HomePageAdmin
+            onRefresh={onRefresh}
           />
         )}
+
       </div>
     </div>
   );

@@ -1,164 +1,203 @@
-@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap');
-
-.modalOverlay-Ambientes {
+/* --- OVERLAY --- */
+.modal-overlay-ambientes {
   position: fixed;
   top: 0;
   left: 0;
-  width: 100vw;
-  height: 100vh;
-  background: rgba(0, 0, 0, 0.4);
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  backdrop-filter: blur(5px);
   display: flex;
   align-items: center;
   justify-content: center;
   z-index: 1000;
+  animation: fadeIn 0.3s ease-out;
 }
 
-.modalContent-Ambientes {
+/* --- CARD DO MODAL --- */
+.modal-content-ambientes {
   background: white;
-  color: #222;
-  border-radius: 12px;
-  width: 750px;
-  max-width: 98vw;
-  text-align: center;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
-  font-family: 'Roboto', Arial, sans-serif;
-  padding: 0 0 24px 0;
+  width: 90%;
+  max-width: 1000px; /* Bem largo para caber vários cards */
+  height: 85vh;      /* Altura quase total */
+  border-radius: 24px;
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
   display: flex;
   flex-direction: column;
-  align-items: stretch;
-}
-
-.navAmbientes {
   position: relative;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background-color: #6C63FF;
-  height: 54px;
-  color: white;
-  padding: 0 16px;
-  border-radius: 12px 12px 0 0;
-  margin-bottom: 18px;
+  overflow: hidden;
+  animation: scaleUp 0.3s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-.navAmbientes h1 {
-  flex: 1;
-  font-size: 2rem;
-  font-weight: 700;
-  letter-spacing: 1px;
-  margin: 0;
-  text-align: center;
+/* --- HEADER --- */
+.modal-header-ambientes {
+    padding: 30px 40px;
+    background: white;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    border-bottom: 1px solid #f0f0f0;
 }
 
-.navAmbientes button {
-  position: absolute;
-  right: 18px;
-  top: 10px;
-  background: transparent;
-  border: none;
-  font-size: 15px;
-  color: #fff;
-  cursor: pointer;
-  font-weight: bold;
-  transition: color 0.2s;
-}
-.navAmbientes button:hover {
-  color: #000000;
+.modal-header-ambientes h2 {
+    margin: 0;
+    font-size: 1.8rem;
+    color: #1a202c;
+    font-weight: 800;
 }
 
-.abasAmbientes {
-  display: flex;
-  justify-content: center;
-  gap: 16px;
-  margin-bottom: 18px;
-}
-
-.abasAmbientes button {
-  background: transparent;
-  border: 2px solid #6C63FF;
-  color: #6C63FF;
-  font-family: 'Roboto', Arial, sans-serif;
-  font-size: 1rem;
-  font-weight: 600;
-  border-radius: 8px 8px 0 0;
-  padding: 8px 32px;
-  cursor: pointer;
-  transition: background 0.2s, color 0.2s;
-}
-
-.abasAmbientes .abaAtiva,
-.abasAmbientes button:hover {
-  background: #6C63FF;
-  color: #fff;
-}
-
-#criarAmbiente {
-  background: #ffffff;
-  border: 2px solid #d6046a;
-  color: #d6046a;
-}
-
-#criarAmbiente:hover {
-  background: #ff1e8c;
-  border: 2px solid #ff1e8c;
-  color: white;
-}
-
-.cardsInfoBox-Ambientes {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 20px;
-  max-height: 400px;
-  overflow-y: auto;
-  margin: 24px 0 0 0;
-  padding: 9px;
-  padding-left: 100px;
-  padding-right: 50px;
-
-
-}
-
-.cardsInfoBox-Ambientes p {
-  font-family: 'Roboto', Arial, sans-serif;
-  font-size: 15px;
-  color: #333;
-  margin: 0;
-  grid-column: 1 / -1;
-  text-align: center;
-}
-
-@media (max-width: 900px) {
-  .modalContent-Ambientes {
-    width: 98vw;
-    min-width: unset;
-  }
-  .cardsInfoBox-Ambientes {
-    grid-template-columns: 1fr;
-    max-height: 350px;
-    
-  }
-  .navAmbientes h1 {
-    font-size: 1.3rem;
-  }
-}
-
-@media (max-width: 500px) {
-  .modalContent-Ambientes {
-    padding: 0 0 12px 0;
-  }
-  .navAmbientes {
-    font-size: 1rem;
-    padding: 0 8px;
-    height: 48px;
-  }
-  .abasAmbientes button {
-    padding: 8px 10px;
+.modal-header-ambientes p {
+    margin: 5px 0 0 0;
+    color: #718096;
     font-size: 0.95rem;
-  }
-  .cardsInfoBox-Ambientes {
-    padding: 9px;
-    padding-left: 20px;
-    padding-right: 20px;
-    gap: 10px;
-  }
+}
+
+.btn-close-ambientes {
+    background: #f7fafc;
+    border: none;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    font-size: 1.5rem;
+    color: #718096;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s;
+}
+
+.btn-close-ambientes:hover {
+    background: #edf2f7;
+    color: #1a202c;
+}
+
+/* --- TOOLBAR (ABAS + BOTÃO) --- */
+.toolbar-ambientes {
+    padding: 20px 40px;
+    background: #fff;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 20px;
+}
+
+.tabs-container {
+    display: flex;
+    background: #f1f5f9;
+    padding: 4px;
+    border-radius: 12px;
+}
+
+.tab-btn {
+    padding: 8px 24px;
+    border: none;
+    background: transparent;
+    color: #64748b;
+    font-weight: 600;
+    font-size: 0.95rem;
+    cursor: pointer;
+    border-radius: 10px;
+    transition: all 0.2s;
+}
+
+.tab-btn.active {
+    background: white;
+    color: #6C63FF;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+}
+
+.btn-create-ambiente {
+    background: #6C63FF;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 10px;
+    font-weight: 700;
+    font-size: 0.9rem;
+    cursor: pointer;
+    box-shadow: 0 4px 10px rgba(108, 99, 255, 0.3);
+    transition: all 0.2s;
+}
+
+.btn-create-ambiente:hover {
+    background: #5a52d5;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 15px rgba(108, 99, 255, 0.4);
+}
+
+/* --- BODY (SCROLLÁVEL) --- */
+.modal-body-ambientes {
+    flex: 1; /* Ocupa o espaço restante */
+    overflow-y: auto; /* Scroll aqui */
+    padding: 20px 40px 40px 40px;
+    background: #f8fafc; /* Fundo levemente cinza */
+}
+
+.section-title {
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: #94a3b8;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 20px;
+}
+
+/* --- GRID DE CARDS --- */
+.ambientes-grid {
+    display: grid;
+    /* Grid mágico responsivo */
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 20px;
+}
+
+/* --- ESTADOS (LOADING/VAZIO/ERRO) --- */
+.state-message {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 60px;
+    text-align: center;
+    color: #64748b;
+    width: 100%;
+    grid-column: 1 / -1; /* Ocupa toda a largura do grid se estiver dentro dele */
+}
+
+.state-message.error { color: #e53e3e; }
+.state-message.empty p { font-size: 1.1rem; color: #475569; }
+.state-message.empty small { margin-top: 5px; color: #94a3b8; }
+
+.spinner {
+    width: 30px; 
+    height: 30px; 
+    border: 3px solid rgba(108,99,255,0.3); 
+    border-top-color: #6C63FF; 
+    border-radius: 50%; 
+    animation: spin 1s linear infinite;
+    margin-bottom: 15px;
+}
+
+/* --- FOOTER --- */
+.modal-footer-ambientes {
+    padding: 15px 40px;
+    background: white;
+    border-top: 1px solid #f0f0f0;
+    color: #94a3b8;
+    font-size: 0.85rem;
+    text-align: right;
+}
+
+/* Animações */
+@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+@keyframes scaleUp { from { transform: scale(0.95); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* Responsivo */
+@media (max-width: 768px) {
+    .toolbar-ambientes { flex-direction: column-reverse; align-items: stretch; }
+    .btn-create-ambiente { width: 100%; }
+    .tabs-container { justify-content: center; }
+    .modal-header-ambientes { padding: 20px; }
+    .modal-body-ambientes { padding: 20px; }
 }
