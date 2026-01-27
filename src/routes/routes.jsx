@@ -9,6 +9,7 @@ import HomePage from '../pages/Specialist/HomePage/Home.jsx';
 import RotaProtegida from './RotaProtegida.jsx';
 import FormsPage from '../pages/Specialist/FormsPage/FormsPage.jsx'; 
 import HistoricPage from "../pages/Specialist/HistoricPage/HistoricPage.jsx";
+import CriarAmbiente from '../pages/Admins/CriarAmbiente/CriarAmbiente.jsx';
 
 function Rotas() {
   return (
@@ -29,6 +30,15 @@ function Rotas() {
             }
           />
 
+          <Route 
+            path="/historic" 
+            element={
+                <RotaProtegida tipoNecessario={1}>
+                    <HistoricPage />
+                </RotaProtegida>
+            } 
+          />
+
           {/* Telas administrador (user_type === 2) */}
           <Route
             path="/HomePageAdmin"
@@ -40,13 +50,14 @@ function Rotas() {
           />
 
           <Route 
-            path="/historic" 
+            path="/CriarAmbiente" 
             element={
-                <RotaProtegida tipoNecessario={1}>
-                    <HistoricPage />
-                </RotaProtegida>
+              <RotaProtegida tipoNecessario={2}>
+                <CriarAmbiente />
+              </RotaProtegida>
             } 
           />
+
 
           {/* exemplo adicional */}
           <Route 

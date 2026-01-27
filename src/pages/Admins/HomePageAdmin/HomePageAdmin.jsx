@@ -1,12 +1,11 @@
 import "./HomePageAdmin.css";
-// IMPORTANTE: Adicionar useEffect
 import { useState, useEffect } from "react"; 
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../../routes/context/AuthContext.jsx";
 import ImgNav from "../../../assets/navAdmin.png";
 import CardGreenList from "../../../components/CardsAdmin/CardgreenList/CardgreenList.jsx";
 import ModalGreenList from "../../../pages/Admins/ModalGreenList/ModalGreenList.jsx";
-import ModalCriarAmbiente from "../../../pages/Admins/ModalCriarAmbiente/ModalCriarAmbiente.jsx";
+// import ModalCriarAmbiente ...  <-- REMOVER OU COMENTAR ESTE IMPORT (Não usaremos mais aqui)
 import ModalAmbientes from "../../../pages/Admins/ModalAmbientes/ModalAmbientes.jsx";
 import CardAmbientes from "../../../components/CardsAdmin/CardAmbientesAdmin/CardAmbientesAdmin.jsx";
 import CardDashboard from "../../../components/CardsAdmin/CardDashboard/CardDashboard.jsx";
@@ -18,36 +17,31 @@ function HomePageAdmin() {
     const navigate = useNavigate();
     const auth = useAuth(); 
     
-    // NOVO: Estados para dados reais
     const [ambientes, setAmbientes] = useState({ ativos: [], inativos: [] });
     const [loadingAmbientes, setLoadingAmbientes] = useState(true);
     const [errorAmbientes, setErrorAmbientes] = useState(null);
 
-    // NOVO: Função para buscar ambientes do backend
     const fetchAmbientes = async () => {
         setLoadingAmbientes(true);
         setErrorAmbientes(null);
         try {
             const response = await fetch("http://localhost:8000/ambientes/", {
                 method: "GET",
-                credentials: "include" // CRÍTICO: Garante que o cookie HttpOnly seja enviado
+                credentials: "include"
             });
 
             if (!response.ok) {
                 let detail = "Falha ao carregar ambientes.";
                 if (response.status === 401 || response.status === 403) {
-                     detail = "Não autorizado. Verifique se você é um administrador.";
+                     detail = "Não autorizado.";
                 }
                 throw new Error(detail);
             }
 
             const data = await response.json();
-
-            // Lógica de filtragem e adaptação dos dados da API
             const ativos = data.filter(amb => amb.ativo);
             const inativos = data.filter(amb => !amb.ativo);
 
-            // Adaptação dos dados para o formato esperado pelo CardAmbiente
             setAmbientes({ 
                 ativos: ativos.map(a => ({ 
                     id: a.id_amb, 
@@ -63,32 +57,21 @@ function HomePageAdmin() {
 
         } catch (err) {
             setErrorAmbientes(err.message);
-            console.error("Erro ao buscar ambientes:", err); // Mantém o log
+            console.error(err);
         } finally {
             setLoadingAmbientes(false);
         }
     };
     
-    // NOVO: useEffect para chamar a função de fetch na montagem do componente
     useEffect(() => {
         fetchAmbientes();
     }, []);
 
     async function handleLogout() {
       try {
-        // 1. Tenta invalidar cookie HttpOnly no backend
-        await fetch("http://localhost:8000/auth/logout", {
-          method: "POST",
-          credentials: "include"
-        });
-      } catch (err) {
-        console.warn("Logout request falhou:", err);
-      }
-      
-      // 2. Limpa dados locais (payload persistente) via AuthContext
+        await fetch("http://localhost:8000/auth/logout", { method: "POST", credentials: "include" });
+      } catch (err) { console.warn(err); }
       auth.logout(); 
-      
-      // 3. Redireciona
       navigate("/");
     }
 
@@ -112,27 +95,25 @@ function HomePageAdmin() {
         )}
         
         {modalAberto === 'ambientes' && (
-            <ModalAmbientes onClose={() => setModalAberto(null)}
-            onCriarAmbiente={() => setModalAberto('criarAmbiente')}
-            // Passa os dados e o estado de carregamento/erro
-            ambientesAtivos={ambientes.ativos} 
-            ambientesInativos={ambientes.inativos} 
-            loading={loadingAmbientes}
-            error={errorAmbientes}
-            onRefresh={fetchAmbientes}
+            <ModalAmbientes 
+                onClose={() => setModalAberto(null)}
+                // MUDANÇA AQUI: Em vez de abrir modal, navegamos para a página
+                onCriarAmbiente={() => navigate("/CriarAmbiente")}
+                
+                ambientesAtivos={ambientes.ativos} 
+                ambientesInativos={ambientes.inativos} 
+                loading={loadingAmbientes}
+                error={errorAmbientes}
+                onRefresh={fetchAmbientes}
             />
         )}
+
         {modalAberto === 'usuarios' && (
             <ModalUsuarios onClose={() => setModalAberto(null)} />
         )}
-        {modalAberto === 'criarAmbiente' && (
-        <ModalCriarAmbiente
-            onClose={() => setModalAberto('ambientes')}
-        />
-        )}
 
+        {/* MUDANÇA AQUI: Removemos a renderização condicional do ModalCriarAmbiente antigo */}
     </>
-    
     )
 }
 
