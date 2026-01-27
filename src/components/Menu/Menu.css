@@ -1,4 +1,4 @@
-/* Garante que body e html ocupem 100% da altura da tela */
+/* --- CONFIGURAÇÕES GERAIS E DESKTOP --- */
 html, body {
   height: 100%;
   margin: 0;
@@ -7,13 +7,13 @@ html, body {
   align-items: start;
 }
 
-/* Atualiza a .princ para ocupar altura total e se ajustar */
+/* Menu Desktop (Barra Lateral) */
 .princ {
-  position: fixed;           /* Faz o menu ficar fixo na tela */
+  position: fixed;
   top: 0;
   left: 0;
-  height: 100vh;             /* Ocupa toda a altura da tela */
-  width: 80px;               /* Largura do menu lateral */
+  height: 100vh;
+  width: 80px;
   background-color: white;
   padding: 1rem 0.5rem;
   box-sizing: border-box;
@@ -21,10 +21,10 @@ html, body {
   display: flex;
   flex-direction: column;
   align-items: center;
-  z-index: 999;              /* Garante que fique acima de outros elementos */
+  z-index: 999;
 }
 
-/* Ícones com animação */
+/* Ícones padrão */
 .icon {
   display: flex;
   max-width: 26px;
@@ -35,12 +35,11 @@ html, body {
   transition: transform 0.2s ease-in-out;
 }
 
-
-
 .icon:hover {
   transform: scale(1.1);
 }
 
+/* Botão Sair (Desktop) - Margem Grande para empurrar para baixo */
 #icon-out {
   margin-top: 230px;
 }
@@ -52,4 +51,92 @@ html, body {
 .princ img {
   width: 100%;
   max-width: 26px;
+}
+
+@media (max-width: 768px) {
+    /* 1. CONTAINER PRINCIPAL (A barra branca) */
+    .princ {
+        position: fixed !important;
+        top: auto !important;
+        bottom: 0 !important;
+        left: 0 !important;
+        
+        width: 100% !important;
+        height: 60px !important;
+        
+        display: flex !important;
+        flex-direction: row !important;
+        align-items: center !important;
+        justify-content: space-between !important;
+        
+        background-color: white !important;
+        padding: 0 !important;
+        margin: 0 !important;
+        box-shadow: 0 -2px 10px rgba(0,0,0,0.1);
+        border-top: 1px solid #eee;
+        z-index: 99999 !important;
+    }
+
+    /* 2. O GRUPO DE ÍCONES DE NAVEGAÇÃO (.icons) */
+    /* Essa é a div que agrupa Home, Histórico, Forms e Adm */
+    .icons {
+        display: flex !important;
+        flex-direction: row !important;
+        justify-content: space-around !important; /* Espalha os 4 ícones */
+        align-items: center !important;
+        
+        flex-grow: 1 !important; /* Ocupa todo o espaço disponível na esquerda */
+        height: 100% !important;
+        width: auto !important;
+    }
+
+    /* 3. OS WRAPPERS DOS ÍCONES (Home, Forms, etc) */
+    .icon-wrapper {
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        height: 100% !important;
+        flex: 1 !important; /* Garante área de toque igual para todos */
+        padding: 0 5px !important;
+    }
+
+    /* 4. O BOTÃO DE SAIR (#icon-out) */
+    /* Ele está fora do grupo .icons, então tratamos separado */
+    #icon-out {
+        margin: 0 !important;
+        flex-grow: 0 !important; /* Não estica, fica com tamanho fixo */
+        width: 70px !important;  /* Largura fixa para o botão sair */
+        height: 100% !important;
+        
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        
+        /* Uma borda leve para separar visualmente "Navegação" de "Sair" */
+        border-left: 1px solid #f0f0f0; 
+        background-color: #fafafa !important; /* Leve destaque de fundo */
+    }
+
+    /* 5. RESET DOS ÍCONES SVG (Mata as margens do desktop) */
+    .icon {
+        margin: 0 !important;
+        padding: 0 !important;
+        width: 24px !important;
+        height: 24px !important;
+        max-width: none !important;
+        transform: none !important;
+    }
+    
+    /* Ajuste específico para o ícone de sair não ficar gigante */
+    #icon-out .icon {
+        width: 20px !important; 
+        height: 20px !important;
+    }
+
+    /* 6. AQUI O ÍCONE DA HOME (SVG PATH) */
+    /* O SVG da home tem tamanho fixo no HTML (30x27), forçamos ele a obedecer */
+    .icon.home {
+        width: 24px !important;
+        height: 24px !important;
+    }
 }

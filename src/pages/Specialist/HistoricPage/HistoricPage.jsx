@@ -4,109 +4,61 @@ import FormsAmbiente from "../../../components/FormsAmbiente/FormsAmbiente.jsx";
 import "./HistoricPage.css";
 
 function HistoricPage() {
-    const [historicoPorAmbiente, setHistoricoPorAmbiente] = useState({});
+    const [historicoData, setHistoricoData] = useState([]); 
     const [loading, setLoading] = useState(true);
     const [modalData, setModalData] = useState(null);
+    
+    // Estado para guardar o texto da busca de cada ambiente separadamente
+    // Ex: { "id_do_ambiente": "texto digitado" }
+    const [buscas, setBuscas] = useState({});
 
     const API_BASE = import.meta.env.VITE_API_BASE ?? "http://localhost:8000";
 
-    // Função para buscar o histórico "caminhando para trás"
-    const buscarHistoricoDoAmbiente = async (idAmbiente, nomeAmbiente) => {
-        try {
-            // 1. Descobrir onde o usuário parou (o "cursor")
-            const resInit = await fetch(`${API_BASE}/classificacoes/ambiente/${idAmbiente}/inicializar`, {
-                credentials: "include"
-            });
-
-            let hashReferencia = null;
-
-            if (resInit.ok) {
-                const dataInit = await resInit.json();
-                if (dataInit.imagens && dataInit.imagens.length > 0) {
-                    // Se tem imagens pendentes, a referência é a primeira delas
-                    hashReferencia = dataInit.imagens[0].content_hash;
-                } else {
-                    // SE O USUÁRIO JÁ ACABOU TUDO (fila vazia):
-                    // Precisamos de um "chute" para saber onde é o final.
-                    // Vamos pegar a última imagem da lista geral para usar de âncora.
-                    const resTest = await fetch(`${API_BASE}/test/conjuntos/${idAmbiente}/imagens?page=1&page_size=1`, {
-                        credentials: "include"
-                    });
-                    if (resTest.ok) {
-                        const dataTest = await resTest.json();
-                        // Se a lista de teste retorna algo, tentamos usar, mas isso é um fallback arriscado
-                        // O ideal seria o backend ter um endpoint "/ultimo", mas vamos tentar sem.
-                        // Nota: Se isso falhar, o histórico pode vir vazio para quem já acabou tudo.
-                        if (dataTest.imagens && dataTest.imagens.length > 0) {
-                             hashReferencia = dataTest.imagens[0].content_hash;
-                        }
-                    }
-                }
-            }
-
-            if (!hashReferencia) return [];
-
-            // 2. Agora pedimos para "Voltar" a partir dessa referência
-            // Isso vai trazer as imagens que o usuário JÁ FEZ (ou pulou)
-            const resVoltar = await fetch(`${API_BASE}/classificacoes/ambiente/${idAmbiente}/voltar`, {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ content_hash: hashReferencia }),
-                credentials: "include"
-            });
-
-            if (resVoltar.ok) {
-                const dataVoltar = await resVoltar.json();
-                // A rota voltar retorna TUDO (feitos e pulados).
-                // Vamos filtrar apenas o que tem classificação.
-                const apenasClassificadas = (dataVoltar.imagens || []).filter(img => img.classificacao);
-                
-                // Adicionamos o ID do ambiente para o modal funcionar
-                return apenasClassificadas.map(img => ({ ...img, _ambienteIdOriginal: idAmbiente }));
-            }
-            
-            return [];
-
-        } catch (error) {
-            console.error(`Erro ao buscar histórico de ${nomeAmbiente}:`, error);
-            return [];
-        }
-    };
-
-    const carregarTudo = async () => {
+    const carregarHistorico = async () => {
         setLoading(true);
-        const novoHistorico = {};
+        const listaFinal = [];
 
         try {
-            // 1. Lista de Ambientes
-            const resAmbientes = await fetch(`${API_BASE}/ambientes`, { credentials: "include" });
-            let listaAmbientes = [];
+            // 1. Busca os ambientes (Eles vêm na ordem de criação/chegada do backend)
+            const resAmbientes = await fetch(`${API_BASE}/usuarios-ambientes/meus-ambientes`, { 
+                credentials: "include" 
+            });
             
+            let listaAmbientes = [];
             if (resAmbientes.ok) {
                 const data = await resAmbientes.json();
-                listaAmbientes = Array.isArray(data) ? data : (data.ambientes || []);
-            } else {
-                // Fallback para rota de teste se a de ambientes falhar (para manter compatibilidade)
-                const resConj = await fetch(`${API_BASE}/test/conjuntos`, { credentials: "include" });
-                if(resConj.ok) {
-                   const dataC = await resConj.json();
-                   listaAmbientes = dataC.conjuntos || [];
+                listaAmbientes = data.ambientes || [];
+            }
+
+            // 2. Busca o histórico de cada um, mantendo a ordem
+            // Usamos um loop for...of para preencher o array na sequência certa
+            for (const amb of listaAmbientes) {
+                const idAmb = amb.id_amb || amb.id_cnj;
+                const nome = amb.titulo_amb || amb.nome_conj;
+
+                try {
+                    // Pede 100 itens para ter uma boa massa de dados para pesquisar
+                    const resHist = await fetch(`${API_BASE}/classificacoes/historico?id_amb=${idAmb}&page_size=100`, {
+                        credentials: "include"
+                    });
+
+                    if (resHist.ok) {
+                        const dataHist = await resHist.json();
+                        // Só adiciona na lista se tiver imagens
+                        if (dataHist.items && dataHist.items.length > 0) {
+                            listaFinal.push({
+                                id: idAmb,
+                                nome: nome,
+                                items: dataHist.items
+                            });
+                        }
+                    }
+                } catch (e) {
+                    console.error(`Erro ao carregar histórico de ${nome}`, e);
                 }
             }
 
-            // 2. Busca histórico de cada ambiente em paralelo
-            await Promise.all(listaAmbientes.map(async (amb) => {
-                const idAmb = amb.id_amb || amb.id_cnj;
-                const nome = amb.titulo_amb || amb.nome_conj || "Ambiente";
-                
-                const imagensDoAmbiente = await buscarHistoricoDoAmbiente(idAmb, nome);
-                
-                if (imagensDoAmbiente.length > 0) {
-                    novoHistorico[nome] = imagensDoAmbiente;
-                }
-            }));
-
-            setHistoricoPorAmbiente(novoHistorico);
+            setHistoricoData(listaFinal);
 
         } catch (err) {
             console.error("Erro geral:", err);
@@ -116,99 +68,137 @@ function HistoricPage() {
     };
 
     useEffect(() => {
-        carregarTudo();
+        carregarHistorico();
     }, [API_BASE]);
 
-    const getUrlImagem = (img) => {
-        if (!img) return "";
-        if (img.download_url) {
-             if (img.download_url.startsWith("http")) return img.download_url;
-             return `${API_BASE}${img.download_url}`;
-        }
-        return "";
+    // Função para atualizar a busca de um ambiente específico
+    const handleSearch = (idAmbiente, texto) => {
+        setBuscas(prev => ({
+            ...prev,
+            [idAmbiente]: texto
+        }));
+    };
+
+    // Função auxiliar para tratar URL
+    const getFullUrl = (urlParcial) => {
+        if (!urlParcial) return "";
+        if (urlParcial.startsWith("http")) return urlParcial;
+        return `${API_BASE}${urlParcial}`;
     };
 
     return (
         <div className="geral">
             <Menu />
             <div className="historic-container">
-                <h1 className="historic-title">Minhas Avaliações Realizadas</h1>
+                <h1 className="historic-title">Histórico de Avaliações</h1>
 
                 {loading ? (
-                    <div className="loading-area">Buscando seu histórico...</div>
-                ) : Object.keys(historicoPorAmbiente).length === 0 ? (
+                    <div className="loading-area">
+                        <div className="spinner"></div>
+                        <p>Carregando avaliações...</p>
+                    </div>
+                ) : historicoData.length === 0 ? (
                     <div className="empty-state">
                         <h3>Nenhuma avaliação encontrada.</h3>
-                        <p>As imagens aparecem aqui depois que você as classifica.</p>
+                        <p>Suas classificações aparecerão aqui.</p>
                     </div>
                 ) : (
-                    Object.entries(historicoPorAmbiente).map(([nomeAmbiente, imagens]) => (
-                        <div key={nomeAmbiente} className="ambiente-section">
-                            <h2 className="ambiente-header">{nomeAmbiente} <span className="count-badge">{imagens.length} recentes</span></h2>
-                            
-                            <div className="historic-grid">
-                                {imagens.map((img) => (
-                                    <div 
-                                        key={img.content_hash} 
-                                        className="historic-item"
-                                        onClick={() => setModalData({ img: img, ambienteId: img._ambienteIdOriginal })}
-                                    >
-                                        <img 
-                                            src={getUrlImagem(img)} 
-                                            alt={img.nome_img} 
-                                            className="historic-img"
-                                            loading="lazy"
-                                        />
-                                        <div className="historic-label">
-                                            {/* Mostra o que o usuário escolheu! */}
-                                            {img.classificacao ? img.classificacao.texto_opcao : img.nome_img}
-                                        </div>
-                                        {/* Selo visual */}
-                                        <div style={{
-                                            position: 'absolute', top: 5, right: 5, 
-                                            background: '#4CAF50', color: 'white', 
-                                            borderRadius: '50%', width: 20, height: 20, 
-                                            textAlign: 'center', fontSize: '12px'
-                                        }}>✓</div>
+                    /* Renderiza na ordem correta do Array */
+                    historicoData.map((ambiente) => {
+                        const termoBusca = buscas[ambiente.id] || "";
+                        
+                        // Filtra as imagens baseado no que foi digitado
+                        const imagensFiltradas = ambiente.items.filter(img => 
+                            img.nome_img.toLowerCase().includes(termoBusca.toLowerCase())
+                        );
+
+                        return (
+                            <div key={ambiente.id} className="ambiente-section">
+                                <div className="ambiente-header-row">
+                                    <div className="ambiente-info">
+                                        <h2 className="ambiente-name">{ambiente.nome}</h2>
+                                        <span className="count-badge">
+                                            {ambiente.items.length} imagens
+                                        </span>
                                     </div>
-                                ))}
+                                    
+                                    {/* O PESQUISADOR */}
+                                    <div className="ambiente-search">
+                                        <input 
+                                            type="text" 
+                                            placeholder="🔍 Pesquisar imagem..." 
+                                            value={termoBusca}
+                                            onChange={(e) => handleSearch(ambiente.id, e.target.value)}
+                                        />
+                                    </div>
+                                </div>
+                                
+                                {imagensFiltradas.length === 0 ? (
+                                    <p className="no-results">Nenhuma imagem encontrada com esse nome.</p>
+                                ) : (
+                                    <div className="historic-grid">
+                                        {imagensFiltradas.map((item) => (
+                                            <div 
+                                                key={item.content_hash} 
+                                                className="historic-item"
+                                                onClick={() => setModalData(item)}
+                                                title={item.nome_img}
+                                            >
+                                                <img 
+                                                    src={getFullUrl(item.url_img)} 
+                                                    alt={item.nome_img} 
+                                                    className="historic-img"
+                                                    loading="lazy"
+                                                />
+                                                <div className="historic-label">
+                                                    {item.opcao_escolhida}
+                                                </div>
+                                                <div className="check-icon">✓</div>
+                                            </div>
+                                        ))}
+                                    </div>
+                                )}
                             </div>
-                        </div>
-                    ))
+                        );
+                    })
                 )}
             </div>
 
+            {/* MODAL (Igual ao anterior) */}
             {modalData && (
                 <div className="modal-overlay" onClick={() => setModalData(null)}>
                     <div className="modal-content" onClick={e => e.stopPropagation()}>
                         <button className="modal-close" onClick={() => setModalData(null)}>×</button>
                         
-                        <div className="modal-img-wrapper">
-                            <img 
-                                src={getUrlImagem(modalData.img)} 
-                                alt="Detalhe" 
-                                style={{maxWidth: '100%', maxHeight: '60vh', borderRadius: 8}}
-                            />
-                        </div>
-
-                        <div className="modal-form-wrapper">
-                            <h3>Editar Classificação</h3>
-                            <p style={{fontSize: '0.9rem', color: '#666', marginBottom: 10}}>
-                                {modalData.img.nome_img}
-                            </p>
-                            <div style={{marginBottom: 20, padding: 10, background: '#e8f5e9', borderRadius: 4, color: '#2e7d32'}}>
-                                <strong>Sua escolha atual:</strong> {modalData.img.classificacao?.texto_opcao}
+                        <div className="modal-body">
+                            <div className="modal-img-wrapper">
+                                <img 
+                                    src={getFullUrl(modalData.url_img)} 
+                                    alt="Detalhe" 
+                                />
                             </div>
-                            
-                            <FormsAmbiente 
-                                ambienteId={modalData.ambienteId}
-                                imagemId={modalData.img.content_hash}
-                                onSucesso={() => {
-                                    alert("Avaliação atualizada!");
-                                    setModalData(null);
-                                    carregarTudo(); // Recarrega para atualizar o texto na grid
-                                }}
-                            />
+
+                            <div className="modal-form-wrapper">
+                                <h3>Editar Classificação</h3>
+                                <p className="img-name">{modalData.nome_img}</p>
+                                <p className="date-info">
+                                    Avaliado em: {new Date(modalData.data_classificacao).toLocaleDateString()}
+                                </p>
+                                
+                                <div className="current-choice">
+                                    Escolha atual: <strong>{modalData.opcao_escolhida}</strong>
+                                </div>
+                                
+                                <FormsAmbiente 
+                                    ambienteId={modalData.id_amb}
+                                    imagemId={modalData.content_hash}
+                                    onSucesso={() => {
+                                        alert("Atualizado com sucesso!");
+                                        setModalData(null);
+                                        carregarHistorico();
+                                    }}
+                                />
+                            </div>
                         </div>
                     </div>
                 </div>

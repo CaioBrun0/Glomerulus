@@ -1,43 +1,139 @@
+/* --- 1. RESET GLOBAL --- */
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+/* --- 2. LAYOUT PRINCIPAL (Trava a tela) --- */
+.geral {
+    display: flex;
+    background-color: #f4f6f8;
+    height: 100vh;      /* Ocupa EXATAMENTE a altura da tela */
+    width: 100vw;       /* Ocupa EXATAMENTE a largura da tela */
+    overflow: hidden;   /* Impede que a tela inteira role */
+    position: relative;
+}
+
+/* --- 3. CONTAINER DE ROLAGEM (Só ele mexe) --- */
 .historic-container {
-    padding: 20px;
-    max-width: 1200px;
-    margin: 0 auto;
+    flex: 1;
+    padding: 40px;
+    
+    /* Desktop: Margem para o menu lateral */
+    margin-left: 80px; 
+    width: calc(100% - 80px);
+    
+    /* A MÁGICA ACONTECE AQUI: */
+    height: 100%;       /* Altura total disponível */
+    overflow-y: auto;   /* Habilita rolagem vertical DENTRO deste container */
+    
+    transition: all 0.3s ease;
 }
 
 .historic-title {
-    color: #6C63FF;
-    margin-bottom: 20px;
-    text-align: center;
+    color: #333;
+    font-size: 2rem;
+    margin-bottom: 30px;
+    border-bottom: 2px solid #e0e0e0;
+    padding-bottom: 10px;
+    word-wrap: break-word;
 }
 
-/* O GRID MÁGICO */
+/* --- 3. SEÇÃO POR AMBIENTE --- */
+.ambiente-section {
+    background: white;
+    border-radius: 12px;
+    padding: 25px;
+    margin-bottom: 30px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+}
+
+.ambiente-header-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    flex-wrap: wrap;
+    gap: 20px;
+    border-bottom: 1px solid #f0f0f0;
+    padding-bottom: 15px;
+}
+
+.ambiente-info {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    flex-wrap: wrap;
+}
+
+.ambiente-name {
+    font-size: 1.4rem;
+    color: #6C63FF;
+    margin: 0;
+}
+
+.count-badge {
+    background: #e8eaf6;
+    color: #3949ab;
+    font-size: 0.85rem;
+    padding: 4px 10px;
+    border-radius: 20px;
+    font-weight: 600;
+    white-space: nowrap;
+}
+
+/* --- 4. PESQUISADOR --- */
+.ambiente-search {
+    flex-grow: 1;
+    display: flex;
+    justify-content: flex-end;
+}
+
+.ambiente-search input {
+    padding: 10px 15px;
+    border: 1px solid #ddd;
+    border-radius: 20px;
+    outline: none;
+    width: 100%;
+    max-width: 300px;
+    transition: all 0.3s;
+    font-size: 0.95rem;
+}
+
+.ambiente-search input:focus {
+    border-color: #6C63FF;
+    box-shadow: 0 0 0 3px rgba(108, 99, 255, 0.1);
+}
+
+/* --- 5. GRID DE IMAGENS --- */
 .historic-grid {
     display: grid;
-    /* Cria colunas automáticas com largura mínima de 150px */
-    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); 
     gap: 15px;
 }
 
 .historic-item {
-    cursor: pointer;
+    position: relative;
     border-radius: 8px;
     overflow: hidden;
+    cursor: pointer;
+    aspect-ratio: 1;
     border: 2px solid transparent;
     transition: transform 0.2s, box-shadow 0.2s;
-    position: relative;
-    aspect-ratio: 1; /* Mantém as imagens quadradas */
 }
 
 .historic-item:hover {
     transform: scale(1.03);
-    box-shadow: 0 4px 10px rgba(0,0,0,0.2);
     border-color: #6C63FF;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    z-index: 1;
 }
 
 .historic-img {
     width: 100%;
     height: 100%;
-    object-fit: cover; /* Corta a imagem para preencher o quadrado sem distorcer */
+    object-fit: cover;
 }
 
 .historic-label {
@@ -45,86 +141,189 @@
     bottom: 0;
     left: 0;
     right: 0;
-    background: rgba(0,0,0,0.7);
+    background: rgba(0, 0, 0, 0.7);
     color: white;
-    font-size: 12px;
-    padding: 4px;
+    font-size: 0.75rem;
+    padding: 6px;
     text-align: center;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
 }
 
-/* MODAL */
+.check-icon {
+    position: absolute;
+    top: 5px;
+    right: 5px;
+    background: #4CAF50;
+    color: white;
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+    font-weight: bold;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+}
+
+.no-results {
+    color: #888;
+    font-style: italic;
+    padding: 30px;
+    text-align: center;
+    background: #fafafa;
+    border-radius: 8px;
+}
+
+/* --- 6. MODAL --- */
 .modal-overlay {
     position: fixed;
     top: 0; left: 0; right: 0; bottom: 0;
-    background: rgba(0,0,0,0.8);
+    background: rgba(0, 0, 0, 0.85);
     display: flex;
     justify-content: center;
     align-items: center;
-    z-index: 1000;
+    z-index: 2000;
+    padding: 20px;
 }
 
 .modal-content {
     background: white;
-    padding: 20px;
+    width: 100%;
+    max-width: 1000px;
     border-radius: 12px;
-    display: flex;
-    gap: 20px;
-    max-width: 90%;
-    max-height: 90vh;
-    overflow-y: auto;
     position: relative;
+    overflow: hidden;
+    height: 85vh;
+    display: flex;
+    flex-direction: column;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.5);
+}
+
+.modal-body {
+    display: flex;
+    flex-direction: row;
+    height: 100%;
+    overflow: hidden;
+}
+
+.modal-img-wrapper {
+    flex: 2;
+    background: #111;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    overflow: hidden;
+}
+
+.modal-img-wrapper img {
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: contain;
+}
+
+.modal-form-wrapper {
+    flex: 1;
+    padding: 30px;
+    background: #fff;
+    overflow-y: auto;
+    border-left: 1px solid #eee;
 }
 
 .modal-close {
     position: absolute;
-    top: 10px;
+    top: 15px;
     right: 15px;
-    background: none;
+    background: rgba(0, 0, 0, 0.5);
     border: none;
-    font-size: 24px;
-    cursor: pointer;
-    color: #333;
-    font-weight: bold;
-}
-
-/* Adicione isso ao seu arquivo CSS existente */
-
-.ambiente-section {
-    margin-bottom: 50px; /* Espaço entre as seções */
-    background: #f9f9f9;
-    padding: 20px;
-    border-radius: 12px;
-}
-
-.ambiente-header {
     font-size: 1.5rem;
-    color: #333;
-    margin-bottom: 20px;
-    border-bottom: 2px solid #ddd;
-    padding-bottom: 10px;
+    color: white;
+    cursor: pointer;
+    z-index: 10;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
     display: flex;
     align-items: center;
-    gap: 15px;
+    justify-content: center;
+    transition: background 0.2s;
 }
 
-.count-badge {
-    background-color: #6C63FF;
-    color: white;
-    font-size: 0.9rem;
-    padding: 2px 10px;
-    border-radius: 15px;
-    vertical-align: middle;
+.modal-close:hover {
+    background: rgba(0, 0, 0, 0.8);
 }
 
-/* Responsividade do Modal para celular */
+/* --- 7. RESPONSIVIDADE (Mobile) --- */
 @media (max-width: 768px) {
-    .modal-content {
-        flex-direction: column;
+    
+   .historic-container {
+        margin-left: 0;
+        padding: 15px;
+        width: 100%;
+        
+        /* Espaço extra no final para o conteúdo não ficar atrás do Menu Inferior */
+        padding-bottom: 100px; 
     }
-    .modal-img-wrapper img {
-        max-height: 200px;
+
+    .historic-title {
+        font-size: 1.5rem;
+        text-align: center;
+        margin-top: 10px;
+    }
+
+    .ambiente-header-row {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 15px;
+    }
+    
+    .ambiente-info {
+        justify-content: center;
+    }
+
+    .ambiente-search {
+        width: 100%;
+    }
+    .ambiente-search input {
+        max-width: none;
+    }
+
+    .historic-grid {
+        grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+        gap: 10px;
+    }
+
+    /* Modal Mobile */
+    .modal-content {
+        height: 90vh;
+        max-height: none;
+    }
+
+    .modal-body {
+        flex-direction: column;
+        overflow-y: auto;
+    }
+
+    .modal-img-wrapper {
+        flex: none;
+        height: 40%;
+        min-height: 250px;
+        padding: 10px;
+    }
+
+    .modal-form-wrapper {
+        flex: none;
+        padding: 20px;
+        min-height: 60%;
+    }
+    
+    .modal-close {
+        top: 10px;
+        right: 10px;
+        width: 35px;
+        height: 35px;
     }
 }
