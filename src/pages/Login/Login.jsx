@@ -1,10 +1,11 @@
-import './Login.css';
+import React from 'react';
+import './Login.css'; // Usa o CSS unificado
 import { useNavigate } from 'react-router-dom';
-import { useAuth } from '../../routes/context/AuthContext.jsx'; // <--- IMPORTE O useAuth
+import { useAuth } from '../../routes/context/AuthContext.jsx';
 
 function Login({ isOpen, onClose, onOpenRegister }) {
   const navigate = useNavigate();
-  const auth = useAuth(); // <--- CHAME O HOOK
+  const auth = useAuth();
 
   if (!isOpen) return null;
 
@@ -33,18 +34,12 @@ function Login({ isOpen, onClose, onOpenRegister }) {
 
       const data = await response.json();
       const token = data?.access_token;
-      const userType = data?.user_type; // O user_type ainda vem aqui
+      const userType = data?.user_type;
 
       if (token) {
-        // --- MUDANÇA PRINCIPAL AQUI ---
-        // 1. Chame a função login do contexto com o TOKEN
-        // (O auth.login vai descodificar e guardar no estado global)
         auth.login(token); 
-        
-        // 2. Feche o modal
         onClose();
 
-        // 3. Navegue com base no user_type
         const tipoNum = Number(userType);
         if (tipoNum === 2) {
           navigate("/HomePageAdmin");
@@ -53,7 +48,6 @@ function Login({ isOpen, onClose, onOpenRegister }) {
         } else {
           navigate("/");
         }
-        // --- FIM DA MUDANÇA ---
       } else {
         alert("Token não recebido do servidor.");
       }
@@ -64,18 +58,40 @@ function Login({ isOpen, onClose, onOpenRegister }) {
   };
 
   return (
-    <div className='modal-overlay-login-register' onClick={onClose}>
-      <div className='modal-content-login-register' onClick={e => e.stopPropagation()}>
-        <h2>Login</h2>
-        <form onSubmit={handleSubmit}>
-          <input placeholder='Email' type="email" />
-          <input placeholder='Senha' type="password" />
-          <button type='submit'>Entrar</button>
-          <a href="http://">Esqueceu a senha?</a>
-          <p>ou</p>
-          <button type='button' onClick={onOpenRegister}>Cadastro</button>
+    <div className='modal-overlay-auth' onClick={onClose}>
+      <div className='modal-content-auth' onClick={e => e.stopPropagation()}>
+        
+        {/* Botão Fechar */}
+        <button className='close-btn' onClick={onClose}>&times;</button>
+        
+        <h2>Bem-vindo de volta!</h2>
+        
+        <form onSubmit={handleSubmit} className="auth-form">
+          
+          <div className="input-group">
+            <input className="auth-input" placeholder='Seu email' type="email" required />
+          </div>
+          
+          <div className="input-group">
+            <input className="auth-input" placeholder='Sua senha' type="password" required />
+          </div>
+          
+          <button type='submit' className="btn-submit">Acessar Conta</button>
         </form>
-        <button className='close-btn' onClick={onClose}>x</button>
+
+        <div className="auth-links">
+            <a href="#" className="link-action" style={{fontSize: '0.8rem', color: '#718096'}}>Esqueceu a senha?</a>
+            
+            <div className="divider">ou</div>
+            
+            <p>
+                Ainda não tem conta?{' '}
+                <button type='button' className="link-action" onClick={onOpenRegister}>
+                    Cadastre-se grátis
+                </button>
+            </p>
+        </div>
+
       </div>
     </div>
   );

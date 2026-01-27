@@ -1,72 +1,200 @@
-/* LoginModal.css */
-.modal-overlay-login-register {
+/* --- VARIÁVEIS (Mesmas da Landing Page) --- */
+:root {
+  --primary: #6C63FF;
+  --primary-hover: #5a52d5;
+  --text-dark: #2D3748;
+  --text-gray: #718096;
+  --bg-input: #f4f6f8;
+  --border-input: #e2e8f0;
+}
+
+/* --- OVERLAY (Fundo Escuro com Blur) --- */
+.modal-overlay-auth {
   position: fixed;
   top: 0;
   left: 0;
   width: 100%;
   height: 100%;
-  backdrop-filter: blur(6px);
-  background-color: rgba(0, 0, 0, 0.4);
+  background-color: rgba(0, 0, 0, 0.5); /* Escurece o fundo */
+  backdrop-filter: blur(8px); /* Blur moderno */
   display: flex;
   justify-content: center;
   align-items: center;
-  z-index: 999;
+  z-index: 1000;
   animation: fadeIn 0.3s ease-in-out;
 }
 
-.modal-content-login-register {
-  color: black;
-  text-align: center;
+/* --- O CARD DO MODAL --- */
+.modal-content-auth {
   background: white;
-  padding: 2rem;
-  border-radius: 10px;
-  position: relative;
   width: 90%;
-  max-width: 400px;
-  box-shadow: 0 0 20px rgba(0,0,0,0.3);
+  max-width: 420px; /* Largura ideal */
+  padding: 40px;
+  border-radius: 24px; /* Cantos bem arredondados */
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.2);
+  position: relative;
+  text-align: center;
+  
+  /* Animação de entrada */
+  transform: translateY(20px);
+  animation: slideUp 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
 
-.modal-content-login-register form {
+/* Título */
+.modal-content-auth h2 {
+  font-family: 'Roboto', sans-serif;
+  font-size: 1.8rem;
+  color: var(--text-dark);
+  margin-bottom: 25px;
+  font-weight: 800;
+}
+
+/* Formulário */
+.auth-form {
   display: flex;
   flex-direction: column;
-  gap: 1rem;
+  gap: 15px;
 }
 
-.modal-content-login-register input {
+/* --- INPUTS MODERNOS --- */
+.input-group {
+    position: relative;
+    width: 100%;
+}
+
+.auth-input {
+  width: 100%;
+  background-color: var(--bg-input);
+  border: 1px solid transparent;
+  padding: 14px 16px;
+  border-radius: 12px;
+  font-size: 0.95rem;
+  color: var(--text-dark);
+  transition: all 0.2s ease;
+  outline: none;
+}
+
+.auth-input::placeholder {
+    color: #a0aec0;
+}
+
+.auth-input:focus {
   background-color: white;
-  border-style: none;
-  color: black;
-  border-radius: 6px;
-  box-shadow: 0 0 5px rgba(0,0,0,0.3);
-  padding: 0.8rem;
+  border-color: var(--primary);
+  box-shadow: 0 0 0 4px rgba(108, 99, 255, 0.1);
 }
 
-.modal-content-login-register button[type="submit"] {
-  background-color: #1C75BC;
+/* --- BOTÕES --- */
+.btn-submit {
+  background-color: var(--primary);
   color: white;
   border: none;
-  padding: 0.8rem;
-  border-radius: 5px;
+  padding: 14px;
+  border-radius: 12px;
+  font-size: 1rem;
+  font-weight: 700;
   cursor: pointer;
+  transition: all 0.3s;
+  margin-top: 10px;
+  box-shadow: 0 4px 15px rgba(108, 99, 255, 0.3);
 }
 
-.modal-content-login-register h2{
-    font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
-    font-size: 30px;
+.btn-submit:hover {
+  background-color: var(--primary-hover);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(108, 99, 255, 0.4);
 }
 
+/* --- LINKS E TEXTOS EXTRAS --- */
+.auth-links {
+    margin-top: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    font-size: 0.9rem;
+    color: var(--text-gray);
+}
+
+.link-action {
+    color: var(--primary);
+    text-decoration: none;
+    font-weight: 600;
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 0;
+    font-size: 0.9rem;
+}
+
+.link-action:hover {
+    text-decoration: underline;
+}
+
+.divider {
+    font-size: 0.85rem;
+    color: #cbd5e0;
+    display: flex;
+    align-items: center;
+    margin: 15px 0;
+}
+.divider::before, .divider::after {
+    content: "";
+    flex: 1;
+    border-bottom: 1px solid #e2e8f0;
+}
+.divider::before { margin-right: 10px; }
+.divider::after { margin-left: 10px; }
+
+
+/* --- MENSAGEM DE ERRO --- */
+.error-message {
+  background-color: #fff5f5;
+  color: #c53030;
+  padding: 10px;
+  border-radius: 8px;
+  font-size: 0.85rem;
+  border: 1px solid #feb2b2;
+}
+
+/* --- BOTÃO DE FECHAR (X) --- */
 .close-btn {
   position: absolute;
-  top: 10px;
+  top: 15px;
   right: 15px;
-  background: transparent;
-  color: black;
+  background: #f7fafc;
+  color: var(--text-gray);
   border: none;
-  font-size: 1.5rem;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   cursor: pointer;
+  transition: all 0.2s;
+  font-size: 1.2rem;
 }
 
+.close-btn:hover {
+  background: #e2e8f0;
+  color: var(--text-dark);
+}
+
+/* --- ANIMAÇÕES --- */
 @keyframes fadeIn {
   from { opacity: 0; }
   to { opacity: 1; }
+}
+
+@keyframes slideUp {
+  from { opacity: 0; transform: translateY(40px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* Ajuste Mobile */
+@media (max-width: 480px) {
+    .modal-content-auth {
+        padding: 30px 20px;
+        width: 95%;
+    }
 }
