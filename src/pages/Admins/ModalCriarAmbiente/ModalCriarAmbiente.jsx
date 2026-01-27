@@ -1,5 +1,6 @@
 // ...existing code...
 import "./ModalCriarAmbiente.css";
+import { toast } from 'react-toastify';
 import React, { useEffect, useState } from "react";
 
 function ModalCriarAmbiente({ onClose, onSelectConjunto }) {
@@ -56,7 +57,7 @@ function ModalCriarAmbiente({ onClose, onSelectConjunto }) {
         );
         if (mounted) setPreviewMap(previews);
       } catch (err) {
-        console.error("Erro ao carregar conjuntos:", err);
+        toast.error("Erro ao carregar conjuntos:", err);
         if (mounted) setErrorConjuntos("Falha ao carregar ambientes do NextCloud.");
       } finally {
         if (mounted) setLoadingConjuntos(false);
@@ -93,7 +94,7 @@ function ModalCriarAmbiente({ onClose, onSelectConjunto }) {
     // Se usuário escolheu importar do NextCloud
     if (useNextcloud) {
       if (!selectedConjunto) {
-        alert("Selecione um ambiente do NextCloud antes de importar.");
+        toast.error("Selecione um ambiente do NextCloud antes de importar.");
         return;
       }
       try {
@@ -112,16 +113,16 @@ function ModalCriarAmbiente({ onClose, onSelectConjunto }) {
         });
         if (!res.ok) {
           const txt = await res.text().catch(() => null);
-          alert(`Erro ao importar: ${res.status} ${txt ?? res.statusText}`);
+          toast.error(`Erro ao importar: ${res.status} ${txt ?? res.statusText}`);
           return;
         }
         const created = await res.json().catch(() => null);
-        alert("Ambiente importado com sucesso.");
+        toast.success("Ambiente importado com sucesso.");
         if (typeof onSelectConjunto === "function") onSelectConjunto(created ?? selectedConjunto);
         onClose();
       } catch (err) {
         console.error("Erro importando do NextCloud:", err);
-        alert("Erro ao importar do NextCloud.");
+        toast.error("Erro ao importar do NextCloud.");
       }
       return;
     }
@@ -144,15 +145,15 @@ function ModalCriarAmbiente({ onClose, onSelectConjunto }) {
 
       if (!res.ok) {
         const txt = await res.text().catch(() => null);
-        alert(`Erro ao criar ambiente: ${res.status} ${txt ?? res.statusText}`);
+        toast.error(`Erro ao criar ambiente: ${res.status} ${txt ?? res.statusText}`);
         return;
       }
 
-      alert("Ambiente criado com sucesso.");
+      toast.success("Ambiente criado com sucesso.");
       onClose();
     } catch (err) {
       console.error("Erro ao enviar formulário:", err);
-      alert("Erro ao conectar com o servidor.");
+      toast.error("Erro ao conectar com o servidor.");
     }
   }
 

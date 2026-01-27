@@ -24,37 +24,96 @@ html, body {
   z-index: 999;
 }
 
-/* Ícones padrão */
-.icon {
+/* --- ESTILO DOS ÍCONES (Novo Design Soft UI) --- */
+
+/* O Container do Ícone (O Botão) */
+.icon-wrapper {
+  width: 48px;
+  height: 48px;
+  border-radius: 12px; /* Cantos arredondados modernos */
   display: flex;
-  max-width: 26px;
-  height: auto;
-  margin-bottom: 1rem;
-  margin-top: 25px;
+  align-items: center;
+  justify-content: center;
   cursor: pointer;
-  transition: transform 0.2s ease-in-out;
+  
+  /* Estado Padrão (Desativado) */
+  color: #8898aa; /* Cinza médio */
+  background-color: transparent;
+  
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  margin-bottom: 15px; /* Espaço entre ícones */
 }
 
-.icon:hover {
-  transform: scale(1.1);
+/* Efeito HOVER (Ao passar o mouse) */
+.icon-wrapper:hover {
+  background-color: #f0eeff; /* Fundo roxo bem clarinho */
+  color: #6C63FF; /* Cor da marca */
+  transform: translateY(-2px); /* Leve subida */
+  box-shadow: 0 4px 12px rgba(108, 99, 255, 0.2); /* Sombra colorida */
 }
 
-/* Botão Sair (Desktop) - Margem Grande para empurrar para baixo */
+/* Estado ATIVO (Página atual) */
+.icon-wrapper.active {
+  background-color: #6C63FF; /* Fundo roxo sólido */
+  color: white; /* Ícone branco */
+  box-shadow: 0 4px 15px rgba(108, 99, 255, 0.4);
+}
+
+/* --- TRATAMENTO DOS SVGs --- */
+.icon {
+  transition: none;
+  margin: 0; 
+  display: block;
+  /* Garante que o SVG obedeça a cor do texto do pai */
+}
+
+/* Para ícones de LINHA (Stroke) */
+.icon path {
+  stroke: currentColor; 
+  transition: stroke 0.3s ease;
+}
+
+/* Para ícones SÓLIDOS (Fill) - Home e Sair */
+.icon.home path, 
+.icon.out path {
+  fill: currentColor;
+  stroke: none;
+}
+
+/* Ajuste sutil de zoom no hover */
+.icon-wrapper:hover .icon,
+.icon-wrapper.active .icon {
+  transform: scale(1.05);
+}
+
+/* --- AJUSTE DO BOTÃO SAIR (Desktop) --- */
 #icon-out {
-  margin-top: 230px;
+  margin-top: auto; /* Empurra pro final da barra */
+  padding-bottom: 20px;
 }
 
-#icon-out:hover .icon path{
-  fill: brown;
+/* Estilo específico para Sair (Vermelho) */
+#icon-out:hover {
+  background-color: #ffebee;
+  color: #e53935;
+  box-shadow: 0 4px 12px rgba(229, 57, 53, 0.2);
+}
+#icon-out:hover .icon path {
+  fill: #e53935;
 }
 
+/* Tamanho da imagem se tiver */
 .princ img {
   width: 100%;
   max-width: 26px;
 }
 
+
+/* =========================================
+   RESPONSIVIDADE: MENU MOBILE (Completo)
+   ========================================= */
 @media (max-width: 768px) {
-    /* 1. CONTAINER PRINCIPAL (A barra branca) */
+    /* 1. CONTAINER PRINCIPAL */
     .princ {
         position: fixed !important;
         top: auto !important;
@@ -77,66 +136,69 @@ html, body {
         z-index: 99999 !important;
     }
 
-    /* 2. O GRUPO DE ÍCONES DE NAVEGAÇÃO (.icons) */
-    /* Essa é a div que agrupa Home, Histórico, Forms e Adm */
+    /* 2. GRUPO DE NAVEGAÇÃO */
     .icons {
         display: flex !important;
         flex-direction: row !important;
-        justify-content: space-around !important; /* Espalha os 4 ícones */
+        justify-content: space-around !important;
         align-items: center !important;
         
-        flex-grow: 1 !important; /* Ocupa todo o espaço disponível na esquerda */
+        flex-grow: 1 !important;
         height: 100% !important;
         width: auto !important;
     }
 
-    /* 3. OS WRAPPERS DOS ÍCONES (Home, Forms, etc) */
+    /* 3. WRAPPERS DOS ÍCONES (Ajuste Mobile) */
     .icon-wrapper {
+        width: 40px; /* Menor no celular */
+        height: 40px;
+        margin-bottom: 0;
+        border-radius: 10px;
+        
         display: flex !important;
         align-items: center !important;
         justify-content: center !important;
-        height: 100% !important;
-        flex: 1 !important; /* Garante área de toque igual para todos */
+        flex: 1 !important; /* Distribuição igual */
         padding: 0 5px !important;
     }
+    
+    /* Remove sombra pesada no mobile */
+    .icon-wrapper:hover {
+        transform: none;
+        box-shadow: none;
+        background-color: rgba(108, 99, 255, 0.1);
+    }
+    
+    .icon-wrapper.active {
+        box-shadow: none;
+    }
 
-    /* 4. O BOTÃO DE SAIR (#icon-out) */
-    /* Ele está fora do grupo .icons, então tratamos separado */
+    /* 4. BOTÃO SAIR (#icon-out) */
     #icon-out {
         margin: 0 !important;
-        flex-grow: 0 !important; /* Não estica, fica com tamanho fixo */
-        width: 70px !important;  /* Largura fixa para o botão sair */
+        flex-grow: 0 !important;
+        width: 60px !important;
         height: 100% !important;
+        padding-bottom: 0 !important;
         
         display: flex !important;
         align-items: center !important;
         justify-content: center !important;
         
-        /* Uma borda leve para separar visualmente "Navegação" de "Sair" */
         border-left: 1px solid #f0f0f0; 
-        background-color: #fafafa !important; /* Leve destaque de fundo */
+        background-color: #fafafa !important;
     }
 
-    /* 5. RESET DOS ÍCONES SVG (Mata as margens do desktop) */
+    /* 5. ÍCONES */
     .icon {
-        margin: 0 !important;
-        padding: 0 !important;
         width: 24px !important;
         height: 24px !important;
-        max-width: none !important;
+        margin: 0 !important;
         transform: none !important;
     }
     
-    /* Ajuste específico para o ícone de sair não ficar gigante */
     #icon-out .icon {
         width: 20px !important; 
         height: 20px !important;
-    }
-
-    /* 6. AQUI O ÍCONE DA HOME (SVG PATH) */
-    /* O SVG da home tem tamanho fixo no HTML (30x27), forçamos ele a obedecer */
-    .icon.home {
-        width: 24px !important;
-        height: 24px !important;
     }
 }

@@ -3,6 +3,7 @@ import iconEspecialista from "../../../assets/iconEspecialista.png";
 import iconEspecialistaHover from "../../../assets/iconEspecialistaHover.png";
 import iconAdmin from "../../../assets/iconAdmin.png";   
 import iconAdminHover from "../../../assets/iconAdminHover.png";
+import { toast } from 'react-toastify';
 import { useState } from "react";
 
 function ModalGreenList({ onClose }) {
@@ -17,18 +18,18 @@ function ModalGreenList({ onClose }) {
 
     // validação mínima
     if (!email) {
-      alert("Informe um email.");
+      toast.warning("Informe um email.");
       return;
     }
     if (!selected) {
-      alert("Escolha o tipo de usuário (Especialista ou Administrador).");
+      toast.warning("Escolha o tipo de usuário (Especialista ou Administrador).");
       return;
     }
 
     // Checa se usuário atual é adm (opcional, para UX)
     const currentType = Number(localStorage.getItem("user_type"));
     if (currentType && currentType !== 2) {
-      alert("Ação permitida somente para administradores.");
+      toast.error("Ação permitida somente para administradores.");
       return;
     }
 
@@ -47,7 +48,7 @@ function ModalGreenList({ onClose }) {
 
       if (res.status === 201) {
         const created = await res.json();
-        alert(`Email ${created.email} adicionado com sucesso.`);
+        toast.success(`Email ${created.email} já pode ser cadastrado.`);
         setEmail("");
         setSelected(null);
         setAction("");
@@ -57,7 +58,7 @@ function ModalGreenList({ onClose }) {
       // ... tratamento de erro (mantém o código existente) ...
     } catch (err) {
       console.error("Erro na requisição /whitelist:", err);
-      alert("Erro ao conectar com o servidor.");
+      toast.error("Erro ao conectar com o servidor.");
     }
   })();
 }

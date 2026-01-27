@@ -98,7 +98,7 @@ function HistoricPage() {
                         <p>Carregando avaliações...</p>
                     </div>
                 ) : historicoData.length === 0 ? (
-                    <div className="empty-state">
+                    <div className="empty-state" style={{"color": "#6C63FF"}}>
                         <h3>Nenhuma avaliação encontrada.</h3>
                         <p>Suas classificações aparecerão aqui.</p>
                     </div>

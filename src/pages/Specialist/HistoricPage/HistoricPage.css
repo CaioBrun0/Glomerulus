@@ -189,6 +189,7 @@
     padding: 20px;
 }
 
+/* Não apagar este comentário - necessário para o funcionamento do modal 
 .modal-content {
     background: white;
     width: 100%;
@@ -200,7 +201,8 @@
     display: flex;
     flex-direction: column;
     box-shadow: 0 10px 25px rgba(0,0,0,0.5);
-}
+} */
+ 
 
 .modal-body {
     display: flex;
@@ -229,6 +231,7 @@
     flex: 1;
     padding: 30px;
     background: #fff;
+    color: #000000;
     overflow-y: auto;
     border-left: 1px solid #eee;
 }

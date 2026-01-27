@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import Menu from "../../../components/Menu/Menu.jsx";
 import FormsAmbiente from "../../../components/FormsAmbiente/FormsAmbiente.jsx";
+import { toast } from 'react-toastify';
 import "./FormsPage.css";
 
 function FormsPage() {
@@ -67,9 +68,9 @@ function FormsPage() {
                 } else {
                     // Se veio imagem, mas todas eram repetidas/feitas
                     if (todasAnteriores.length > 0) {
-                        alert("As imagens anteriores já foram todas avaliadas. Tente buscar mais uma vez para ir mais longe.");
+                        toast.info("As imagens anteriores já foram todas avaliadas. Tente buscar mais uma vez para ir mais longe.")
                     } else {
-                        alert("Não há mais imagens anteriores.");
+                        toast.info("Não há mais imagens anteriores.");
                     }
                 }
             }
@@ -104,7 +105,7 @@ function FormsPage() {
         if (indexAtual < imagens.length - 1) {
             setIndexAtual(prev => prev + 1);
         } else {
-            alert("Lote finalizado! Carregando próximas...");
+            toast.info("Lote finalizado! Carregando próximas...");
             carregarFila();
         }
     };

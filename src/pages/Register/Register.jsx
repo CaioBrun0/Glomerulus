@@ -1,4 +1,5 @@
 import './Register.css';
+import { toast } from 'react-toastify';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../routes/context/AuthContext.jsx'; // <--- IMPORTE O useAuth
@@ -86,7 +87,7 @@ function Register({ isOpen, onClose, onOpenLogin }) {
         // 1. Chame a função login do contexto com o TOKEN
         auth.login(token);
 
-        alert("Cadastro realizado com sucesso!");
+        toast.success("Cadastro realizado com sucesso!");
         onClose();
 
         // 2. Navegue para a homepage correta

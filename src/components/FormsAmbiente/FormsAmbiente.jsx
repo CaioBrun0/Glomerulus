@@ -5,24 +5,47 @@ function FormsAmbiente({ ambienteId, imagemId, onSucesso }) {
     const [opcoes, setOpcoes] = useState([]);
     const [selecao, setSelecao] = useState([]); 
     const [enviando, setEnviando] = useState(false);
+    const [descricaoAmbiente, setDescricaoAmbiente] = useState(""); 
+
     const API_BASE = import.meta.env.VITE_API_BASE ?? "http://localhost:8000";
 
     useEffect(() => {
-        const carregarOpcoes = async () => {
-            if (!ambienteId) return;
+        if (!ambienteId) return;
+
+        const carregarDados = async () => {
             try {
-                const res = await fetch(`${API_BASE}/opcoes/ambiente/${ambienteId}`, { 
+                // 1. Busca as OPÇÕES
+                const resOpcoes = await fetch(`${API_BASE}/opcoes/ambiente/${ambienteId}`, { 
                     credentials: "include" 
                 });
-                if (res.ok) {
-                    const data = await res.json();
+                if (resOpcoes.ok) {
+                    const data = await resOpcoes.json();
                     setOpcoes(Array.isArray(data.opcoes) ? data.opcoes : []);
                 }
+
+                // 2. Busca a DESCRIÇÃO usando a rota "meus-ambientes"
+                // Como não temos GET /ambientes/{id} para user comum, usamos a lista de ambientes do usuário
+                const resAmbientes = await fetch(`${API_BASE}/usuarios-ambientes/meus-ambientes`, {
+                    credentials: "include"
+                });
+                
+                if (resAmbientes.ok) {
+                    const data = await resAmbientes.json();
+                    // Encontra o ambiente atual na lista
+                    const ambienteAtual = data.ambientes.find(a => a.id_amb === ambienteId);
+                    
+                    if (ambienteAtual) {
+                        // O campo correto no backend é 'descricao_questionario'
+                        setDescricaoAmbiente(ambienteAtual.descricao_questionario || "");
+                    }
+                }
+
             } catch (err) {
-                console.error("Erro ao buscar opções:", err);
+                console.error("Erro ao carregar dados:", err);
             }
         };
-        carregarOpcoes();
+
+        carregarDados();
     }, [ambienteId, API_BASE]);
 
     const handleToggle = (id) => {
@@ -35,22 +58,15 @@ function FormsAmbiente({ ambienteId, imagemId, onSucesso }) {
     const handleConfirmar = async (e) => {
         e.preventDefault();
         
-        if (!imagemId) {
-            console.error("Erro: imagemId está nulo!");
-            alert("Aguarde a imagem carregar totalmente.");
-            return;
-        }
+        if (!imagemId) return;
 
         setEnviando(true);
         try {
-            // O Backend espera uma requisição para cada opção selecionada
             const promessas = selecao.map(id_opc => 
-                // CORREÇÃO 1: A URL agora inclui o ID do ambiente e a ação 'classificar'
                 fetch(`${API_BASE}/classificacoes/ambiente/${ambienteId}/classificar`, {
                     method: "POST",
                     headers: { "Content-Type": "application/json" },
                     body: JSON.stringify({
-                        // CORREÇÃO 2: O backend espera 'content_hash', não 'id_img'
                         content_hash: imagemId, 
                         id_opc: id_opc
                     }),
@@ -58,14 +74,9 @@ function FormsAmbiente({ ambienteId, imagemId, onSucesso }) {
                 })
             );
 
-            // Aguarda todas as requisições terminarem
             const respostas = await Promise.all(promessas);
-
-            // Verifica se alguma deu erro (status diferente de 200/201)
             const algumErro = respostas.find(res => !res.ok);
-            if (algumErro) {
-                throw new Error("Falha em uma das requisições");
-            }
+            if (algumErro) throw new Error("Falha na requisição");
 
             setSelecao([]); 
             onSucesso();
@@ -81,7 +92,11 @@ function FormsAmbiente({ ambienteId, imagemId, onSucesso }) {
         <div className="forms-base">
             <h2>Questionário</h2>
             <form onSubmit={handleConfirmar}>
-                <p style={{ color: "black", fontWeight: "bold" }}>Defina as lesões:</p>
+                
+                {/* Exibe a descrição vinda do banco */}
+                <p style={{ color: "black", fontWeight: "bold", marginBottom: "15px" }}>
+                    {descricaoAmbiente || "Defina a classificação:"}
+                </p>
                 
                 <div className="forms-control">
                     {opcoes.map((opc) => (
@@ -98,7 +113,6 @@ function FormsAmbiente({ ambienteId, imagemId, onSucesso }) {
 
                 <button 
                     type="submit" 
-                    // O botão agora ativa assim que selecao.length > 0
                     disabled={enviando || selecao.length === 0}
                 >
                     {enviando ? "Salvando..." : "Confirmar"}

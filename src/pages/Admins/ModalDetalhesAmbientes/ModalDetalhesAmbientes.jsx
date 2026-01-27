@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { toast } from 'react-toastify';
 import "./ModalDetalhesAmbientes.css";
 
 function ModalDetalhesAmbiente({ ambienteId, statusInicial, onClose, onRefresh }) {
@@ -37,7 +38,7 @@ function ModalDetalhesAmbiente({ ambienteId, statusInicial, onClose, onRefresh }
       setLoading(false);
     } catch (err) {
       console.error("Erro ao carregar dados:", err);
-      alert("Falha ao carregar informações de gerenciamento.");
+      toast.error("Falha ao carregar informações de gerenciamento.");
     }
   };
 
@@ -51,12 +52,12 @@ function ModalDetalhesAmbiente({ ambienteId, statusInicial, onClose, onRefresh }
     try {
       const res = await fetch(endpoint, { method, credentials: "include" });
       if (res.ok) {
-        alert(estaAtivo ? "Ambiente inativado!" : "Ambiente reativado!");
+        toast.warning(estaAtivo ? "Ambiente inativado!" : "Ambiente reativado!");
         onRefresh();
         onClose();
       }
     } catch (err) {
-      alert("Erro ao alterar status do ambiente.");
+      toast.error("Erro ao alterar status do ambiente.");
     }
   };
 
@@ -67,11 +68,11 @@ function ModalDetalhesAmbiente({ ambienteId, statusInicial, onClose, onRefresh }
         credentials: "include"
       });
       if (res.ok) {
-        alert("Todos os especialistas associados!");
+        toast.success("Todos os especialistas associados!");
         fetchDadosIniciais();
       }
     } catch (err) {
-      alert("Erro ao associar todos.");
+      toast.error("Erro ao associar todos.");
     }
   };
 
@@ -96,7 +97,7 @@ function ModalDetalhesAmbiente({ ambienteId, statusInicial, onClose, onRefresh }
       }
       fetchDadosIniciais();
     } catch (err) {
-      alert("Erro ao modificar acesso.");
+      toast.error("Erro ao modificar acesso.");
     }
   };
 
