@@ -4,95 +4,88 @@ import InfoBoxAdmin from "../../../components/InfoBoxAdmin/infoBoxAdmin";
 import InfoBoxEspecialista from "../../../components/InfoBoxEspecialista/InfoBoxEspecialista.jsx";
 
 function ModalUsuarios({ onClose }) {
-  // 1. Adicionar estados para gerenciar os dados, carregamento e erros
   const [usuarios, setUsuarios] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  // 2. Usar o useEffect para buscar os dados da API quando o componente for montado
   useEffect(() => {
-    // Função assíncrona para buscar os usuários
     const fetchUsuarios = async () => {
       try {
-        // Faz a requisição para o seu backend.
-        // `credentials: 'include'` é crucial para enviar o cookie de autenticação.
         const response = await fetch("http://localhost:8000/usuarios/", {
           method: "GET",
           credentials: "include", 
         });
 
-        if (!response.ok) {
-          throw new Error("Falha ao carregar os usuários. Verifique se você está autenticado.");
-        }
+        if (!response.ok) throw new Error("Falha ao carregar usuários.");
 
         const data = await response.json();
-        
-        // Filtra para mostrar apenas usuários ativos
         const usuariosAtivos = data.filter(user => user.ativo);
         setUsuarios(usuariosAtivos);
 
       } catch (err) {
         setError(err.message);
       } finally {
-        setLoading(false); // Termina o carregamento, seja com sucesso ou erro
+        setLoading(false);
       }
     };
 
     fetchUsuarios();
-  }, []); // O array vazio [] garante que o useEffect rode apenas uma vez
-
-  // 3. Renderizar o conteúdo dinamicamente
-  const renderContent = () => {
-    if (loading) {
-      return <p style={{ color: "#6C63FF" }}>Carregando usuários...</p>;
-    }
-
-    if (error) {
-      return <p style={{ color: "red" }}>Erro: {error}</p>;
-    }
-
-    if (usuarios.length === 0) {
-        return <p>Nenhum usuário ativo encontrado.</p>
-    }
-
-    return usuarios.map((usuario) => {
-      // Baseado no campo "tipo" do seu JSON, decide qual card renderizar
-      if (usuario.tipo === 'admin' || usuario.id_tipo === 2) {
-        return (
-          <InfoBoxAdmin
-            key={usuario.id_usu} // A 'key' é essencial para o React em listas
-            name={usuario.nome_completo}
-            email={usuario.email}
-          />
-        );
-      } else {
-        // Assume que qualquer outro tipo é 'Especialista'
-        return (
-          <InfoBoxEspecialista
-            key={usuario.id_usu}
-            name={usuario.nome_completo}
-            email={usuario.email}
-          />
-        );
-      }
-    });
-  };
+  }, []);
 
   return (
-    <div className="modalOverlay-Usuario" onClick={onClose}>
-      <div className="modalContent-Usuarios" onClick={(e) => e.stopPropagation()}>
-        <nav className="navUsuarios">
-          <h1>Usuários</h1>
-          <button onClick={onClose}>X</button>
-        </nav>
+    <div className="modal-overlay-users" onClick={onClose}>
+      <div className="modal-content-users" onClick={(e) => e.stopPropagation()}>
+        
+        {/* Header Limpo */}
+        <header className="modal-header-users">
+            <div>
+                <h2>Gerenciar Usuários</h2>
+                <p>Lista de todos os especialistas e administradores ativos.</p>
+            </div>
+            <button className="btn-close-users" onClick={onClose}>&times;</button>
+        </header>
 
-        <h2 style={{ color: "#6C63FF", fontSize: "16px", fontFamily: "Roboto, arial, sans-serif" }}>
-          Aqui você encontrará informações de usuários especialistas e administradores
-        </h2>
+        {/* Área de Conteúdo (Grid) */}
+        <div className="modal-body-users">
+            {loading && (
+                <div className="status-msg loading">
+                    <div className="spinner"></div> Carregando...
+                </div>
+            )}
 
-        <div className="cardsInfoBox">
-          {renderContent()}
+            {error && <div className="status-msg error">{error}</div>}
+
+            {!loading && !error && usuarios.length === 0 && (
+                <div className="status-msg empty">Nenhum usuário ativo encontrado.</div>
+            )}
+
+            {!loading && !error && (
+                <div className="users-grid">
+                    {usuarios.map((usuario) => {
+                        const isAdmin = usuario.tipo === 'admin' || usuario.id_tipo === 2;
+                        return isAdmin ? (
+                            <InfoBoxAdmin
+                                key={usuario.id_usu}
+                                name={usuario.nome_completo}
+                                email={usuario.email}
+                            />
+                        ) : (
+                            <InfoBoxEspecialista
+                                key={usuario.id_usu}
+                                name={usuario.nome_completo}
+                                email={usuario.email}
+                            />
+                        );
+                    })}
+                </div>
+            )}
         </div>
+
+        {/* Footer com contagem */}
+        <div className="modal-footer-users">
+            <span>Total: <strong>{usuarios.length}</strong> usuários ativos</span>
+        </div>
+
       </div>
     </div>
   );
