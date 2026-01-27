@@ -1,173 +1,291 @@
+/* --- 1. RESET --- */
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+/* --- CONFIGURAÇÃO GERAL --- */
 html, body {
-  margin: 0;
-  padding: 0;
-  height: 100%;
-  width: 100%;
-  overflow-x: hidden; /* evita scroll lateral indesejado */
-  overflow-y: auto;
-  box-sizing: border-box;
+    height: 100%;
+    width: 100%;
+    background-color: #f4f6f8;
+    overflow-x: hidden;
+}
+
+.dashboard-container {
+    display: flex;
+    min-height: 100vh;
+    width: 100%;
 }
 
 .main-content {
-  margin-left: 62px; /* igual à largura do seu menu */
-  padding: 1rem;
-  box-sizing: border-box;
-  width: calc(100% - 80px);
+    margin-left: 80px;
+    width: auto;
+    flex: 1;
+    padding: 30px 40px;
+    max-width: 1600px;
 }
 
-.main-content h1{
-  color: #000000;
-  font-size: 26px;
-  text-align: center;
-  
-}
-
-.topo {
-    width: 100vw;
-    height: 300px;
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    justify-content: center;
-    gap: 10px;
-    color: black;
-    background-color: rgb(255, 255, 255);
-    box-shadow: 0px 0 4px rgba(0,0,0,0.2);
-}
-
-.img-inovacao {
+/* --- HEADER / TOPO --- */
+.dashboard-header {
+    display: grid;
+    grid-template-columns: 2fr 1fr; /* Banner ocupa mais espaço */
+    gap: 25px;
+    margin-bottom: 40px;
     width: 100%;
-    border-radius: 5px;
-    max-width: 440px;
-    height: 275px;
-    margin-right: 60px;
-    box-shadow: 0px 0 4px rgba(0,0,200,0.2);
-
 }
 
-.cardTopo {
-    width: 100%;
-    max-width: 200px;
-    height: 260px;
-    border-radius: 5px;
-    margin-right: 10px;
-    padding: 8px;
+/* Banner de Boas Vindas */
+.welcome-banner {
+    background: white;
+    border-radius: 16px;
+    padding: 0 40px; /* Padding lateral */
     display: flex;
-    justify-content: center;
+    justify-content: space-between;
     align-items: center;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.03);
+    overflow: hidden;
+    position: relative;
+    height: 220px; /* Altura fixa para o banner ficar elegante */
+}
+
+.welcome-text {
+    z-index: 2;
+    max-width: 55%;
+}
+
+.welcome-text h2 {
+    font-size: 1.8rem;
+    color: #333;
+    margin-bottom: 10px;
+}
+
+.welcome-text p {
+    color: #666;
+    font-size: 1rem;
+    line-height: 1.5;
+}
+
+/* --- CORREÇÃO DA IMAGEM DO MÉDICO --- */
+.hero-img {
+    height: 90%; /* Ocupa 90% da altura do banner */
+    width: auto; /* Largura automática para não distorcer */
+    max-width: 40%; /* Nunca ocupa mais que 40% da largura */
+    object-fit: contain; /* MÁGICA: Garante que a imagem apareça inteira */
+    object-position: right center; /* Alinha a imagem à direita */
+}
+
+/* Grid de Estatísticas (Cards pequenos) */
+.stats-grid {
+    display: flex;
     flex-direction: column;
-    box-shadow: 0px 0 4px rgba(0,0,200,0.2);
-    flex-shrink: 0;
-    aspect-ratio: 27/22;
-    
+    gap: 15px;
+    height: 220px; /* Mesma altura do banner */
 }
 
-.cardTopo p{
-    color: #717171;
-    text-align: justify;
-    font-family: Roboto;
-    font-size: 14px;
-    font-style: normal;
-    font-weight: 400;
-    line-height: 14px; 
-    letter-spacing: -0.6px;
+.stat-card {
+    background: white;
+    border-radius: 16px;
+    padding: 0 25px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.03);
+    transition: transform 0.2s;
+    flex: 1; /* Divide o espaço verticalmente igual */
 }
 
-#titulo {
-    color: #6C63FF;
-    font-size: 16px;
-    font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif ;
+.stat-card:hover {
+    transform: translateY(-3px);
 }
 
-.numero {
-    color: #6C63FF;
-    font-size: 45px;
+.stat-info {
+    display: flex;
+    flex-direction: column;
 }
 
-.cardTopo img {
-    margin-top: 5px;
-    width: 75%;
-    max-width: 200px;
-    height: 120px;
-    flex-shrink: 0;
-    aspect-ratio: 27/22;
+.stat-value {
+    font-size: 2rem;
+    font-weight: 700;
+    line-height: 1;
+    margin-bottom: 5px;
 }
 
+.stat-label {
+    font-size: 0.85rem;
+    color: #888;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
 
-/*Parte de ambientes*/
-
-.carrossel-ambientes {
-    width: 90%;
+/* Ícones SVG */
+.stat-icon {
+    width: 50px;
+    height: 50px;
+    border-radius: 12px;
     display: flex;
     align-items: center;
     justify-content: center;
-    color: black;
-
+    flex-shrink: 0;
 }
 
-.sem-conteudo {
-  width: 100%;
-  padding: 2rem;
-  text-align: center;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  color: #6C63FF;
-  font-weight: bold;
+/* Cores Temáticas */
+.stat-card.purple .stat-value { color: #6C63FF; }
+.stat-card.purple .stat-icon { background: #EEEDFF; color: #6C63FF; }
+
+.stat-card.blue .stat-value { color: #2D9CDB; }
+.stat-card.blue .stat-icon { background: #EAF6FB; color: #2D9CDB; }
+
+
+/* --- SEÇÃO DE AMBIENTES --- */
+.ambientes-section {
+    margin-top: 30px;
 }
 
-.sem-conteudo img {
-  max-width: 280px;
-  height: auto;
-  margin-bottom: 1rem;
-  opacity: 0.8;
+.section-title {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 25px;
 }
 
-/* Tablets (até 1024px) */
-@media (max-width: 1024px) {
-  .main-content {
-    margin-left: 0; /* remove menu fixo */
+.section-title h3 {
+    font-size: 1.5rem;
+    color: #333;
+    font-weight: 600;
+}
+
+.badge {
+    background: #6C63FF;
+    color: white;
+    padding: 3px 12px;
+    border-radius: 20px;
+    font-size: 0.85rem;
+    font-weight: bold;
+}
+
+/* GRID */
+.ambientes-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 25px;
     width: 100%;
-  }
-
-  .topo {
-    flex-direction: row;
-    justify-content: space-evenly;
-  }
 }
 
-/* Celulares (até 768px) */
-@media (max-width: 768px) {
-  .topo {
-    flex-direction: column;
-    height: auto;
-    gap: 20px;
+.ambiente-wrapper {
+    height: 100%;
+    width: 100%;
+}
+
+/* Empty State & Loading */
+.loading-text {
     text-align: center;
-  }
-
-  .img-inovacao {
-    width: 90%;
-    margin: 0 auto;
-  }
-
-  .cardTopo {
-    width: 50%;
-    max-width: none;
-    margin-left: 50px;
-  }
+    color: #6C63FF;
+    font-weight: bold;
+    margin-top: 40px;
+    grid-column: 1 / -1;
 }
 
-/* Celulares muito pequenos (até 480px) */
-@media (max-width: 480px) {
-  .numero {
-    font-size: 32px;
-  }
+.empty-state {
+    grid-column: 1 / -1;
+    background: white;
+    border-radius: 12px;
+    padding: 50px;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    border: 2px dashed #e0e0e0;
+}
 
-  #titulo {
-    font-size: 14px;
-  }
+.empty-state img {
+    max-width: 200px;
+    opacity: 0.7;
+    margin-bottom: 20px;
+}
 
-  .cardTopo p {
-    font-size: 12px;
-  }
+.empty-state p {
+    color: #888;
+    font-size: 1.1rem;
+}
+
+/* --- ANIMAÇÕES --- */
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px); /* Começa um pouco abaixo */
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Aplica a animação aos cards */
+.ambiente-wrapper {
+    opacity: 0; /* Começa invisível */
+    animation: fadeInUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+/* Cria o "atraso" (cascata) para os primeiros 10 itens */
+.ambiente-wrapper:nth-child(1) { animation-delay: 0.1s; }
+.ambiente-wrapper:nth-child(2) { animation-delay: 0.2s; }
+.ambiente-wrapper:nth-child(3) { animation-delay: 0.3s; }
+.ambiente-wrapper:nth-child(4) { animation-delay: 0.4s; }
+.ambiente-wrapper:nth-child(5) { animation-delay: 0.5s; }
+/* ... se tiver muitos, o resto anima junto ou você adiciona mais linhas */
+
+/* --- RESPONSIVIDADE --- */
+
+@media (max-width: 1024px) {
+    .dashboard-header {
+        grid-template-columns: 1fr;
+        height: auto;
+    }
+    
+    .stats-grid {
+        flex-direction: row;
+        height: auto;
+        gap: 15px;
+    }
+    
+    .stat-card {
+        padding: 20px;
+    }
+}
+
+@media (max-width: 768px) {
+    .main-content {
+        margin-left: 0;
+        padding: 20px;
+        padding-bottom: 100px;
+    }
+
+    .welcome-banner {
+        flex-direction: column-reverse;
+        text-align: center;
+        height: auto;
+        padding: 30px 20px;
+        gap: 20px;
+    }
+    
+    .welcome-text {
+        max-width: 100%;
+    }
+
+    .hero-img {
+        max-width: 80%;
+        height: 150px;
+    }
+
+    .stats-grid {
+        flex-direction: column;
+    }
+    
+    .ambientes-grid {
+        grid-template-columns: 1fr;
+    }
 }

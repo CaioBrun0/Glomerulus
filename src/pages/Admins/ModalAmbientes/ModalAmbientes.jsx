@@ -32,6 +32,8 @@ function ModalAmbientes({ onClose, onCriarAmbiente, ambientesAtivos = [], ambien
     <CardAmbiente
       key={amb.id || idx}
       type={amb.type}
+      isAdmin={true}      // Ativa o modo Admin
+      ativo={true}        // Controla o Badge
       amount={amb.amount}
       onClick={() => setAmbienteSelecionado(amb.id)} // ADICIONADO
     />
