@@ -1,67 +1,236 @@
-body {
+/* --- CONFIGURAÇÕES GERAIS --- */
+:root {
+  --primary: #6C63FF;
+  --primary-hover: #5a52d5;
+  --dark-text: #1a202c;
+  --gray-text: #4a5568;
+  --bg-gradient: linear-gradient(135deg, #f0f4ff 0%, #ffffff 100%);
+}
+
+html, body {
   margin: 0;
-  background-color: white;
+  padding: 0;
+  height: 100%;
+  width: 100%;
+  overflow-x: hidden;
+  background: var(--bg-gradient) no-repeat fixed;
 }
 
-.principal {
+.landing-container {
+  min-height: 100vh;
+  width: 100%;
   display: flex;
-  justify-content: space-between;
-  align-items: center;
-  gap: 2rem;
-  color: brown;
-
-}
-
-.principal img{
-  width: 100%;
-  max-width: 650px;
-  height: auto;
-  
-}
-
-
-.text {
-  width: 100%;
-  max-width: 600px;
-  padding: 1rem;
-  text-align: center;
-}
-
-.text p{
-  font-size: 30px;
-  color: black;
-}
-
-.button {
-  background-color: #1C75BC;
-  color: white;
-  width: 100%;
-  max-width: 250px;
-  max-height: 60px;
-  border-radius: 30px;
-  font-size: 30px;
-  justify-content: center; /* alinha horizontalmente */
-  align-items: center;     /* alinha verticalmente */
-  padding: 10px 20px;
-  cursor: pointer;
-  box-shadow: 0px 0px 6px rgba(0, 0, 0, 0.5);
-}
-
-.button:hover{
-  opacity: 80%;
-  transform: scale(1.03);
-
+  flex-direction: column;
+  position: relative;
 }
 
 .blurred {
-  filter: blur(4px);
-  transition: filter 0.3s ease-in-out;
+  filter: blur(5px);
+  pointer-events: none;
 }
 
-/*Parte debaixo da tela principal*/
-
-
-.segunda-principal img {
+/* --- NAVBAR --- */
+.landing-nav {
   width: 100%;
-  background-color: transparent;
+  padding: 25px 50px; /* Mais padding lateral */
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 10;
+}
+
+.logo-text {
+  font-size: 1.6rem;
+  font-weight: 800;
+  color: var(--dark-text);
+  letter-spacing: -0.5px;
+}
+
+/* --- BOTÃO ENTRAR (Novo Destaque) --- */
+.btn-nav {
+  /* Agora é SÓLIDO e ROXO, impossível não ver */
+  background-color: var(--primary); 
+  color: white;
+  border: none;
+  padding: 12px 30px; /* Um pouco menor que o botão principal, mas visível */
+  border-radius: 30px;
+  font-weight: 700;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: all 0.3s;
+  box-shadow: 0 4px 10px rgba(108, 99, 255, 0.3); /* Sombra roxa */
+}
+
+.btn-nav:hover {
+  transform: translateY(-2px);
+  background-color: var(--primary-hover);
+  box-shadow: 0 6px 15px rgba(108, 99, 255, 0.4);
+}
+
+/* --- HERO WRAPPER --- */
+.hero-wrapper {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    padding: 80px 2% 0 5%; /* Menos padding na direita para a imagem encostar */
+    overflow: visible; /* Permite a imagem vazar se quiser */
+}
+
+.hero-section {
+  width: 100%;
+  max-width: 1800px; /* Limite bem maior */
+  display: grid;
+  /* MUDANÇA: Texto fica com 35% e Imagem com 65% da tela */
+  grid-template-columns: 0.8fr 1.4fr; 
+  align-items: center;
+  gap: 10px; 
+}
+
+/* --- TEXTO (Esquerda) --- */
+.hero-content {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  z-index: 2;
+  padding-bottom: 40px;
+}
+
+.hero-content h1 {
+  font-family: 'Roboto', sans-serif;
+  font-size: clamp(2.5rem, 4vw, 3.5rem); 
+  line-height: 1.1;
+  color: var(--dark-text);
+  margin-bottom: 25px;
+  font-weight: 800;
+}
+
+.highlight {
+  color: var(--primary);
+  display: block;
+}
+
+.hero-description {
+  font-size: 1.1rem;
+  color: var(--gray-text);
+  margin-bottom: 35px;
+  max-width: 480px; /* Texto um pouco mais estreito para dar espaço à imagem */
+  line-height: 1.6;
+}
+
+/* BOTÃO PRINCIPAL */
+.hero-buttons {
+  display: flex;
+}
+
+.btn-primary {
+  background-color: var(--dark-text); /* Preto/Cinza escuro para diferenciar do nav */
+  color: white;
+  border: none;
+  padding: 18px 40px;
+  border-radius: 50px;
+  font-size: 1.1rem;
+  font-weight: 700;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.btn-primary:hover {
+  transform: translateY(-4px) scale(1.02);
+  background-color: black;
+}
+
+/* --- IMAGEM (Direita - SUPER SIZE) --- */
+.hero-image-wrapper {
+  position: relative;
+  display: flex;
+  justify-content: center; /* Alinha a direita */
+  align-items: center;
+  width: 100%;
+  height: 100%;
+}
+
+.blob {
+  position: absolute;
+  width: 100%; /* Blob gigante */
+  height: 100%;
+  right: -10%; /* Deslocado para direita */
+  background: radial-gradient(circle, rgba(108, 99, 255, 0.06) 0%, rgba(255,255,255,0) 70%);
+  z-index: 0;
+  border-radius: 50%;
+  animation: pulse 5s ease-in-out infinite;
+}
+
+.landing-hero-img {
+  width: 65%; /* Aumenta além do container (Zoom In) */
+  max-width: 1100px; /* Limite gigante */
+  height: auto;
+  object-fit: contain;
+  position: relative;
+  z-index: 1;
+  filter: drop-shadow(0 20px 50px rgba(0,0,0,0.15));
+  animation: float 6s ease-in-out infinite;
+  
+  /* Puxa a imagem para a direita para criar um visual imersivo */
+  transform: translateX(5%); 
+}
+
+/* ANIMAÇÕES */
+@keyframes float {
+  0%, 100% { transform: translateY(0) translateX(5%); } /* Mantém o translateX */
+  50% { transform: translateY(-20px) translateX(5%); }
+}
+
+@keyframes pulse {
+  0%, 100% { transform: scale(1); opacity: 0.5; }
+  50% { transform: scale(1.1); opacity: 1; }
+}
+
+/* --- RESPONSIVIDADE --- */
+@media (max-width: 1200px) {
+    /* Ajuste para telas médias */
+    .landing-hero-img { width: 100%; transform: none; }
+    @keyframes float {
+        0%, 100% { transform: translateY(0); }
+        50% { transform: translateY(-15px); }
+    }
+}
+
+@media (max-width: 1024px) {
+  .landing-nav { padding: 20px; }
+  
+  .hero-section {
+    grid-template-columns: 1fr;
+    text-align: center;
+    gap: 40px;
+    margin-top: 40px;
+  }
+
+  .hero-content {
+    align-items: center;
+    order: 2;
+  }
+  
+  .hero-description { margin: 0 auto 30px auto; }
+
+  .hero-image-wrapper { order: 1; }
+
+  .landing-hero-img {
+    max-width: 90%; 
+    margin-right: 0;
+  }
+}
+
+@media (max-width: 480px) {
+  .landing-hero-img { max-width: 100%; }
+  .btn-primary { width: 100%; justify-content: center; }
+  .logo-text { font-size: 1.3rem; }
 }
