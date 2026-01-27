@@ -1,64 +1,139 @@
-.navHomeAdmin {
-  position: relative;
-  display: flex;
-  flex-direction: column;
-  align-items: center;       /* centraliza horizontalmente */
-  justify-content: center;   /* centraliza verticalmente */
-  text-align: center;
-  width: 100vw;              /* ocupa toda a largura da tela */
-  padding: 20px;
-  box-sizing: border-box;
-  box-shadow: 0 1px 1px rgba(0, 0, 0, 0.1);
+/* --- RESET BLINDADO PARA ESTA TELA --- */
+.admin-dashboard-container {
+    position: absolute; /* Ignora margens do pai/body */
+    top: 0;
+    left: 0;
+    width: 100%;
+    min-height: 100vh;
+    background-color: #f4f6f8;
+    display: flex;
+    flex-direction: column;
+    margin: 0;
+    padding: 0;
+    
+    /* SEGURANÇA MÁXIMA CONTRA TELA BRANCA */
+    overflow-x: hidden; 
+    box-sizing: border-box;
 }
 
-.navHomeAdmin h1 {
-    color: rgb(168, 168, 168);
+/* Garante que todos os filhos respeitem o tamanho da caixa */
+.admin-dashboard-container * {
+    box-sizing: border-box;
+}
+
+/* --- NAVBAR FIXA --- */
+.admin-navbar {
+    background: white;
+    height: 70px;
+    width: 100%;
+    padding: 0 40px;
+    
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    
+    border-bottom: 1px solid #e2e8f0;
+    position: sticky; /* Fica fixo ao rolar */
+    top: 0;
+    z-index: 100;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.02);
+}
+
+.nav-brand {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.brand-icon { font-size: 1.8rem; line-height: 1; }
+
+.brand-name {
+    font-size: 1.2rem;
+    font-weight: 800;
+    color: #1a202c;
+    letter-spacing: -0.5px;
+    white-space: nowrap;
+}
+
+.nav-actions {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+}
+
+.admin-badge {
+    background: #ebf8ff;
+    color: #3182ce;
+    padding: 6px 12px;
+    border-radius: 20px;
+    font-size: 0.85rem;
     font-weight: 700;
-    font-size: 40px;
-    margin-bottom: 40px;
-}
-
-.navHomeAdmin img {
-    margin-top: 50px;
-    width: 295px;
-    height: 215px;
-    flex-shrink: 0;
+    text-transform: uppercase;
 }
 
 .logout-btn {
-  position: absolute;
-  right: 20px;
-  top: 20px;
-  background: #fff;
-  color: #FF6584;
-  border: 2px solid #FF6584;
-  padding: 8px 12px;
-  border-radius: 8px;
-  cursor: pointer;
-  font-weight: 700;
-  transition: background 0.15s, color 0.15s, transform 0.08s;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: white;
+    color: #e53e3e;
+    border: 1px solid #fed7d7;
+    padding: 8px 16px;
+    border-radius: 8px;
+    font-weight: 600;
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition: all 0.2s;
+    white-space: nowrap;
 }
+
 .logout-btn:hover {
-  background: #FF6584;
-  border: 2px solid #FF6584;
-  color: #fff;
-  transform: translateY(-1px);
+    background: #fff5f5;
+    border-color: #e53e3e;
+    transform: translateY(-1px);
 }
 
-.cardArea {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-  gap: 20px;
-  padding: 12px;
-  margin: 0 auto;      /* Centraliza a grid */
-  margin-left: 30px;
-
+/* --- CONTEÚDO PRINCIPAL --- */
+.dashboard-content {
+    flex: 1;
+    width: 100%;
+    max-width: 1400px; /* Limite para telas gigantes */
+    margin: 0 auto;    /* Centraliza o bloco de conteúdo */
+    padding: 40px 20px;
 }
 
-@media (max-width: 633px) {
-  .cardArea {
-    grid-template-columns: 1fr;
-    padding: 10px;
-    gap: 10px;
-  }
+.dashboard-header {
+    margin-bottom: 40px;
+}
+
+.dashboard-header h1 {
+    font-size: 2rem;
+    color: #1a202c;
+    margin: 0 0 10px 0;
+    font-weight: 800;
+}
+
+.dashboard-header p {
+    color: #718096;
+    font-size: 1.1rem;
+    margin: 0;
+}
+
+/* --- GRID DE CARDS --- */
+.cards-grid {
+    display: grid;
+    /* Grid Responsivo Seguro */
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 25px;
+    width: 100%;
+}
+
+/* --- RESPONSIVIDADE --- */
+@media (max-width: 768px) {
+    .admin-navbar { padding: 0 20px; }
+    .nav-actions .admin-badge { display: none; } 
+    .dashboard-content { padding: 30px 20px; }
+    
+    /* No celular, força 1 coluna para evitar quebra */
+    .cards-grid { grid-template-columns: 1fr; }
 }

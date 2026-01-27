@@ -1,16 +1,21 @@
-import "./HomePageAdmin.css";
-import { useState, useEffect } from "react"; 
+import React, { useState, useEffect } from "react"; 
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../../routes/context/AuthContext.jsx";
-import ImgNav from "../../../assets/navAdmin.png";
+import "./HomePageAdmin.css";
+
+// Importações dos Cards
 import CardGreenList from "../../../components/CardsAdmin/CardgreenList/CardgreenList.jsx";
-import ModalGreenList from "../../../pages/Admins/ModalGreenList/ModalGreenList.jsx";
-// import ModalCriarAmbiente ...  <-- REMOVER OU COMENTAR ESTE IMPORT (Não usaremos mais aqui)
-import ModalAmbientes from "../../../pages/Admins/ModalAmbientes/ModalAmbientes.jsx";
 import CardAmbientes from "../../../components/CardsAdmin/CardAmbientesAdmin/CardAmbientesAdmin.jsx";
-import CardDashboard from "../../../components/CardsAdmin/CardDashboard/CardDashboard.jsx";
 import CardGerenciarUsuarios from "../../../components/CardsAdmin/CardGerenciarUsuarios/CardGerenciarUsuarios.jsx";
+import CardDashboard from "../../../components/CardsAdmin/CardDashboard/CardDashboard.jsx";
+
+// Importações dos Modais
+import ModalGreenList from "../../../pages/Admins/ModalGreenList/ModalGreenList.jsx";
+import ModalAmbientes from "../../../pages/Admins/ModalAmbientes/ModalAmbientes.jsx";
 import ModalUsuarios from "../../../pages/Admins/ModalUsuarios/ModalUsuarios.jsx";
+
+// Opcional: Se quiser uma imagem pequena no header
+// import LogoPequena from "../../../assets/logo.png"; 
 
 function HomePageAdmin() {
     const [modalAberto, setModalAberto] = useState(null); 
@@ -76,20 +81,42 @@ function HomePageAdmin() {
     }
 
     return (
-    <>
-        <div className="navHomeAdmin">
-            <img src={ImgNav} alt="" />
-            <h1>Bem Vindo, Administrador</h1>
-            <button className="logout-btn" onClick={handleLogout}>Sair</button>
-        </div>
+    <div className="admin-dashboard-container">
+        
+        {/* HEADER FIXO NO TOPO */}
+        <nav className="admin-navbar">
+            <div className="nav-brand">
+                <span className="brand-icon">🧬</span> {/* Ou sua logo <img> */}
+                <span className="brand-name">Glomerulus Admin</span>
+            </div>
+            <div className="nav-actions">
+                <span className="admin-badge">Administrador</span>
+                <button className="logout-btn" onClick={handleLogout}>
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+                    Sair
+                </button>
+            </div>
+        </nav>
 
-        <div className="cardArea"> 
-            <CardGreenList onOpen={() => setModalAberto('greenList')} />
-            <CardAmbientes onOpen={() => setModalAberto('ambientes')} />
-            <CardGerenciarUsuarios onOpen={() => setModalAberto('usuarios')} />
-            <CardDashboard onOpen={() => setModalAberto('dashboard')} />
-        </div>
+        {/* CONTEÚDO PRINCIPAL */}
+        <main className="dashboard-content">
+            
+            <header className="dashboard-header">
+                <h1>Painel de Controle</h1>
+                <p>Gerencie usuários, ambientes e listas de acesso.</p>
+            </header>
 
+            {/* GRID DE CARDS */}
+            <div className="cards-grid"> 
+                <CardGreenList onOpen={() => setModalAberto('greenList')} />
+                <CardAmbientes onOpen={() => setModalAberto('ambientes')} />
+                <CardGerenciarUsuarios onOpen={() => setModalAberto('usuarios')} />
+                <CardDashboard onOpen={() => setModalAberto('dashboard')} />
+            </div>
+
+        </main>
+
+        {/* MODAIS */}
         {modalAberto === 'greenList' && (
             <ModalGreenList onClose={() => setModalAberto(null)} />
         )}
@@ -97,9 +124,7 @@ function HomePageAdmin() {
         {modalAberto === 'ambientes' && (
             <ModalAmbientes 
                 onClose={() => setModalAberto(null)}
-                // MUDANÇA AQUI: Em vez de abrir modal, navegamos para a página
                 onCriarAmbiente={() => navigate("/CriarAmbiente")}
-                
                 ambientesAtivos={ambientes.ativos} 
                 ambientesInativos={ambientes.inativos} 
                 loading={loadingAmbientes}
@@ -111,10 +136,8 @@ function HomePageAdmin() {
         {modalAberto === 'usuarios' && (
             <ModalUsuarios onClose={() => setModalAberto(null)} />
         )}
-
-        {/* MUDANÇA AQUI: Removemos a renderização condicional do ModalCriarAmbiente antigo */}
-    </>
-    )
+    </div>
+    );
 }
 
 export default HomePageAdmin;
