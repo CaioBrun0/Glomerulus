@@ -1,195 +1,219 @@
-:root{
-  --bg-card: #ffffff;
-  --muted: #6b7280;
-  --primary: #6C63FF;
-  --primary-2: #8577ff;
-  --accent-shadow: rgba(108,99,255,0.12);
-  --radius: 12px;
-  --gap: 12px;
-  --pad: 18px;
-  font-family: "Roboto", Arial, sans-serif;
+/* Container Principal do Formulário */
+.forms-modern-container {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
 }
 
-/* container principal */
-.forms-base {
-  width: 380px;
-  height: 500px;
-  background-color: #fafaff;
-  box-shadow: 0 2px 2px rgba(1, 1, 2, 0.06);
-  border-radius: var(--radius);
-  color: #111827;
-  overflow: hidden;
-  box-sizing: border-box;
-  border: 1px solid rgba(16,24,40,0.04);
+.forms-content {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
 }
 
-/* header */
-.forms-base h2 {
-  margin: 0;
-  padding: 14px var(--pad);
-  font-size: 23px;
-  color: white;
-  background: linear-gradient(90deg, var(--primary), var(--primary-2));
-  text-align: center;
-  font-weight: 800;
-  letter-spacing: 0.2px;
+/* Cabeçalho (Pergunta) */
+.forms-header {
+    margin-bottom: 25px;
+    padding-bottom: 15px;
+    border-bottom: 1px solid #f1f5f9;
 }
 
-/* corpo do form com padding consistente e scroll se necessário */
-.forms-base form {
-  padding: var(--pad);
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  gap: var(--gap);
+.form-label {
+    font-size: 0.75rem;
+    font-weight: 800;
+    color: #94a3b8;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    margin-bottom: 8px;
+    display: block;
 }
 
-/* labels e textos */
-.forms-base p {
-  margin: 0;
-  font-weight: 700;
-  color: #111827;
-  font-size: 0.95rem;
+.form-question {
+    font-size: 1.15rem;
+    font-weight: 700;
+    color: #1e293b;
+    line-height: 1.5;
+    margin: 0;
 }
 
-/* área das opções radio */
-.forms-control {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
+/* Grid de Opções */
+.options-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    flex: 1; /* Ocupa o espaço disponível */
+    overflow-y: auto; /* Scroll apenas nas opções se a lista for longa */
+    padding: 2px; /* Evita cortar a sombra do foco */
+    margin-bottom: 20px;
 }
 
-/* cada opção - cartão clicável */
-.forms-control label {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  padding: 10px 12px;
-  border-radius: 10px;
-  cursor: pointer;
-  background: #fbfbff;
-  border: 3px solid rgba(16,24,40,0.04);
-  transition: box-shadow .14s ease, transform .08s ease, border-color .12s ease;
-}
+/* Scrollbar fina e elegante */
+.options-grid::-webkit-scrollbar { width: 6px; }
+.options-grid::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
+.options-grid::-webkit-scrollbar-track { background: transparent; }
 
-/* hover */
-.forms-control label:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 8px 20px rgba(16,24,40,0.04);
-}
-
-/* input radio visual (esconde padrão) */
-.forms-control input[type="radio"] {
-  appearance: none;
-  -webkit-appearance: none;
-  width: 18px;
-  height: 18px;
-  border-radius: 50%;
-  border: 2px solid #d1d5db;
-  display: inline-block;
-  position: relative;
-  cursor: pointer;
-  flex: 0 0 auto;
-  outline: none;
-  transition: border-color .12s ease, background .12s ease;
-}
-
-/* estado checked com indicador */
-.forms-control input[type="radio"]:checked {
-  border-color: var(--primary);
-  background: linear-gradient(90deg,var(--primary),var(--primary-2));
-  box-shadow: 0 4px 12px var(--accent-shadow);
-}
-
-/* texto da opção */
-.forms-control span {
-  color: #111827;
-  font-weight: 600;
-  font-size: 0.95rem;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-
-/* Troque radio por checkbox na estilização visual */
-.forms-control input[type="checkbox"] {
-    appearance: none;
-    -webkit-appearance: none;
-    width: 18px;
-    height: 18px;
-    border-radius: 4px; /* Checkboxes costumam ser quadrados com cantos arredondados */
-    border: 2px solid #d1d5db;
-    display: inline-block;
-    position: relative;
+/* O Cartão de Opção (A mágica acontece aqui) */
+.modern-option-card {
+    display: flex;
+    align-items: center;
+    padding: 18px 20px;
+    background: #ffffff;
+    border: 2px solid #e2e8f0;
+    border-radius: 16px;
     cursor: pointer;
-    flex: 0 0 auto;
-    outline: none;
-    transition: border-color .12s ease, background .12s ease;
+    transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+    user-select: none;
 }
 
-.forms-control input[type="checkbox"]:checked {
-    border-color: var(--primary);
-    background: linear-gradient(90deg,var(--primary),var(--primary-2));
-    box-shadow: 0 4px 12px var(--accent-shadow);
+/* Hover State */
+.modern-option-card:hover {
+    border-color: #cbd5e1;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.03);
 }
 
-/* Indicador de "visto" no checkbox (opcional) */
-.forms-control input[type="checkbox"]:checked::after {
-    content: '✓';
-    position: absolute;
+/* Active/Selected State */
+.modern-option-card.active {
+    border-color: #6C63FF;
+    background-color: #f5f3ff; /* Roxo muito claro */
+    box-shadow: 0 4px 15px rgba(108, 99, 255, 0.15);
+}
+
+/* Indicador Visual (Bolinha/Checkbox) */
+.option-indicator {
+    width: 22px;
+    height: 22px;
+    border-radius: 6px;
+    border: 2px solid #cbd5e1;
+    margin-right: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s ease;
+    background: white;
+    flex-shrink: 0;
+}
+
+.modern-option-card.active .option-indicator {
+    background-color: #6C63FF;
+    border-color: #6C63FF;
+    transform: scale(1.1);
+}
+
+/* Ícone de Check via CSS puro */
+.modern-option-card.active .option-indicator::after {
+    content: '';
+    width: 6px;
+    height: 10px;
+    border: solid white;
+    border-width: 0 2px 2px 0;
+    transform: rotate(45deg);
+    margin-top: -2px;
+}
+
+.option-label {
+    font-size: 1rem;
+    font-weight: 500;
+    color: #475569;
+    transition: color 0.2s;
+}
+
+.modern-option-card.active .option-label {
+    color: #1e293b;
+    font-weight: 700;
+}
+
+/* Área do Botão Submit */
+.submit-area {
+    margin-top: auto; /* Empurra para o fundo */
+    padding-top: 20px;
+    border-top: 1px solid #f1f5f9;
+}
+
+.btn-modern-submit {
+    width: 100%;
+    padding: 16px;
+    background: linear-gradient(135deg, #6C63FF 0%, #5a52d5 100%);
     color: white;
-    font-size: 12px;
-    left: 50%;
-    top: 50%;
-    transform: translate(-50%, -50%);
+    border: none;
+    border-radius: 14px;
+    font-size: 1rem;
+    font-weight: 700;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    box-shadow: 0 10px 20px rgba(108, 99, 255, 0.25);
+    transition: all 0.3s ease;
 }
 
-/* botão submit estilizado */
-.forms-base button[type="submit"] {
-  width: 100%;
-  background: linear-gradient(90deg,var(--primary),var(--primary-2));
-  color: white;
-  border: none;
-  padding: 12px;
-  border-radius: 10px;
-  cursor: pointer;
-  font-weight: 800;
-  font-size: 18px;
-  box-shadow: 0 10px 30px rgba(108,99,255,0.12);
-  transition: transform .08s ease, opacity .12s ease;
+.btn-modern-submit:hover:not(:disabled) {
+    transform: translateY(-3px);
+    box-shadow: 0 15px 30px rgba(108, 99, 255, 0.35);
+    filter: brightness(1.1);
 }
 
-/* estado desabilitado */
-.forms-base button[disabled] {
-  opacity: 0.6;
-  cursor: not-allowed;
-  transform: none;
-  box-shadow: none;
+.btn-modern-submit:disabled {
+    background: #e2e8f0;
+    color: #94a3b8;
+    cursor: not-allowed;
+    box-shadow: none;
+    transform: none;
 }
 
-/* hover do botão */
-.forms-base button[type="submit"]:hover:not([disabled]) {
-  transform: translateY(-2px);
-}
+/* Animação dos pontinhos ... */
+.loading-dots span { animation: blink 1.4s infinite both; }
+.loading-dots span:nth-child(2) { animation-delay: 0.2s; }
+.loading-dots span:nth-child(3) { animation-delay: 0.4s; }
+@keyframes blink { 0% { opacity: 0.2; } 20% { opacity: 1; } 100% { opacity: 0.2; } }
 
-/* responsividade: ajustar largura em telas pequenas */
-@media (max-width: 520px) {
-  .forms-base { max-width: 100%; border-radius: 10px; }
-  .forms-base form { padding: 14px; gap: 10px; }
-  .forms-control label { padding: 10px; }
-  .forms-control span { font-size: 0.92rem; }
-  .forms-base h2 { font-size: 16px; padding: 12px; }
-}
+/* --- AJUSTE MOBILE PARA EXPANDIR O FORM --- */
+@media (max-width: 900px) {
+    /* O container do form para de limitar a altura */
+    .forms-modern-container {
+        height: auto;
+        display: block; /* Remove flexbox que tenta ajustar altura */
+    }
 
-/* acessibilidade: foco visível */
-.forms-control input[type="radio"]:focus-visible {
-  box-shadow: 0 0 0 4px rgba(108,99,255,0.12);
-  border-color: var(--primary);
-}
+    .forms-content {
+        height: auto;
+        display: block;
+    }
 
-/* pequena melhora visual para o container do formulário quando necessário */
-.forms-base .note {
-  color: var(--muted);
-  font-size: 0.9rem;
-  margin-top: 6px;
+    /* A lista de opções para de ter scroll interno */
+    .options-grid {
+        overflow-y: visible; /* IMPORTANTE: Remove o scroll interno */
+        height: auto;        /* Cresce com o conteúdo */
+        max-height: none;    /* Remove limite */
+        padding-bottom: 20px;
+    }
+
+    /* Ajuste no cabeçalho */
+    .forms-header {
+        margin-bottom: 15px;
+        padding-bottom: 10px;
+    }
+
+    .form-question {
+        font-size: 1rem;
+    }
+
+    /* Cartões de opção mais compactos */
+    .modern-option-card {
+        padding: 14px;
+        margin-bottom: 8px; /* Espaço entre itens pois não é mais flex gap */
+    }
+    
+    .option-label {
+        font-size: 0.95rem;
+    }
+    
+    /* Botão de enviar fixo ou no final normal */
+    .submit-area {
+        margin-top: 20px;
+        padding-top: 10px;
+        position: static; /* Segue o fluxo da página */
+    }
 }

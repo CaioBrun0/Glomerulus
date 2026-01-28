@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import Menu from "../../../components/Menu/Menu.jsx";
 import FormsAmbiente from "../../../components/FormsAmbiente/FormsAmbiente.jsx";
+import { toast } from 'react-toastify';
 import "./HistoricPage.css";
 
 function HistoricPage() {
@@ -193,7 +194,7 @@ function HistoricPage() {
                                     ambienteId={modalData.id_amb}
                                     imagemId={modalData.content_hash}
                                     onSucesso={() => {
-                                        alert("Atualizado com sucesso!");
+                                        toast.success("Atualizado com sucesso!");
                                         setModalData(null);
                                         carregarHistorico();
                                     }}

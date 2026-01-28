@@ -1,199 +1,247 @@
-/* ...existing code... */
-@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap');
-
-html, body {
-  margin: 0;
-  padding: 0;
-  height: 100%;
-  width: 100%;
-  overflow-x: hidden; /* evita scroll lateral indesejado */
-  overflow-y: auto;
-  box-sizing: border-box;
-}
-
-.geral {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 100vmax;
-  height: 100vh;
-}
-
-.main-wrapper {
-  width: 1100px;
-  max-width: 98vw;
-  display: flex;
-  gap: 24px;
-  padding: 20px;
-  height: auto;
-  box-shadow: 0 0 3px rgba(16,24,40,0.3);
-  border-radius: 12px;
-  background: #fff;
-  box-sizing: border-box;
-}
-
-/* espaço esquerdo - área de imagens */
-.space-for-images {
-  flex: 0 0 650px;
-  max-width: 60vw;
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-  padding: 14px;
-  box-sizing: border-box;
-}
-
-.space-for-images .images-title {
-  margin: 0;
-  font-size: 1.25rem;
-  font-weight: 700;
-  color: #1f2937;
-  letter-spacing: 0.2px;
-  display: flex;
-  align-items: center;
-  gap: 10px;
-}
-
-/* destaque pequeno à esquerda do título */
-.space-for-images .images-title::before {
-  content: "";
-  width: 8px;
-  height: 8px;
-  border-radius: 2px;
-  background: linear-gradient(90deg,#6C63FF,#8577FF);
-  display: inline-block;
-}
-
-/* área da imagem fica quadrada usando aspect-ratio */
-.images-area {
-  width: 500px;
-  aspect-ratio: 1 / 1;         /* garante quadrado */
-  background-color: #f0f2f7;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  border-radius: 10px;
-  overflow: hidden;
-  position: relative;
-  box-shadow: inset 0 1px 0 rgba(255,255,255,0.6);
-  margin-left: 50px;
-}
-
-/* conteúdo interno quando não há imagens */
-.images-area p {
-  margin: 0;
-  color: #6b7280;
-  font-size: 1rem;
-}
-
-/* quando houver thumbnails use this class for img */
-.images-area img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  display: block;
-}
-
-/* paginação (placeholder) */
-.images-pagination {
-  width: 100%;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  gap: 12px;
-  padding: 8px 4px;
-}
-
-.forms-direita {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  margin-right: 20px;
-}
-
-.page-btn {
-  background: #6C63FF;
-  color: white;
-  border: none;
-  padding: 8px 12px;
-  border-radius: 8px;
-  cursor: pointer;
-  font-weight: 700;
-  box-shadow: 0 4px 10px rgba(108,99,255,0.12);
-}
-.page-btn:disabled {
-  background: #d1cfff;
-  cursor: not-allowed;
-  box-shadow: none;
-}
-
-.page-info {
-  color: #374151;
-  font-weight: 600;
-}
-
-.forms-image-container {
-    flex: 1;
-    background: #f4f4f9;
-    border-radius: 12px;
-    padding: 15px;
+/* --- CONTAINER GERAL BLINDADO --- */
+.workspace-container {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100vh;
     display: flex;
-    justify-content: center;
-    align-items: center;
-    min-height: 450px;
-    box-shadow: inset 0 0 10px rgba(0,0,0,0.05);
-}
-
-.responsive-img {
-    max-width: 100%;
-    max-height: 75vh; /* Garante que a imagem caiba na tela sem scroll excessivo */
-    object-fit: contain; /* Mantém a proporção sem cortar */
-    border-radius: 8px;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-}
-
-.forms-workspace {
-    display: flex;
-    gap: 30px;
-    align-items: flex-start;
-    padding: 20px 0;
-}
-
-/* responsividade: duas colunas em larguras médias, uma coluna em pequenas */
-@media (max-width: 1000px) {
-  .main-wrapper {
     flex-direction: column;
-    gap: 16px;
-    padding: 16px;
-  }
-  .space-for-images {
-    width: 100%;
-    flex: none;
-    min-width: unset;
-  }
-  .forms-direita {
-    width: 100%;
-    justify-content: stretch;
-    align-items: stretch;
-  }
-  .images-title {
-    font-size: 1.1rem;
-  }
-  .page-btn {
-    padding: 7px 10px;
-  }
+    background-color: #f8fafc;
+    overflow: hidden;
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
 }
 
-@media (max-width: 600px) {
-  .geral { padding: 12px; }
-  .main-wrapper { padding: 12px; }
-  .space-for-images { padding: 8px; gap: 8px; }
-  .images-title { font-size: 1rem; }
-  .images-area { aspect-ratio: 1 / 1; border-radius: 8px; }
-  .page-btn { padding: 6px 8px; font-size: 14px; }
+.workspace-container * { box-sizing: border-box; }
+
+/* --- HEADER SLIM --- */
+.workspace-header {
+    height: 64px;
+    background: #ffffff;
+    border-bottom: 1px solid #e2e8f0;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 24px;
+    flex-shrink: 0;
+    z-index: 20;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.02);
 }
 
-/* evita overflow horizontal em casos extremos */
-@media (max-height: 420px) {
-  .main-wrapper { max-height: 95vh; overflow-y: auto; }
+.workspace-title h1 {
+    font-size: 1rem;
+    font-weight: 700;
+    color: #0f172a;
+    margin: 0;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.image-counter {
+    font-size: 0.75rem;
+    background: #f1f5f9;
+    padding: 2px 8px;
+    border-radius: 12px;
+    color: #64748b;
+    font-weight: 600;
+    margin-top: 2px;
+}
+
+/* Botão Voltar (Estilo Link Moderno) */
+.btn-back-workspace {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: transparent;
+    border: none;
+    color: #64748b;
+    font-weight: 600;
+    font-size: 0.9rem;
+    cursor: pointer;
+    padding: 8px 12px;
+    border-radius: 8px;
+    transition: all 0.2s;
+}
+.btn-back-workspace:hover {
+    background: #f1f5f9;
+    color: #0f172a;
+}
+
+/* Botão Histórico */
+.btn-history {
+    background: white;
+    border: 1px solid #cbd5e1;
+    color: #475569;
+    padding: 8px 16px;
+    border-radius: 8px;
+    font-weight: 600;
+    font-size: 0.85rem;
+    cursor: pointer;
+    transition: all 0.2s;
+    box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+}
+.btn-history:hover:not(:disabled) {
+    border-color: #6C63FF;
+    color: #6C63FF;
+    transform: translateY(-1px);
+}
+
+/* --- ÁREA DE TRABALHO --- */
+.workspace-content {
+    flex: 1;
+    display: flex;
+    overflow: hidden;
+    width: 100%;
+}
+
+/* --- VIEWER (ESQUERDA - MODO TEATRO) --- */
+.image-viewer-panel {
+    flex: 1;
+    background-color: #0f172a; /* Slate 900 */
+    background-image: radial-gradient(circle at center, #1e293b 0%, #0f172a 100%); /* Gradiente sutil */
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    min-width: 0;
+}
+
+.viewer-canvas {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 30px;
+    position: relative;
+}
+
+.main-image {
+    max-width: 100%;
+    max-height: 85vh;
+    object-fit: contain;
+    border-radius: 4px;
+    box-shadow: 0 0 50px rgba(0,0,0,0.6); /* Sombra dramática */
+    transition: transform 0.3s ease;
+}
+
+/* Meta dados FLUTUANTES */
+.image-meta {
+    position: absolute;
+    top: 20px;
+    background: rgba(15, 23, 42, 0.8);
+    padding: 8px 16px;
+    border-radius: 30px;
+    border: 1px solid rgba(255,255,255,0.1);
+    color: #e2e8f0;
+    backdrop-filter: blur(8px);
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    font-size: 0.85rem;
+    font-weight: 500;
+}
+
+.status-badge.reviewed { color: #4ade80; font-weight: 700; }
+
+/* Controles de Navegação (Setas Laterais Grandes) */
+.viewer-controls {
+    position: absolute;
+    width: 100%;
+    padding: 0 20px;
+    display: flex;
+    justify-content: space-between;
+    top: 50%;
+    transform: translateY(-50%);
+    pointer-events: none; /* Deixa clicar na imagem se precisar */
+}
+
+.nav-arrow {
+    pointer-events: auto; /* Reativa clique no botão */
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    color: white;
+    font-size: 1.5rem;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    backdrop-filter: blur(4px);
+    transition: all 0.2s;
+}
+
+.nav-arrow:hover:not(:disabled) {
+    background: rgba(255, 255, 255, 0.25);
+    transform: scale(1.1);
+}
+.nav-arrow:disabled { opacity: 0; cursor: default; }
+
+/* --- SIDEBAR (DIREITA - FORMULÁRIO) --- */
+.tools-sidebar {
+    width: 420px; /* Largura confortável para leitura */
+    min-width: 420px; /* Evita achatamento */
+    background: #ffffff;
+    border-left: 1px solid #e2e8f0;
+    padding: 40px 32px;
+    display: flex;
+    flex-direction: column;
+    overflow-y: auto;
+    height: 100%;
+    z-index: 15;
+    box-shadow: -5px 0 25px rgba(0,0,0,0.03); /* Sombra suave separando do viewer */
+}
+
+.forms-wrapper {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+/* Placeholder */
+.viewer-placeholder {
+    color: #94a3b8;
+    text-align: center;
+}
+.empty-icon { font-size: 3rem; margin-bottom: 15px; display: block;}
+.viewer-placeholder h3 { color: white; margin-bottom: 5px; font-size: 1.5rem;}
+
+.btn-reload {
+    margin-top: 20px;
+    padding: 12px 24px;
+    background: #6C63FF;
+    color: white;
+    border: none;
+    border-radius: 10px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+.btn-reload:hover { background: #5a52d5; }
+
+/* Responsividade Mobile */
+@media (max-width: 1024px) {
+    .workspace-content { flex-direction: column; }
+    
+    .image-viewer-panel { 
+        height: 50vh; 
+        flex: none; 
+    }
+    
+    .tools-sidebar { 
+        width: 100%; 
+        min-width: 100%; 
+        flex: 1;
+        border-left: none;
+        border-top: 1px solid #e2e8f0;
+        padding: 24px;
+    }
+    
+    .nav-arrow { width: 40px; height: 40px; font-size: 1.2rem; }
 }

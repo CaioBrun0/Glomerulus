@@ -1,16 +1,17 @@
 import React, { useState, useEffect } from "react";
-import { useParams } from "react-router-dom";
-import Menu from "../../../components/Menu/Menu.jsx";
+import { useParams, useNavigate } from "react-router-dom";
+// import Menu from "../../../components/Menu/Menu.jsx"; // REMOVIDO: Menu lateral atrapalha o foco aqui.
 import FormsAmbiente from "../../../components/FormsAmbiente/FormsAmbiente.jsx";
 import { toast } from 'react-toastify';
 import "./FormsPage.css";
 
 function FormsPage() {
     const { id } = useParams(); 
+    const navigate = useNavigate(); // Para botão de voltar
     const [imagens, setImagens] = useState([]);
     const [indexAtual, setIndexAtual] = useState(0);
     const [loading, setLoading] = useState(true);
-    const [buscandoAnteriores, setBuscandoAnteriores] = useState(false); // Novo estado
+    const [buscandoAnteriores, setBuscandoAnteriores] = useState(false);
     
     const API_BASE = import.meta.env.VITE_API_BASE ?? "http://localhost:8000";
 
@@ -28,6 +29,7 @@ function FormsPage() {
             }
         } catch (err) {
             console.error("Erro fatal:", err);
+            toast.error("Erro ao carregar fila de imagens.");
         } finally {
             setLoading(false);
         }
@@ -37,7 +39,6 @@ function FormsPage() {
         carregarFila();
     }, [id, API_BASE]);
 
-    // --- NOVA FUNÇÃO: Buscar imagens anteriores ---
     const buscarAnteriores = async () => {
         const imagemReferencia = imagens[0]; 
         if (!imagemReferencia) return;
@@ -47,35 +48,25 @@ function FormsPage() {
             const response = await fetch(`${API_BASE}/classificacoes/ambiente/${id}/voltar`, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({
-                    content_hash: imagemReferencia.content_hash
-                }),
+                body: JSON.stringify({ content_hash: imagemReferencia.content_hash }),
                 credentials: "include"
             });
 
             if (response.ok) {
                 const data = await response.json();
                 const todasAnteriores = data.imagens || [];
-                
-                // === AQUI ESTÁ A CORREÇÃO ===
-                // Filtramos para manter apenas as que NÃO tem classificação (pendentes)
                 const pendentesAnteriores = todasAnteriores.filter(img => !img.classificacao);
                 
                 if (pendentesAnteriores.length > 0) {
                     setImagens(prev => [...pendentesAnteriores, ...prev]);
-                    // Mantém o foco na imagem que você estava vendo
                     setIndexAtual(prev => prev + pendentesAnteriores.length);
+                    toast.success(`${pendentesAnteriores.length} imagens anteriores carregadas.`);
                 } else {
-                    // Se veio imagem, mas todas eram repetidas/feitas
-                    if (todasAnteriores.length > 0) {
-                        toast.info("As imagens anteriores já foram todas avaliadas. Tente buscar mais uma vez para ir mais longe.")
-                    } else {
-                        toast.info("Não há mais imagens anteriores.");
-                    }
+                    toast.info("Não há imagens pendentes anteriores.");
                 }
             }
         } catch (err) {
-            console.error("Erro ao buscar anteriores:", err);
+            toast.error("Erro ao buscar anteriores.");
         } finally {
             setBuscandoAnteriores(false);
         }
@@ -94,9 +85,7 @@ function FormsPage() {
                  const rawPath = decodeURIComponent(img.caminho_img);
                  const safePath = rawPath.split('/').map(part => encodeURIComponent(part)).join('/');
                  return `${API_BASE}/nextcloud/images/${safePath}`;
-             } catch (e) {
-                 return "";
-             }
+             } catch (e) { return ""; }
         }
         return "";
     };
@@ -105,98 +94,115 @@ function FormsPage() {
         if (indexAtual < imagens.length - 1) {
             setIndexAtual(prev => prev + 1);
         } else {
-            toast.info("Lote finalizado! Carregando próximas...");
+            toast.success("Lote concluído! Buscando mais...");
             carregarFila();
         }
     };
 
     return (
-        <div className="geral">
-            <Menu />
-            <div className="main-wrapper">
-                <div className="space-for-images">
-                    <h1 className="images-title">Fila de Classificação</h1>
-                    
-                    <div className="images-area" style={{ display: "flex", flexDirection: "column", justifyContent: "center" }}>
-                        {loading ? (
-                            <p>Buscando tarefas...</p>
-                        ) : imagemAtual ? (
-                            <>
-                                <img 
-                                    src={getUrlImagem(imagemAtual)} 
-                                    alt={imagemAtual.nome_img}
-                                    className="responsive-img"
-                                    style={{ maxHeight: "60vh", objectFit: "contain" }}
-                                    onError={(e) => e.target.src = "/src/assets/ambiente-indisponivel.png"}
-                                />
-                                <p style={{ marginTop: 10, color: "#666", fontWeight: "bold" }}>
-                                    {imagemAtual.nome_img}
-                                </p>
+        <div className="workspace-container">
+            
+            {/* HEADER MINIMALISTA (Para não distrair) */}
+            <header className="workspace-header">
+                <button className="btn-back-workspace" onClick={() => navigate("/HomePage")}>
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M19 12H5"/><path d="M12 19l-7-7 7-7"/></svg>
+                    Voltar
+                </button>
+                <div className="workspace-title">
+                    <h1>Ambiente de Rotulação</h1>
+                    {imagemAtual && <span className="image-counter">Imagem {indexAtual + 1} de {imagens.length}</span>}
+                </div>
+                <div className="header-actions">
+                    <button 
+                        className="btn-history" 
+                        onClick={buscarAnteriores} 
+                        disabled={loading || buscandoAnteriores || imagens.length === 0}
+                        title="Buscar anteriores"
+                    >
+                         {buscandoAnteriores ? "..." : "⏪ Buscar Anteriores"}
+                    </button>
+                </div>
+            </header>
 
-                                {/* Informação extra se a imagem já foi classificada (útil ao voltar) */}
+            {/* ÁREA DE TRABALHO */}
+            <div className="workspace-content">
+                
+                {/* 1. VIEWER (Esquerda - Escuro) */}
+                <div className="image-viewer-panel">
+                    {loading ? (
+                        <div className="viewer-placeholder">
+                            <div className="spinner"></div>
+                            <p>Carregando imagens...</p>
+                        </div>
+                    ) : imagemAtual ? (
+                        <div className="viewer-canvas">
+                            <img 
+                                src={getUrlImagem(imagemAtual)} 
+                                alt={imagemAtual.nome_img} 
+                                className="main-image"
+                                onError={(e) => e.target.src = "/src/assets/ambiente-indisponivel.png"}
+                            />
+                            
+                            <div className="image-meta">
+                                <span className="filename">{imagemAtual.nome_img}</span>
                                 {imagemAtual.classificacao && (
-                                    <span style={{color: "green", fontSize: "0.8rem"}}>
-                                        (Já classificada: {imagemAtual.classificacao.texto_opcao})
+                                    <span className="status-badge reviewed">
+                                        ✓ Já classificada: {imagemAtual.classificacao.texto_opcao}
                                     </span>
                                 )}
-                            </>
-                        ) : (
-                            <div style={{textAlign: "center"}}>
-                                <h3>Tudo pronto por aqui!</h3>
-                                <p>Sem imagens pendentes à frente.</p>
-                                <div style={{display: "flex", gap: "10px", justifyContent: "center", marginTop: 20}}>
-                                    <button onClick={carregarFila} style={{cursor: "pointer"}}>
-                                        Verificar Novas
-                                    </button>
-                                    {/* Botão para buscar as esquecidas mesmo se a lista estiver vazia (mas precisa de lógica extra no backend para funcionar sem ref, então deixamos opcional aqui) */}
-                                </div>
                             </div>
-                        )}
-                    </div>
+                        </div>
+                    ) : (
+                        <div className="viewer-placeholder empty">
+                            <div className="empty-icon">🎉</div>
+                            <h3>Tudo pronto!</h3>
+                            <p>Você classificou todas as imagens deste lote.</p>
+                            <button className="btn-reload" onClick={carregarFila}>Verificar Novas Imagens</button>
+                        </div>
+                    )}
 
-                    <div className="images-pagination">
-                        {/* --- BOTÃO CARREGAR ANTERIORES --- */}
-                        <button 
-                            className="page-btn secondary"
-                            onClick={buscarAnteriores}
-                            disabled={loading || buscandoAnteriores || imagens.length === 0}
-                            style={{ marginRight: 'auto', fontSize: '0.8rem' }} // Joga para a esquerda
-                            title="Buscar imagens que ficaram para trás"
-                        >
-                            {buscandoAnteriores ? "..." : "⏪ Buscar Anteriores"}
-                        </button>
-
-                        <button 
-                            className="page-btn" 
-                            onClick={() => setIndexAtual(i => i - 1)} 
-                            disabled={indexAtual === 0 || loading}
-                        >
-                            Anterior
-                        </button>
-                        
-                        <span className="page-info">
-                            {imagens.length > 0 ? `${indexAtual + 1} de ${imagens.length}` : "0/0"}
-                        </span>
-                        
-                        <button 
-                            className="page-btn" 
-                            onClick={() => setIndexAtual(i => i + 1)} 
-                            disabled={indexAtual >= imagens.length - 1 || loading}
-                        >
-                            Próxima
-                        </button>
-                    </div>
-                </div>
-
-                <div className="forms-direita">
-                    {imagemAtual && (
-                        <FormsAmbiente 
-                            ambienteId={id} 
-                            imagemId={imagemAtual?.content_hash}
-                            onSucesso={handleSucesso}
-                        />
+                    {/* Controles de Navegação Flutuantes */}
+                    {imagens.length > 0 && (
+                        <div className="viewer-controls">
+                            <button 
+                                className="nav-arrow prev" 
+                                onClick={() => setIndexAtual(i => i - 1)} 
+                                disabled={indexAtual === 0 || loading}
+                                title="Imagem Anterior (Seta Esquerda)"
+                            >
+                                ❮
+                            </button>
+                            <button 
+                                className="nav-arrow next" 
+                                onClick={() => setIndexAtual(i => i + 1)} 
+                                disabled={indexAtual >= imagens.length - 1 || loading}
+                                title="Próxima Imagem (Seta Direita)"
+                            >
+                                ❯
+                            </button>
+                        </div>
                     )}
                 </div>
+
+                {/* 2. SIDEBAR (Direita - Claro) */}
+                <aside className="tools-sidebar">
+                    {imagemAtual ? (
+                        <div className="forms-wrapper">
+                            <h3>Classificação</h3>
+                            
+                            <FormsAmbiente 
+                                ambienteId={id} 
+                                imagemId={imagemAtual?.content_hash}
+                                onSucesso={handleSucesso}
+                            />
+                        </div>
+                    ) : (
+                        <div className="sidebar-placeholder">
+                            <p>Selecione ou carregue uma imagem para ver as opções.</p>
+                        </div>
+                    )}
+                </aside>
+
             </div>
         </div>
     );
