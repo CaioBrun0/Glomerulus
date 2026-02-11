@@ -111,7 +111,7 @@ function HomePageAdmin() {
                 <CardGreenList onOpen={() => setModalAberto('greenList')} />
                 <CardAmbientes onOpen={() => setModalAberto('ambientes')} />
                 <CardGerenciarUsuarios onOpen={() => setModalAberto('usuarios')} />
-                <CardDashboard onOpen={() => setModalAberto('dashboard')} />
+                <CardDashboard onOpen={() => navigate("/dashboard")} />
             </div>
 
         </main>

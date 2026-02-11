@@ -10,6 +10,7 @@ import RotaProtegida from './RotaProtegida.jsx';
 import FormsPage from '../pages/Specialist/FormsPage/FormsPage.jsx'; 
 import HistoricPage from "../pages/Specialist/HistoricPage/HistoricPage.jsx";
 import CriarAmbiente from '../pages/Admins/CriarAmbiente/CriarAmbiente.jsx';
+import DashboardPage from '../pages/Admins/DashboardPage/DashboardPage.jsx';
 
 function Rotas() {
   return (
@@ -56,6 +57,12 @@ function Rotas() {
                 <CriarAmbiente />
               </RotaProtegida>
             } 
+          />
+          <Route path="/dashboard" element={
+              <RotaProtegida tipoPermitido={2}>
+                  <DashboardPage />
+              </RotaProtegida>
+          } 
           />
 
 

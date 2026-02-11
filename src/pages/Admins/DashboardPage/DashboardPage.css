@@ -1,0 +1,243 @@
+/* --- CONTAINER GERAL --- */
+.dashboard-container {
+    background-color: #f8fafc;
+    min-height: 100vh; /* Altura mínima da tela toda */
+    width: 100vw;      /* Força ocupar 100% da largura da JANELA */
+    max-width: 100vw;  /* Não deixa passar disso */
+    display: flex;
+    flex-direction: column;
+    position: absolute; /* Garante que ele saia de containers restritivos */
+    top: 0;
+    left: 0;
+    margin: 0;
+    padding: 0;
+}
+
+/* --- CONTEÚDO --- */
+.dashboard-content-page {
+    padding: 30px 40px;
+    width: 100%;
+    margin: 0 auto;
+    flex: 1;
+    /* Centraliza o conteúdo se a tela for ultra-wide (opcional) */
+    /* max-width: 1600px; */ 
+}
+
+.header-left {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+}
+
+.dashboard-header-page h1 {
+    margin: 0;
+    font-size: 1.5rem;
+    color: #1a202c; /* Slate 900 */
+    font-weight: 800;
+    letter-spacing: -0.5px;
+}
+
+/* Botão Voltar */
+.btn-back-dash {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: white;
+    border: 1px solid #e2e8f0;
+    padding: 8px 16px;
+    border-radius: 8px;
+    color: #64748b; /* Slate 500 */
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.btn-back-dash:hover {
+    background: #f1f5f9;
+    color: #1a202c;
+    border-color: #cbd5e1;
+}
+
+/* --- CONTEÚDO PRINCIPAL (FULL WIDTH) --- */
+.dashboard-content-page {
+    padding: 30px 40px;
+    width: 100%;       /* Ocupa toda a largura disponível */
+    max-width: 100%;   /* Remove travas de largura */
+    margin: 0;
+    flex: 1;           /* Ocupa a altura restante da tela */
+    box-sizing: border-box; /* Garante que padding não quebre o layout */
+}
+
+/* --- 1. SEÇÃO DE KPI (CARDS NO TOPO) --- */
+.kpi-section {
+    display: grid;
+    /* Cria 4 colunas de tamanho igual */
+    grid-template-columns: repeat(4, 1fr); 
+    gap: 25px;
+    margin-bottom: 35px;
+}
+
+.kpi-box {
+    background: white;
+    padding: 25px;
+    border-radius: 16px;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.02); /* Sombra ultra leve */
+    border-left: 5px solid transparent; /* Faixa colorida na esquerda */
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    min-width: 0; /* Evita quebra de flexbox */
+}
+
+.kpi-box:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 12px 20px rgba(0,0,0,0.06);
+}
+
+/* Tipografia dos Cards */
+.kpi-box h3 { 
+    margin: 0 0 5px 0; 
+    font-size: 2.5rem; 
+    font-weight: 800; 
+    color: #2d3748; 
+    line-height: 1;
+}
+
+.kpi-box p { 
+    margin: 0; 
+    font-size: 1rem; 
+    font-weight: 700; 
+    color: #4a5568; 
+}
+
+.kpi-box small { 
+    font-size: 0.85rem; 
+    color: #a0aec0; 
+    margin-top: 8px;
+    font-weight: 500;
+}
+
+/* Cores das Bordas (Identidade Visual) */
+.kpi-box.purple { border-left-color: #6C63FF; } /* Roxo Principal */
+.kpi-box.pink   { border-left-color: #FF6584; } /* Rosa Secundário */
+.kpi-box.green  { border-left-color: #33D69F; } /* Verde Sucesso */
+.kpi-box.dark   { border-left-color: #475569; } /* Cinza Escuro */
+
+/* --- 2. SEÇÃO DE GRÁFICOS (SINGLE CHART) --- */
+.charts-section-single {
+    width: 100%;
+    margin-bottom: 30px;
+}
+
+.chart-card.full-width {
+    background: white;
+    border-radius: 16px;
+    padding: 30px;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.02);
+    width: 100%;
+}
+
+.chart-header { 
+    margin-bottom: 30px; 
+}
+
+.chart-header h4 { 
+    margin: 0; 
+    font-size: 1.25rem; 
+    color: #2d3748; 
+    font-weight: 700; 
+}
+
+.chart-header p { 
+    margin: 5px 0 0 0; 
+    font-size: 0.95rem; 
+    color: #718096; 
+}
+
+/* Estilo para quando não há dados */
+.no-data-chart {
+    height: 300px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #cbd5e1;
+    font-weight: 500;
+    font-size: 1.1rem;
+    border: 2px dashed #f1f5f9;
+    border-radius: 10px;
+    background-color: #fcfcfc;
+}
+
+/* --- ESTADO DE CARREGAMENTO (LOADING) --- */
+.loading-state {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 60vh;
+    color: #718096;
+}
+
+.spinner-dash {
+    width: 50px; 
+    height: 50px;
+    border: 4px solid #e2e8f0;
+    border-top-color: #6C63FF;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    margin-bottom: 20px;
+}
+
+@keyframes spin { 
+    to { transform: rotate(360deg); } 
+}
+
+/* --- RESPONSIVIDADE --- */
+
+/* Tablets Grandes (até 1200px) */
+@media (max-width: 1200px) {
+    .kpi-section {
+        gap: 15px; /* Menos espaço entre cards */
+    }
+    .kpi-box h3 {
+        font-size: 2rem; /* Fonte um pouco menor */
+    }
+}
+
+/* Tablets (até 900px) */
+@media (max-width: 900px) {
+    .dashboard-content-page {
+        padding: 20px;
+    }
+    
+    .kpi-section {
+        grid-template-columns: repeat(2, 1fr); /* 2 colunas */
+    }
+}
+
+/* Mobile (até 600px) */
+@media (max-width: 600px) {
+    .dashboard-header-page {
+        padding: 15px 20px;
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 15px;
+    }
+
+    .kpi-section {
+        grid-template-columns: 1fr; /* 1 coluna (pilha) */
+    }
+
+    .kpi-box {
+        padding: 20px;
+    }
+    
+    .chart-card.full-width {
+        padding: 15px;
+    }
+    
+    .chart-header h4 {
+        font-size: 1.1rem;
+    }
+}

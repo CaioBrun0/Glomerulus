@@ -79,25 +79,51 @@ function ModalDetalhesAmbiente({ ambienteId, statusInicial, onClose, onRefresh }
   const toggleUsuario = async (especialista, jaAssociado) => {
     try {
       if (jaAssociado) {
-        // Desassociar: Usa o ID de usuário convencional (id_con) retornado pela rota de associados
+        // --- DESASSOCIAR ---
+        // O backend espera o id_con na URL para deletar
         const idParaRemover = especialista.id_con; 
-        await fetch(`${API_BASE}/usuarios-ambientes/${ambienteId}/usuario/${idParaRemover}`, {
+        
+        const res = await fetch(`${API_BASE}/usuarios-ambientes/${ambienteId}/usuario/${idParaRemover}`, {
           method: "DELETE",
           credentials: "include"
         });
+
+        if (!res.ok) throw new Error("Erro ao remover associação.");
+
       } else {
-        // Associar: O backend espera id_con (ID convencional). 
-        // Note: Se o objeto de 'todos os usuários' não tiver id_con, o backend pode precisar do id_usu
-        await fetch(`${API_BASE}/usuarios-ambientes/${ambienteId}/associar`, {
+        // --- ASSOCIAR ---
+        // A Rota correta CONFIRMADA no backend é: POST /usuarios-ambientes/{id_amb}/associar
+        
+        // PROBLEMA COMUM: O backend espera o ID da tabela 'usuarios_convencionais' (id_con).
+        // Se 'especialista.id_con' for undefined, você está enviando 'id_usu', o que causa o 404 no backend.
+        const idUsuario = especialista.id_con || especialista.id_usu;
+
+        if (!idUsuario) {
+            toast.error("ID do usuário inválido.");
+            return;
+        }
+
+        const res = await fetch(`${API_BASE}/usuarios-ambientes/${ambienteId}/associar`, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ ids_usuarios: [especialista.id_con || especialista.id_usu] }),
+          body: JSON.stringify({ ids_usuarios: [idUsuario] }), // Envia array de IDs
           credentials: "include"
         });
+
+        if (!res.ok) {
+            // Se der 404 ou 400, pegamos a mensagem detalhada do backend
+            const errorData = await res.json().catch(() => ({}));
+            throw new Error(errorData.detail || "Falha ao associar usuário (Verifique se é um Especialista válido).");
+        }
       }
-      fetchDadosIniciais();
+      
+      toast.success(jaAssociado ? "Acesso removido!" : "Acesso permitido!");
+      fetchDadosIniciais(); // Recarrega a lista
+      
     } catch (err) {
-      toast.error("Erro ao modificar acesso.");
+      console.error(err);
+      // Agora o toast vai te dizer exatamente o que o backend reclamou (ex: "IDs de usuários inválidos")
+      toast.error(err.message);
     }
   };
 

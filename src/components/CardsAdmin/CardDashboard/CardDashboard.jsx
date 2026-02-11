@@ -1,17 +1,18 @@
 import "./CardDashboard.css";
 import ImgDashboard from "../../../assets/dashboard.png";
 import ImgDashboardHover from "../../../assets/dashboardHover.png";
-import { toast } from 'react-toastify';
+// import { toast } from 'react-toastify'; // Pode remover se não for usar mais aqui
 
-function CardDashboard({onOpen}) {
+function CardDashboard({ onOpen }) {
     return (
-        <div className="dashboardContainer" onClick={() => toast.info("Em desenvolvimento")}>
+        // AQUI ESTÁ A MUDANÇA: Usamos a função onOpen recebida do pai
+        <div className="dashboardContainer" onClick={onOpen}>
             <div className="imageWrapper-dash">
-                <img src={ImgDashboard} alt="" className="img-default-dash" />
-                <img src={ImgDashboardHover} alt="" className="img-hover-dash" />
+                <img src={ImgDashboard} alt="Dashboard Default" className="img-default-dash" />
+                <img src={ImgDashboardHover} alt="Dashboard Hover" className="img-hover-dash" />
             </div>
             <h2>Dashboard</h2>
-            <p>Aqui vai observar de forma gráfica os dados dos sistemas</p>
+            <p>Visualize métricas e gráficos do sistema.</p>
         </div>
     );
 }
