@@ -3,7 +3,7 @@ import "./InfoBoxEspecialista.css";
 import iconEspecialista from "../../assets/iconEspecialista.png";
 import iconEspecialistaHover from "../../assets/iconEspecialistaHover.png";
 
-function InfoBoxEspecialista({ name, email }) {
+function InfoBoxEspecialista({ name, email, telefone }) {
   const [hovered, setHovered] = useState(false);
 
   return (
@@ -22,6 +22,7 @@ function InfoBoxEspecialista({ name, email }) {
       <div className="card-info">
         <span className="user-name">{name}</span>
         <span className="user-email">{email}</span>
+        <span className="user-telefone">{telefone}</span>
         <span className="user-role">Especialista</span>
       </div>
     </div>

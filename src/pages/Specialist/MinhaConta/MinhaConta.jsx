@@ -3,6 +3,8 @@ import "./MinhaConta.css";
 import { toast } from 'react-toastify';
 import { useAuth } from "../../../routes/context/AuthContext.jsx"; 
 
+const API_BASE = import.meta.env.VITE_API_BASE || "http://localhost:8000";
+
 function MinhaConta({ isOpen, onClose }) {
   const { user } = useAuth();
   const [activeTab, setActiveTab] = useState("perfil");
@@ -18,17 +20,47 @@ function MinhaConta({ isOpen, onClose }) {
     confirmarSenha: ""
   });
 
+  const [originalData, setOriginalData] = useState({
+    nome: "",
+    email: "",
+    telefone: ""
+  });
+
+  // 1. CARREGAR DADOS
   useEffect(() => {
     if (isOpen) {
-      setFormData(prev => ({
-        ...prev,
-        nome: user?.nome_completo || "",
-        email: user?.email || "",
-        telefone: user?.telefone || "",
-        cpf: user?.cpf || ""
-      }));
+      const fetchDadosUsuario = async () => {
+        try {
+          const response = await fetch(`${API_BASE}/usuarios/me`, {
+            method: "GET",
+            credentials: "include",
+            headers: { "Content-Type": "application/json" }
+          });
+
+          if (response.ok) {
+            const data = await response.json();
+            
+            const dadosCarregados = {
+              nome: data.nome_completo || "",
+              email: data.email || "",
+              telefone: data.telefone || "",
+              cpf: data.cpf || ""
+            };
+
+            setFormData(prev => ({ ...prev, ...dadosCarregados }));
+            setOriginalData({
+                nome: dadosCarregados.nome,
+                email: dadosCarregados.email,
+                telefone: dadosCarregados.telefone
+            });
+          }
+        } catch (error) {
+          console.error("Erro de conexão:", error);
+        }
+      };
+      fetchDadosUsuario();
     }
-  }, [isOpen, user]);
+  }, [isOpen]);
 
   if (!isOpen) return null;
 
@@ -36,42 +68,161 @@ function MinhaConta({ isOpen, onClose }) {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
+  const getSidebarName = () => {
+    const fullName = formData.nome || originalData.nome || (user && user.nome_completo) || "Usuário";
+    return fullName.split(" ")[0];
+  };
+
+  // 2. SALVAR PERFIL (Correção: Apenas o que mudou, sem bloquear o resto)
+  // 2. SALVAR PERFIL (Com Feedback Completo)
   const handleSavePerfil = async (e) => {
     e.preventDefault();
     setLoading(true);
+    
+    const payload = {};
+    const alteracoes = [];
+
+    // --- VALIDAÇÕES LOCAIS (Feedback Imediato) ---
+    
+    // Validação de Nome
+    if (formData.nome !== originalData.nome) {
+        if (!formData.nome || formData.nome.trim().length < 5) {
+            toast.warning("O nome deve ter pelo menos 5 caracteres.");
+            setLoading(false); 
+            return;
+        }
+        payload.nome_completo = formData.nome;
+        alteracoes.push("Nome");
+    }
+
+    // Validação de Email
+    if (formData.email !== originalData.email) {
+        if (!formData.email || !formData.email.includes('@')) {
+            toast.warning("Por favor, insira um e-mail válido.");
+            setLoading(false); 
+            return;
+        }
+        payload.email = formData.email;
+        alteracoes.push("E-mail");
+    }
+
+    // Validação de Telefone
+    if (formData.telefone !== originalData.telefone) {
+        // Impede apagar o telefone
+        if (!formData.telefone || formData.telefone.trim() === "") {
+            toast.error("O telefone é obrigatório e não pode ser removido.");
+            setLoading(false); 
+            return;
+        }
+        payload.telefone = formData.telefone;
+        alteracoes.push("Telefone");
+    }
+
+    // Se nada mudou
+    if (Object.keys(payload).length === 0) {
+        toast.info("Você não alterou nenhuma informação.");
+        setLoading(false);
+        return;
+    }
+
     try {
-      await new Promise(r => setTimeout(r, 1000)); // Simulação fetch
-      toast.success("Dados atualizados com sucesso!");
+      const response = await fetch(`${API_BASE}/usuarios/me`, {
+        method: "PATCH",
+        credentials: "include", 
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload)
+      });
+
+      const data = await response.json();
+
+      if (response.ok) {
+        // SUCESSO
+        const msg = alteracoes.join(", ") + (alteracoes.length > 1 ? " foram atualizados!" : " foi atualizado!");
+        toast.success(msg);
+        
+        // Atualiza o estado original para refletir a mudança
+        setOriginalData(prev => ({ ...prev, ...formData }));
+      } else {
+        // ERRO DO BACKEND (Ex: Email já existe)
+        // O backend retorna { detail: "Mensagem de erro" }
+        toast.error(data.detail || "Erro ao atualizar perfil. Tente novamente.");
+      }
     } catch (error) {
-      toast.error("Erro ao atualizar.");
+      // ERRO DE REDE/CONEXÃO
+      console.error(error);
+      toast.error("Erro de conexão com o servidor. Verifique sua internet.");
     } finally {
       setLoading(false);
     }
   };
 
+  // 3. SALVAR SENHA (Com Feedback Completo)
   const handleSaveSenha = async (e) => {
     e.preventDefault();
+
+    // Validação: Senhas iguais
     if (formData.novaSenha !== formData.confirmarSenha) {
-        toast.warning("As novas senhas não coincidem.");
+        toast.warning("A confirmação da senha não confere.");
         return;
     }
+
+    // Validação: Senha vazia
+    if (!formData.senhaAtual || !formData.novaSenha) {
+        toast.warning("Preencha todos os campos de senha.");
+        return;
+    }
+
+    // Validação: Força da senha (Regex)
+    const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{8,}$/;
+    if (!passwordRegex.test(formData.novaSenha)) {
+        toast.error(
+            <div>
+                <strong>Senha muito fraca!</strong><br/>
+                Use no mínimo 8 caracteres, com letras maiúsculas, minúsculas e números.
+            </div>
+        );
+        return;
+    }
+
     setLoading(true);
     try {
-        await new Promise(r => setTimeout(r, 1000));
-        toast.success("Senha alterada com sucesso!");
-        setFormData(prev => ({ ...prev, senhaAtual: "", novaSenha: "", confirmarSenha: "" }));
+        const response = await fetch(`${API_BASE}/usuarios/me/senha`, {
+            method: "PATCH",
+            credentials: "include",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+                senha_atual: formData.senhaAtual,
+                nova_senha: formData.novaSenha
+            })
+        });
+
+        const data = await response.json(); // Tenta ler o JSON de resposta
+
+        if (response.ok) {
+            toast.success("Sua senha foi alterada com sucesso!");
+            // Limpa os campos para evitar confusão
+            setFormData(prev => ({ 
+                ...prev, 
+                senhaAtual: "", 
+                novaSenha: "", 
+                confirmarSenha: "" 
+            }));
+        } else {
+            // ERRO DO BACKEND (Ex: Senha atual errada)
+            toast.error(data.detail || "Não foi possível alterar a senha.");
+        }
     } catch (error) {
-        toast.error("Erro ao alterar senha.");
+        console.error(error);
+        toast.error("Erro ao conectar com o servidor.");
     } finally {
         setLoading(false);
     }
   };
-
+  
   return (
     <div className="modal-overlay-conta" onClick={onClose}>
       <div className="modal-content-conta" onClick={e => e.stopPropagation()}>
         
-        {/* Header com Título de AÇÃO */}
         <div className="conta-header">
             <div className="header-texts">
                 <h2>Editar Perfil</h2>
@@ -81,11 +232,10 @@ function MinhaConta({ isOpen, onClose }) {
         </div>
 
         <div className="conta-body">
-            
             <aside className="conta-sidebar">
                 <div className="sidebar-info">
                     <p className="sidebar-welcome">Olá,</p>
-                    <p className="sidebar-name">{formData.nome.split(" ")[0]}</p>
+                    <p className="sidebar-name">{getSidebarName()}</p>
                     <p className="sidebar-role">Especialista</p>
                 </div>
 
@@ -94,13 +244,13 @@ function MinhaConta({ isOpen, onClose }) {
                         className={`nav-item ${activeTab === 'perfil' ? 'active' : ''}`}
                         onClick={() => setActiveTab('perfil')}
                     >
-                        <span className="icon-edit">✎</span> Dados Pessoais
+                        <span>✎</span> Dados Pessoais
                     </button>
                     <button 
                         className={`nav-item ${activeTab === 'seguranca' ? 'active' : ''}`}
                         onClick={() => setActiveTab('seguranca')}
                     >
-                        <span className="icon-edit">🔒</span> Senha e Segurança
+                        <span>🔒</span> Senha e Segurança
                     </button>
                 </nav>
             </aside>
@@ -108,12 +258,12 @@ function MinhaConta({ isOpen, onClose }) {
             <main className="conta-main">
                 {activeTab === 'perfil' ? (
                     <form onSubmit={handleSavePerfil} className="form-conta">
-                        
                         <div className="form-instruction">
                             <strong>Dados Editáveis</strong>
                             <p>Clique nos campos abaixo para alterar suas informações.</p>
                         </div>
 
+                        {/* REMOVIDO 'required' de todos os inputs abaixo */}
                         <div className="input-group">
                             <label>Nome Completo</label>
                             <input 
@@ -122,7 +272,7 @@ function MinhaConta({ isOpen, onClose }) {
                                 className="input-modern editable" 
                                 value={formData.nome} 
                                 onChange={handleChange}
-                                placeholder="Digite seu nome"
+                                placeholder="Carregando..."
                             />
                         </div>
                         <div className="input-group">
@@ -137,23 +287,23 @@ function MinhaConta({ isOpen, onClose }) {
                         </div>
                         <div className="row-inputs">
                             <div className="input-group">
-                                <label>Telefone / Celular</label>
+                                <label>Telefone</label>
                                 <input 
                                     type="tel" 
                                     name="telefone"
                                     className="input-modern editable" 
                                     value={formData.telefone} 
                                     onChange={handleChange}
+                                    placeholder="(XX) XXXXX-XXXX"
                                 />
                             </div>
                             <div className="input-group disabled">
-                                <label>CPF (Fixo)</label>
+                                <label>CPF</label>
                                 <input 
                                     type="text" 
                                     value={formData.cpf} 
                                     className="input-modern" 
                                     disabled 
-                                    title="Entre em contato com o suporte para alterar o CPF"
                                 />
                             </div>
                         </div>
@@ -168,18 +318,19 @@ function MinhaConta({ isOpen, onClose }) {
                     <form onSubmit={handleSaveSenha} className="form-conta">
                         <div className="form-instruction">
                             <strong>Troca de Senha</strong>
-                            <p>Preencha os campos abaixo para definir uma nova senha.</p>
+                            <p>Requisitos: 8 caracteres, 1 maiúscula, 1 número.</p>
                         </div>
 
+                        {/* Senhas continuam required pois é um formulário separado e específico */}
                         <div className="input-group">
                             <label>Senha Atual</label>
                             <input 
                                 type="password" 
                                 name="senhaAtual"
                                 className="input-modern editable" 
-                                placeholder="Digite sua senha atual"
                                 value={formData.senhaAtual}
                                 onChange={handleChange}
+                                required
                             />
                         </div>
                         <hr className="divider-soft" />
@@ -189,9 +340,10 @@ function MinhaConta({ isOpen, onClose }) {
                                 type="password" 
                                 name="novaSenha"
                                 className="input-modern editable" 
-                                placeholder="Mínimo 6 caracteres"
+                                placeholder="Ex: SenhaForte123"
                                 value={formData.novaSenha}
                                 onChange={handleChange}
+                                required
                             />
                         </div>
                         <div className="input-group">
@@ -203,6 +355,7 @@ function MinhaConta({ isOpen, onClose }) {
                                 placeholder="Repita a nova senha"
                                 value={formData.confirmarSenha}
                                 onChange={handleChange}
+                                required
                             />
                         </div>
 
@@ -215,7 +368,6 @@ function MinhaConta({ isOpen, onClose }) {
                 )}
             </main>
         </div>
-
       </div>
     </div>
   );

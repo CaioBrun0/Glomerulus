@@ -74,6 +74,7 @@ function ModalUsuarios({ onClose }) {
                                 key={usuario.id_usu}
                                 name={usuario.nome_completo}
                                 email={usuario.email}
+                                telefone={usuario.telefone}
                             />
                         );
                     })}

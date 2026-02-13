@@ -67,6 +67,15 @@
     text-overflow: ellipsis;
 }
 
+.user-telefone {
+    font-size: 0.85rem;
+    color: #718096;
+    margin-top: 4px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
 .user-role {
     font-size: 0.7rem;
     color: #6C63FF;

@@ -41,7 +41,7 @@ function Register({ isOpen, onClose, onOpenLogin }) {
     if (!senhaRegex.test(senha)) return "A senha precisa ter letra maiúscula, minúscula e número.";
     if (senha !== repeteSenha) return "As senhas não coincidem.";
     if (!cpfRegex.test(cpf)) return "CPF deve conter 11 dígitos numéricos.";
-    if (!telRegex.test(telefone)) return "Telefone inválido.";
+    if (!telRegex.test(telefone)) return "Telefone inválido (digite apenas números com DDD).";
     return null;
   };
 
@@ -59,7 +59,7 @@ function Register({ isOpen, onClose, onOpenLogin }) {
       email: formData.email,
       senha: formData.senha,
       cpf: formData.cpf,
-      // telefone: formData.telefone, 
+      telefone: formData.telefone, 
     };
 
     try {

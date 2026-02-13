@@ -12,7 +12,7 @@ function Home() {
     const [ambientes, setAmbientes] = useState([]);
     const [loading, setLoading] = useState(true);
     const [totalAvaliadas, setTotalAvaliadas] = useState(0);
-    const [userName, setUserName] = useState("Especialista"); 
+    const [userName, setUserName] = useState("Especialista");
 
     const navigate = useNavigate();
     const API_BASE = import.meta.env.VITE_API_BASE ?? "http://localhost:8000";
@@ -47,11 +47,11 @@ function Home() {
     return (
         <div className="dashboard-container">
             <Menu />
-            
+
             <div className="main-content">
                 {/* --- TOPO --- */}
                 <header className="dashboard-header">
-                    
+
                     {/* Banner de Boas Vindas */}
                     <div className="welcome-banner">
                         <div className="welcome-text">
@@ -64,7 +64,7 @@ function Home() {
 
                     {/* Cards de Estatísticas */}
                     <div className="stats-grid">
-                        
+
                         {/* CARD 1: Imagens Avaliadas (Ícone SVG Check Roxo) */}
                         <div className="stat-card purple">
                             <div className="stat-info">
@@ -86,7 +86,7 @@ function Home() {
                             </div>
                             <div className="stat-icon">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                                    <path d="M3 3h7v7H3z"/><path d="M14 3h7v7h-7z"/><path d="M14 14h7v7h-7z"/><path d="M3 14h7v7H3z"/>
+                                    <path d="M3 3h7v7H3z" /><path d="M14 3h7v7h-7z" /><path d="M14 14h7v7h-7z" /><path d="M3 14h7v7H3z" />
                                 </svg>
                             </div>
                         </div>
@@ -113,7 +113,11 @@ function Home() {
                                 <div key={item.id_amb} className="ambiente-wrapper">
                                     <CardAmbiente
                                         type={item.titulo_amb}
-                                        amount={0} 
+                                        // Alteração aqui: Use as propriedades que vêm do backend
+                                        total={item.total_imagens}
+                                        concluidas={item.imagens_classificadas}
+
+                                        isAdmin={false} // Garante a exibição da barra
                                         onClick={() => navigate(`/FormsPage/${item.id_amb}`)}
                                     />
                                 </div>
