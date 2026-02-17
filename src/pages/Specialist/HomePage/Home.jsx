@@ -111,13 +111,24 @@ function Home() {
                         ) : (
                             ambientes.map((item) => (
                                 <div key={item.id_amb} className="ambiente-wrapper">
-                                    <CardAmbiente
+                                    
+                                    {/* <CardAmbiente
                                         type={item.titulo_amb}
                                         // Alteração aqui: Use as propriedades que vêm do backend
                                         total={item.total_imagens}
                                         concluidas={item.imagens_classificadas}
 
                                         isAdmin={false} // Garante a exibição da barra
+                                        onClick={() => navigate(`/FormsPage/${item.id_amb}`)}
+                                    /> */}
+                                    
+                                    <CardAmbiente
+                                        type={item.titulo_amb} // Verifique qual nome o backend manda
+
+                                        // AQUI ESTÁ A MUDANÇA: Passando os totais para a barra
+                                        total={item.qtd_imagens || item.total_imagens || 0}
+                                        realizadas={item.qtd_classificadas || item.total_classificadas || 0}
+
                                         onClick={() => navigate(`/FormsPage/${item.id_amb}`)}
                                     />
                                 </div>

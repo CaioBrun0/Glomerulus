@@ -35,22 +35,58 @@ function FormsAmbiente({ ambienteId, imagemId, onSucesso }) {
 
     const handleConfirmar = async (e) => {
         e.preventDefault();
-        if (!imagemId) return;
+        
+        // 1. Validação Visual: Mostra no console o que vai ser enviado
+        console.log("=== TENTANDO CLASSIFICAR ===");
+        console.log("Ambiente ID:", ambienteId);
+        console.log("Imagem Hash:", imagemId);
+        console.log("Opções Selecionadas:", selecao);
+
+        // 2. Bloqueios de segurança
+        if (!imagemId) {
+            alert("ERRO: O ID da imagem está vazio ou indefinido.");
+            return;
+        }
+        if (selecao.length === 0) {
+            alert("Selecione pelo menos uma opção!");
+            return;
+        }
+
         setEnviando(true);
         try {
-            const promessas = selecao.map(id_opc => 
-                fetch(`${API_BASE}/classificacoes/ambiente/${ambienteId}/classificar`, {
-                    method: "POST",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({ content_hash: imagemId, id_opc: id_opc }),
-                    credentials: "include"
-                })
-            );
-            await Promise.all(promessas);
-            setSelecao([]); 
-            onSucesso();
-        } catch (err) { alert("Erro ao salvar."); } 
-        finally { setEnviando(false); }
+            const payload = { 
+                content_hash: imagemId, 
+                id_opc: selecao 
+            };
+            
+            console.log("Payload JSON:", JSON.stringify(payload)); // Veja se isso parece certo no console
+
+            const response = await fetch(`${API_BASE}/classificacoes/ambiente/${ambienteId}/classificar`, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(payload),
+                credentials: "include"
+            });
+
+            if (response.ok) {
+                console.log("Sucesso!");
+                setSelecao([]); 
+                onSucesso();
+            } else {
+                // Captura o erro detalhado vindo do Python
+                const errorData = await response.json().catch(() => ({}));
+                console.error("Erro retornado pela API:", errorData);
+                
+                // Mensagem amigável baseada no erro
+                alert(`Erro ao salvar: ${errorData.detail || "Verifique o console para detalhes."}`);
+            }
+
+        } catch (err) { 
+            console.error("Erro de Rede/Código:", err);
+            alert("Erro de conexão ao salvar."); 
+        } finally { 
+            setEnviando(false); 
+        }
     };
 
     return (
