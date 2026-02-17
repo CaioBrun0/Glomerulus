@@ -1,5 +1,5 @@
 import React from 'react';
-import './CardAmbiente.css';
+import './cardAmbiente.css';
 import cardBody from '../../assets/card-body.png';
 import cardBodyHover from '../../assets/card-body-hover.png';
 
