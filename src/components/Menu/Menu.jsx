@@ -16,11 +16,13 @@ function Menu() {
   const location = useLocation();
   const auth = useAuth();
 
+  const API_BASE = import.meta.env.VITE_API_BASE ?? "http://localhost:8000";
+
   const isActive = (path) => location.pathname === path ? 'active' : '';
 
   async function handleLogout() {
     try {
-      await fetch("http://localhost:8000/auth/logout", {
+      await fetch(`${API_BASE}/auth/logout`, {
         method: "POST",
         credentials: "include"
       });

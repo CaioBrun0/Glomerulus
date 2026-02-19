@@ -20,6 +20,8 @@ function Register({ isOpen, onClose, onOpenLogin }) {
   });
   const [error, setError] = useState('');
 
+  const API_BASE = import.meta.env.VITE_API_BASE ?? "http://localhost:8000";
+
   if (!isOpen) return null;
 
   const handleChange = (e) => {
@@ -63,7 +65,7 @@ function Register({ isOpen, onClose, onOpenLogin }) {
     };
 
     try {
-      const response = await fetch("http://localhost:8000/auth/cadastro", {
+      const response = await fetch(`${API_BASE}/auth/cadastro`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         credentials: "include",

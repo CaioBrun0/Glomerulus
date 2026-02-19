@@ -8,10 +8,12 @@ function ModalUsuarios({ onClose }) {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
+  const API_BASE = import.meta.env.VITE_API_BASE ?? "http://localhost:8000";
+
   useEffect(() => {
     const fetchUsuarios = async () => {
       try {
-        const response = await fetch("http://localhost:8000/usuarios/", {
+        const response = await fetch(`${API_BASE}/usuarios/`, {
           method: "GET",
           credentials: "include", 
         });

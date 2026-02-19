@@ -26,11 +26,13 @@ function HomePageAdmin() {
     const [loadingAmbientes, setLoadingAmbientes] = useState(true);
     const [errorAmbientes, setErrorAmbientes] = useState(null);
 
+    const API_BASE = import.meta.env.VITE_API_BASE ?? "http://localhost:8000";
+
     const fetchAmbientes = async () => {
         setLoadingAmbientes(true);
         setErrorAmbientes(null);
         try {
-            const response = await fetch("http://localhost:8000/ambientes/", {
+            const response = await fetch(`${API_BASE}/ambientes/`, {
                 method: "GET",
                 credentials: "include"
             });
@@ -74,7 +76,7 @@ function HomePageAdmin() {
 
     async function handleLogout() {
       try {
-        await fetch("http://localhost:8000/auth/logout", { method: "POST", credentials: "include" });
+        await fetch(`${API_BASE}/auth/logout`, { method: "POST", credentials: "include" });
       } catch (err) { console.warn(err); }
       auth.logout(); 
       navigate("/");

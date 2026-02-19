@@ -7,6 +7,8 @@ function Login({ isOpen, onClose, onOpenRegister }) {
   const navigate = useNavigate();
   const auth = useAuth();
 
+  const API_BASE = import.meta.env.VITE_API_BASE ?? "http://localhost:8000";
+
   if (!isOpen) return null;
 
   const handleSubmit = async (e) => {
@@ -19,7 +21,8 @@ function Login({ isOpen, onClose, onOpenRegister }) {
     formData.append("password", senha);
 
     try {
-      const response = await fetch("http://localhost:8000/auth/login", {
+     // 2. AQUI APLICAMOS A VARIÁVEL NA URL
+      const response = await fetch(`${API_BASE}/auth/login`, {
         method: "POST",
         headers: { "Content-Type": "application/x-www-form-urlencoded" },
         body: formData.toString(),

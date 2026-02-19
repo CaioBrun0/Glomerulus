@@ -11,6 +11,8 @@ function ModalGreenList({ onClose }) {
   const [email, setEmail] = useState("");
   const [loading, setLoading] = useState(false);
 
+  const API_BASE = import.meta.env.VITE_API_BASE ?? "http://localhost:8000";
+
   // Função genérica para chamar a API
   const handleAction = async (actionType) => {
     if (!email) {
@@ -28,7 +30,7 @@ function ModalGreenList({ onClose }) {
     setLoading(true);
 
     try {
-      const endpoint = "http://localhost:8000/whitelist/";
+      const endpoint = `${API_BASE}/whitelist/`;
       const method = actionType === "add" ? "POST" : "DELETE";
       
       const payload = { 
