@@ -26,7 +26,7 @@ function Login({ isOpen, onClose, onOpenRegister }) {
         method: "POST",
         headers: { "Content-Type": "application/x-www-form-urlencoded" },
         body: formData.toString(),
-        credentials: "include"
+        //credentials: "include"
       });
 
       if (!response.ok) {
