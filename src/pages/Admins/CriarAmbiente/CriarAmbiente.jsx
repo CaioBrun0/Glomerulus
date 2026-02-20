@@ -35,7 +35,14 @@ function CriarAmbiente() {
       setLoadingConjuntos(true);
       setErrorConjuntos(null);
       try {
-        const resp = await fetch(CONJUNTOS_ENDPOINT, { method: "GET", credentials: "include" });
+        const token = localStorage.getItem("access_token");
+        
+        const resp = await fetch(CONJUNTOS_ENDPOINT, { 
+            method: "GET", 
+            headers: {
+                "Authorization": `Bearer ${token}`
+            } 
+        });
         if (!mounted) return;
         if (!resp.ok) throw new Error(`Status ${resp.status}`);
         
@@ -49,7 +56,12 @@ function CriarAmbiente() {
         await Promise.all(
           toPreview.map(async (c) => {
             try {
-              const r = await fetch(IMAGENS_ENDPOINT(c.id_cnj), { method: "GET", credentials: "include" });
+              const r = await fetch(IMAGENS_ENDPOINT(c.id_cnj), { 
+                  method: "GET", 
+                  headers: {
+                      "Authorization": `Bearer ${token}`
+                  } 
+              });
               if (!r.ok) return;
               const jm = await r.json();
               const imgs = jm?.imagens ?? [];
@@ -86,6 +98,7 @@ function CriarAmbiente() {
   // --- SUBMIT ---
   async function handleSubmit(e) {
     e.preventDefault();
+    const token = localStorage.getItem("access_token");
 
     // Cenário 1: Importação NextCloud
     if (useNextcloud) {
@@ -103,8 +116,10 @@ function CriarAmbiente() {
         };
         const res = await fetch(IMPORT_FROM_NC, {
           method: "POST",
-          headers: { "Content-Type": "application/json" },
-          credentials: "include",
+          headers: { 
+              "Content-Type": "application/json",
+              "Authorization": `Bearer ${token}`
+          },
           body: JSON.stringify(payload)
         });
         
@@ -130,7 +145,10 @@ function CriarAmbiente() {
 
       const res = await fetch(CREATE_AMBIENTE_ENDPOINT, {
         method: "POST",
-        credentials: "include",
+        headers: {
+            "Authorization": `Bearer ${token}`
+            // Não colocamos Content-Type aqui porque é FormData
+        },
         body: formData
       });
 

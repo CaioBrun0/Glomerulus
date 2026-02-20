@@ -17,15 +17,23 @@ function ModalDetalhesAmbiente({ ambienteId, statusInicial, onClose, onRefresh }
   const fetchDadosIniciais = async () => {
     setLoading(true);
     try {
+      const token = localStorage.getItem("access_token");
+      
       // 1. Busca usuários já associados a este ambiente
       const resAssociados = await fetch(`${API_BASE}/usuarios-ambientes/ambiente/${ambienteId}/usuarios`, {
-        credentials: "include"
+        headers: {
+            "Authorization": `Bearer ${token}`
+        }
       });
       const dataAssociados = await resAssociados.json();
       setUsuariosAssociados(dataAssociados.usuarios || []);
 
       // 2. Busca todos os usuários do sistema
-      const resTodos = await fetch(`${API_BASE}/usuarios/`, { credentials: "include" });
+      const resTodos = await fetch(`${API_BASE}/usuarios/`, { 
+          headers: {
+              "Authorization": `Bearer ${token}`
+          } 
+      });
       const dataTodos = await resTodos.json();
       
       // FILTRO CRÍTICO: Apenas especialistas (tipo 'convencional') e que estejam ativos no sistema
@@ -50,7 +58,13 @@ function ModalDetalhesAmbiente({ ambienteId, statusInicial, onClose, onRefresh }
     const method = estaAtivo ? "DELETE" : "PATCH";
 
     try {
-      const res = await fetch(endpoint, { method, credentials: "include" });
+      const token = localStorage.getItem("access_token");
+      const res = await fetch(endpoint, { 
+          method, 
+          headers: {
+              "Authorization": `Bearer ${token}`
+          } 
+      });
       if (res.ok) {
         toast.warning(estaAtivo ? "Ambiente inativado!" : "Ambiente reativado!");
         onRefresh();
@@ -63,9 +77,12 @@ function ModalDetalhesAmbiente({ ambienteId, statusInicial, onClose, onRefresh }
 
   const associarTodos = async () => {
     try {
+      const token = localStorage.getItem("access_token");
       const res = await fetch(`${API_BASE}/usuarios-ambientes/${ambienteId}/associar-todos`, {
         method: "POST",
-        credentials: "include"
+        headers: {
+            "Authorization": `Bearer ${token}`
+        }
       });
       if (res.ok) {
         toast.success("Todos os especialistas associados!");
@@ -78,6 +95,8 @@ function ModalDetalhesAmbiente({ ambienteId, statusInicial, onClose, onRefresh }
 
   const toggleUsuario = async (especialista, jaAssociado) => {
     try {
+      const token = localStorage.getItem("access_token");
+      
       if (jaAssociado) {
         // --- DESASSOCIAR ---
         // O backend espera o id_con na URL para deletar
@@ -85,7 +104,9 @@ function ModalDetalhesAmbiente({ ambienteId, statusInicial, onClose, onRefresh }
         
         const res = await fetch(`${API_BASE}/usuarios-ambientes/${ambienteId}/usuario/${idParaRemover}`, {
           method: "DELETE",
-          credentials: "include"
+          headers: {
+              "Authorization": `Bearer ${token}`
+          }
         });
 
         if (!res.ok) throw new Error("Erro ao remover associação.");
@@ -105,9 +126,11 @@ function ModalDetalhesAmbiente({ ambienteId, statusInicial, onClose, onRefresh }
 
         const res = await fetch(`${API_BASE}/usuarios-ambientes/${ambienteId}/associar`, {
           method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ ids_usuarios: [idUsuario] }), // Envia array de IDs
-          credentials: "include"
+          headers: { 
+              "Content-Type": "application/json",
+              "Authorization": `Bearer ${token}`
+          },
+          body: JSON.stringify({ ids_usuarios: [idUsuario] }) // Envia array de IDs
         });
 
         if (!res.ok) {

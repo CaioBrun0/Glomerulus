@@ -20,9 +20,14 @@ function Home() {
     useEffect(() => {
         const loadData = async () => {
             try {
+                const token = localStorage.getItem("access_token");
+                const headers = {
+                    "Authorization": `Bearer ${token}`
+                };
+
                 const [resAmbientes, resContagem] = await Promise.all([
-                    fetch(`${API_BASE}/usuarios-ambientes/meus-ambientes`, { credentials: "include" }),
-                    fetch(`${API_BASE}/classificacoes/contagem`, { credentials: "include" })
+                    fetch(`${API_BASE}/usuarios-ambientes/meus-ambientes`, { headers }),
+                    fetch(`${API_BASE}/classificacoes/contagem`, { headers })
                 ]);
 
                 if (resAmbientes.ok) {

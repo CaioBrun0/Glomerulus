@@ -31,10 +31,13 @@ function MinhaConta({ isOpen, onClose }) {
     if (isOpen) {
       const fetchDadosUsuario = async () => {
         try {
+          const token = localStorage.getItem("access_token");
           const response = await fetch(`${API_BASE}/usuarios/me`, {
             method: "GET",
-            credentials: "include",
-            headers: { "Content-Type": "application/json" }
+            headers: { 
+                "Content-Type": "application/json",
+                "Authorization": `Bearer ${token}` 
+            }
           });
 
           if (response.ok) {
@@ -73,7 +76,6 @@ function MinhaConta({ isOpen, onClose }) {
     return fullName.split(" ")[0];
   };
 
-  // 2. SALVAR PERFIL (Correção: Apenas o que mudou, sem bloquear o resto)
   // 2. SALVAR PERFIL (Com Feedback Completo)
   const handleSavePerfil = async (e) => {
     e.preventDefault();
@@ -126,10 +128,13 @@ function MinhaConta({ isOpen, onClose }) {
     }
 
     try {
+      const token = localStorage.getItem("access_token");
       const response = await fetch(`${API_BASE}/usuarios/me`, {
         method: "PATCH",
-        credentials: "include", 
-        headers: { "Content-Type": "application/json" },
+        headers: { 
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${token}` 
+        },
         body: JSON.stringify(payload)
       });
 
@@ -186,10 +191,13 @@ function MinhaConta({ isOpen, onClose }) {
 
     setLoading(true);
     try {
+        const token = localStorage.getItem("access_token");
         const response = await fetch(`${API_BASE}/usuarios/me/senha`, {
             method: "PATCH",
-            credentials: "include",
-            headers: { "Content-Type": "application/json" },
+            headers: { 
+                "Content-Type": "application/json",
+                "Authorization": `Bearer ${token}` 
+            },
             body: JSON.stringify({
                 senha_atual: formData.senhaAtual,
                 nova_senha: formData.novaSenha

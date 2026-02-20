@@ -20,9 +20,14 @@ function HistoricPage() {
         const listaFinal = [];
 
         try {
+            const token = localStorage.getItem("access_token");
+            const headers = {
+                "Authorization": `Bearer ${token}`
+            };
+
             // 1. Busca os ambientes (Eles vêm na ordem de criação/chegada do backend)
             const resAmbientes = await fetch(`${API_BASE}/usuarios-ambientes/meus-ambientes`, { 
-                credentials: "include" 
+                headers 
             });
             
             let listaAmbientes = [];
@@ -40,7 +45,7 @@ function HistoricPage() {
                 try {
                     // Pede 100 itens para ter uma boa massa de dados para pesquisar
                     const resHist = await fetch(`${API_BASE}/classificacoes/historico?id_amb=${idAmb}&page_size=100`, {
-                        credentials: "include"
+                        headers
                     });
 
                     if (resHist.ok) {

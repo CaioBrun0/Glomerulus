@@ -68,7 +68,7 @@ function Register({ isOpen, onClose, onOpenLogin }) {
       const response = await fetch(`${API_BASE}/auth/cadastro`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        credentials: "include",
+        // A linha de credentials foi removida para adequação ao novo padrão
         body: JSON.stringify(payload)
       });
 

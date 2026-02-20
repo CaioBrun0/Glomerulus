@@ -22,9 +22,12 @@ function Menu() {
 
   async function handleLogout() {
     try {
+      const token = localStorage.getItem("access_token");
       await fetch(`${API_BASE}/auth/logout`, {
         method: "POST",
-        credentials: "include"
+        headers: {
+            "Authorization": `Bearer ${token}`
+        }
       });
     } catch (err) {
       console.warn("Falha na requisição de logout (ignorado):", err);

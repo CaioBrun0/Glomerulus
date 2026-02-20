@@ -23,8 +23,11 @@ function FormsPage() {
     const carregarFila = async () => {
         try {
             setLoading(true);
+            const token = localStorage.getItem("access_token");
             const response = await fetch(`${API_BASE}/classificacoes/ambiente/${id}/inicializar`, { 
-                credentials: "include" 
+                headers: {
+                    "Authorization": `Bearer ${token}`
+                }
             });
 
             if (response.ok) {
@@ -53,11 +56,14 @@ function FormsPage() {
 
         setBuscandoAnteriores(true);
         try {
+            const token = localStorage.getItem("access_token");
             const response = await fetch(`${API_BASE}/classificacoes/ambiente/${id}/voltar`, {
                 method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ content_hash: imagemReferencia.content_hash }),
-                credentials: "include"
+                headers: { 
+                    "Content-Type": "application/json",
+                    "Authorization": `Bearer ${token}`
+                },
+                body: JSON.stringify({ content_hash: imagemReferencia.content_hash })
             });
 
             if (response.ok) {

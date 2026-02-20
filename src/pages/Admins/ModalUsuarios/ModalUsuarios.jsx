@@ -13,9 +13,12 @@ function ModalUsuarios({ onClose }) {
   useEffect(() => {
     const fetchUsuarios = async () => {
       try {
+        const token = localStorage.getItem("access_token");
         const response = await fetch(`${API_BASE}/usuarios/`, {
           method: "GET",
-          credentials: "include", 
+          headers: {
+              "Authorization": `Bearer ${token}`
+          } 
         });
 
         if (!response.ok) throw new Error("Falha ao carregar usuários.");
@@ -32,7 +35,7 @@ function ModalUsuarios({ onClose }) {
     };
 
     fetchUsuarios();
-  }, []);
+  }, [API_BASE]); // É boa prática incluir o API_BASE aqui nas dependências do useEffect
 
   return (
     <div className="modal-overlay-users" onClick={onClose}>

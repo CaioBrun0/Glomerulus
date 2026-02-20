@@ -32,9 +32,12 @@ function HomePageAdmin() {
         setLoadingAmbientes(true);
         setErrorAmbientes(null);
         try {
+            const token = localStorage.getItem("access_token");
             const response = await fetch(`${API_BASE}/ambientes/`, {
                 method: "GET",
-                credentials: "include"
+                headers: {
+                    "Authorization": `Bearer ${token}`
+                }
             });
 
             if (!response.ok) {
@@ -76,7 +79,13 @@ function HomePageAdmin() {
 
     async function handleLogout() {
       try {
-        await fetch(`${API_BASE}/auth/logout`, { method: "POST", credentials: "include" });
+        const token = localStorage.getItem("access_token");
+        await fetch(`${API_BASE}/auth/logout`, { 
+            method: "POST", 
+            headers: {
+                "Authorization": `Bearer ${token}`
+            } 
+        });
       } catch (err) { console.warn(err); }
       auth.logout(); 
       navigate("/");

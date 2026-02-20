@@ -13,12 +13,17 @@ function FormsAmbiente({ ambienteId, imagemId, onSucesso }) {
         if (!ambienteId) return;
         const carregarDados = async () => {
             try {
-                const resOpcoes = await fetch(`${API_BASE}/opcoes/ambiente/${ambienteId}`, { credentials: "include" });
+                const token = localStorage.getItem("access_token");
+                const headers = {
+                    "Authorization": `Bearer ${token}`
+                };
+
+                const resOpcoes = await fetch(`${API_BASE}/opcoes/ambiente/${ambienteId}`, { headers });
                 if (resOpcoes.ok) {
                     const data = await resOpcoes.json();
                     setOpcoes(Array.isArray(data.opcoes) ? data.opcoes : []);
                 }
-                const resAmbientes = await fetch(`${API_BASE}/usuarios-ambientes/meus-ambientes`, { credentials: "include" });
+                const resAmbientes = await fetch(`${API_BASE}/usuarios-ambientes/meus-ambientes`, { headers });
                 if (resAmbientes.ok) {
                     const data = await resAmbientes.json();
                     const ambienteAtual = data.ambientes.find(a => a.id_amb === ambienteId);
@@ -61,11 +66,14 @@ function FormsAmbiente({ ambienteId, imagemId, onSucesso }) {
             
             console.log("Payload JSON:", JSON.stringify(payload)); // Veja se isso parece certo no console
 
+            const token = localStorage.getItem("access_token");
             const response = await fetch(`${API_BASE}/classificacoes/ambiente/${ambienteId}/classificar`, {
                 method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify(payload),
-                credentials: "include"
+                headers: { 
+                    "Content-Type": "application/json",
+                    "Authorization": `Bearer ${token}`
+                },
+                body: JSON.stringify(payload)
             });
 
             if (response.ok) {

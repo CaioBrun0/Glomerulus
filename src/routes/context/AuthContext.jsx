@@ -81,6 +81,7 @@ export function AuthProvider({ children }) {
     const decoded = decodeJwt(token); // Aqui a variável se chama 'decoded'
     if (decoded) {
       localStorage.setItem("user_payload", JSON.stringify(decoded));
+      localStorage.setItem("access_token", token); 
       setAuthStatus({
         isLoading: false,
         isAuthenticated: true,
@@ -94,6 +95,7 @@ export function AuthProvider({ children }) {
   // 6. Função para o Logout
   const logout = () => {
     localStorage.removeItem("user_payload"); 
+    localStorage.removeItem("access_token");
     setAuthStatus({
       isLoading: false,
       isAuthenticated: false,

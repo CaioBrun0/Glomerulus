@@ -21,12 +21,10 @@ function Login({ isOpen, onClose, onOpenRegister }) {
     formData.append("password", senha);
 
     try {
-     // 2. AQUI APLICAMOS A VARIÁVEL NA URL
       const response = await fetch(`${API_BASE}/auth/login`, {
         method: "POST",
         headers: { "Content-Type": "application/x-www-form-urlencoded" },
-        body: formData.toString(),
-        //credentials: "include"
+        body: formData.toString()
       });
 
       if (!response.ok) {

@@ -38,10 +38,14 @@ function ModalGreenList({ onClose }) {
           id_tipo: Number(selected) 
       };
 
+      const token = localStorage.getItem("access_token");
+
       const res = await fetch(endpoint, {
         method: method,
-        headers: { "Content-Type": "application/json" },
-        credentials: "include",
+        headers: { 
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${token}`
+        },
         body: JSON.stringify(payload)
       });
 

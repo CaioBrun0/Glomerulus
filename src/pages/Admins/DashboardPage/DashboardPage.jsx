@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { 
-  BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Cell
+    BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Cell
 } from 'recharts';
 import { toast } from 'react-toastify';
 import './DashboardPage.css';
@@ -17,12 +17,13 @@ function DashboardPage() {
     const fetchDashboardData = async () => {
       setLoading(true);
       try {
+        const token = localStorage.getItem("access_token");
         const response = await fetch(`${API_BASE}/admins/dashboard-stats`, {
             method: "GET",
             headers: {
                 "Content-Type": "application/json",
-            },
-            credentials: "include"
+                "Authorization": `Bearer ${token}`
+            }
         });
 
         if (response.ok) {
