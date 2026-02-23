@@ -88,7 +88,6 @@
 .card:hover .normal { opacity: 0; }
 .card:hover .hover { opacity: 1; }
 
-
 /* --- RODAPÉ --- */
 .card-footer {
   display: flex;
@@ -100,7 +99,6 @@
 }
 
 /* Info Especialista (Progresso) */
-/* Adicione/Garanta apenas estes estilos para a barra */
 .progress-info {
   flex: 1;
   display: flex;
@@ -139,20 +137,25 @@
   margin: 0;
 }
 
-.meta-text {
-  font-size: 0.7rem;
-  color: #8898aa;
-  margin: 0;
-}
-
-/* Info Admin (Texto Simples) */
+/* Info Admin (Texto Simples Ajustado) */
 .admin-info-block {
   display: flex;
   flex-direction: column;
+  gap: 2px;
 }
-.admin-info-block .value { font-size: 1.2rem; font-weight: 800; color: #333; }
-.admin-info-block .label { font-size: 0.75rem; color: #888; text-transform: uppercase; }
-
+.admin-value { 
+  font-size: 1.4rem; 
+  font-weight: 800; 
+  color: #2d3748; 
+  line-height: 1;
+}
+.admin-label { 
+  font-size: 0.75rem; 
+  color: #718096; 
+  text-transform: uppercase; 
+  font-weight: 600;
+  letter-spacing: 0.5px;
+}
 
 /* --- ÍCONE DE AÇÃO --- */
 .action-icon {

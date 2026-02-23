@@ -8,6 +8,7 @@ function Login({ isOpen, onClose, onOpenRegister }) {
   const auth = useAuth();
 
   const API_BASE = import.meta.env.VITE_API_BASE ?? "http://localhost:8000";
+  console.log(API_BASE);
 
   if (!isOpen) return null;
 
