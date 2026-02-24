@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import Menu from "../../../components/Menu/Menu.jsx";
 import FormsAmbiente from "../../../components/FormsAmbiente/FormsAmbiente.jsx";
 import { toast } from 'react-toastify';
+import Lens from "../../../components/Lens/Lens";
 import "./HistoricPage.css";
 
 function HistoricPage() {
@@ -178,12 +179,17 @@ function HistoricPage() {
                         
                         <div className="modal-body">
                             <div className="modal-img-wrapper">
-                                <img 
-                                    src={getFullUrl(modalData.url_img)} 
-                                    alt="Detalhe" 
-                                />
+                                <Lens 
+                                    zoomFactor={2.5} 
+                                    lensSize={200} 
+                                    imageSrc={getFullUrl(modalData.url_img)} 
+                                >
+                                    <img 
+                                        src={getFullUrl(modalData.url_img)} 
+                                        alt={modalData.nome_img} 
+                                    />
+                                </Lens>
                             </div>
-
                             <div className="modal-form-wrapper">
                                 <h3>Editar Classificação</h3>
                                 <p className="img-name">{modalData.nome_img}</p>

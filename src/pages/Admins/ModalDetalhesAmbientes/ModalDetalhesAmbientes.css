@@ -9,11 +9,13 @@
 .modalContent-Detalhes {
   background: #fff;
   width: 500px;
-  max-height: 85vh;
+  max-height: 90vh; /* Aumentei um pouco para aproveitar melhor a tela */
   border-radius: 12px;
   padding: 24px;
-  display: flex; flex-direction: column;
+  display: flex; 
+  flex-direction: column;
   box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+  overflow: auto; /* IMPORTANTE: Impede que o conteúdo vaze da caixa branca */
 }
 
 .headerDetalhes {
@@ -24,6 +26,12 @@
 }
 
 .headerDetalhes h2 { color: #6C63FF; font-size: 25px; }
+
+.headerDetalhes,
+.statusSection,
+.opcoesSection {
+  flex-shrink: 0;
+}
 
 .statusSection {
   background: #edeffa;
@@ -48,14 +56,28 @@
   padding: 8px 16px; border-radius: 6px; cursor: pointer;
 }
 
+/* Nova regra para o container de usuários para forçar o scroll correto */
+.usuariosSection {
+  display: flex;
+  flex-direction: column;
+  flex: 1; 
+  min-height: 0; 
+  margin-top: 15px;
+  /* Impede que a seção inteira de usuários seja esmagada até sumir */
+  flex-shrink: 0; 
+}
+
 .usuariosSection h3 { font-size: 16px; margin-bottom: 5px; color: #333; }
 .subtitle { font-size: 13px; color: #666; margin-bottom: 15px; }
 
 .listaUsuarios {
   overflow-y: auto;
-  flex-grow: 1;
+  flex: 1; 
   border: 1px solid #eee;
   border-radius: 8px;
+  margin-bottom: 5px;
+  /* Altura mínima garantida. Garante que sempre caberão uns 3 médicos na visão antes do scroll geral ativar */
+  min-height: 150px; 
 }
 
 .itemUsuario {

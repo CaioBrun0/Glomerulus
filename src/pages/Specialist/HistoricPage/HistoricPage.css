@@ -229,13 +229,14 @@
 
 .modal-form-wrapper {
     flex: 1;
-    padding: 30px;
+    padding: 20px; /* Reduzi de 30 para 20 para ganhar espaço útil */
     background: #fff;
     color: #000000;
     overflow-y: auto;
     border-left: 1px solid #eee;
+    display: flex;          /* NOVO */
+    flex-direction: column; /* NOVO */
 }
-
 .modal-close {
     position: absolute;
     top: 15px;

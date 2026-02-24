@@ -8,19 +8,19 @@ import "./FormsPage.css";
 import Lens from "../../../components/Lens/Lens";
 
 function FormsPage() {
-    const { id } = useParams(); 
+    const { id } = useParams();
     const navigate = useNavigate();
-    
+
     // --- LÓGICA DE PREVIEW ---
     const location = useLocation();
     const isPreview = new URLSearchParams(location.search).get("preview") === "true";
-    
+
     // Estados
     const [imagens, setImagens] = useState([]);
     const [indexAtual, setIndexAtual] = useState(0);
     const [loading, setLoading] = useState(true);
     const [buscandoAnteriores, setBuscandoAnteriores] = useState(false);
-    
+
     const API_BASE = import.meta.env.VITE_API_BASE ?? "http://localhost:8000";
 
     // --- CARREGAR IMAGENS ---
@@ -28,13 +28,13 @@ function FormsPage() {
         try {
             setLoading(true);
             const token = localStorage.getItem("access_token");
-            
+
             // Lógica dinâmica: Se for preview bate na rota nova, se não bate na inicializar normal
-            const endpoint = isPreview 
-                ? `${API_BASE}/ambientes/${id}/preview-imagens` 
+            const endpoint = isPreview
+                ? `${API_BASE}/ambientes/${id}/preview-imagens`
                 : `${API_BASE}/classificacoes/ambiente/${id}/inicializar`;
 
-            const response = await fetch(endpoint, { 
+            const response = await fetch(endpoint, {
                 headers: { "Authorization": `Bearer ${token}` }
             });
 
@@ -59,7 +59,7 @@ function FormsPage() {
 
     // --- BUSCAR ANTERIORES ---
     const buscarAnteriores = async () => {
-        const imagemReferencia = imagens[0]; 
+        const imagemReferencia = imagens[0];
         if (!imagemReferencia) return;
 
         setBuscandoAnteriores(true);
@@ -67,7 +67,7 @@ function FormsPage() {
             const token = localStorage.getItem("access_token");
             const response = await fetch(`${API_BASE}/classificacoes/ambiente/${id}/voltar`, {
                 method: "POST",
-                headers: { 
+                headers: {
                     "Content-Type": "application/json",
                     "Authorization": `Bearer ${token}`
                 },
@@ -77,7 +77,7 @@ function FormsPage() {
             if (response.ok) {
                 const data = await response.json();
                 const pendentesAnteriores = (data.imagens || []).filter(img => !img.classificacao);
-                
+
                 if (pendentesAnteriores.length > 0) {
                     setImagens(prev => [...pendentesAnteriores, ...prev]);
                     setIndexAtual(prev => prev + pendentesAnteriores.length);
@@ -97,20 +97,34 @@ function FormsPage() {
     const getUrlImagem = (img) => {
         if (!img) return "";
         if (img.download_url) {
-             if (img.download_url.startsWith("http")) return img.download_url;
-             return `${API_BASE}${img.download_url}`;
+            if (img.download_url.startsWith("http")) return img.download_url;
+            return `${API_BASE}${img.download_url}`;
         }
         if (img.caminho_img) {
-             try {
-                 const rawPath = decodeURIComponent(img.caminho_img);
-                 const safePath = rawPath.split('/').map(part => encodeURIComponent(part)).join('/');
-                 return `${API_BASE}/nextcloud/images/${safePath}`;
-             } catch (e) { return ""; }
+            try {
+                const rawPath = decodeURIComponent(img.caminho_img);
+                const safePath = rawPath.split('/').map(part => encodeURIComponent(part)).join('/');
+                return `${API_BASE}/nextcloud/images/${safePath}`;
+            } catch (e) { return ""; }
         }
         return "";
     };
 
-    const handleSucesso = () => {
+    const handleSucesso = (novasClassificacoes) => {
+        // 1. Atualiza a imagem atual no estado para "lembrar" do que foi marcado
+        // Assim, se o usuário clicar em "Voltar", os dados já estão salvos no React
+        setImagens(prevImagens => {
+            const copia = [...prevImagens];
+            if (copia[indexAtual]) {
+                copia[indexAtual] = {
+                    ...copia[indexAtual],
+                    classificacoes: novasClassificacoes || copia[indexAtual].classificacoes
+                };
+            }
+            return copia;
+        });
+
+        // 2. Avança para a próxima imagem
         if (indexAtual < imagens.length - 1) {
             setIndexAtual(prev => prev + 1);
         } else {
@@ -122,34 +136,37 @@ function FormsPage() {
     const imagemAtual = imagens[indexAtual];
     const urlImagemAtual = getUrlImagem(imagemAtual);
 
+    // NOVO: Extrai os IDs das opções que vieram do banco (ou do clique anterior)
+    const selecaoPrevia = imagemAtual?.classificacoes?.map(c => String(c.id_opc)) || [];
+
     return (
         <div className="workspace-container">
-            
+
             {/* HEADER */}
             <header className="workspace-header">
                 {/* Se for Preview, volta para aba anterior. Se for uso real, volta para HomePage */}
                 <button className="btn-back-workspace" onClick={() => navigate(isPreview ? -1 : "/HomePage")}>
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M19 12H5"/><path d="M12 19l-7-7 7-7"/></svg>
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M19 12H5" /><path d="M12 19l-7-7 7-7" /></svg>
                     Voltar
                 </button>
                 <div className="workspace-title">
-                    <h1>Rotulação {isPreview && <span style={{color: '#e53e3e', fontSize: '0.8em'}}>(Visualização)</span>}</h1>
+                    <h1>Rotulação {isPreview && <span style={{ color: '#e53e3e', fontSize: '0.8em' }}>(Visualização)</span>}</h1>
                     {imagemAtual && <span className="image-counter">Imagem {indexAtual + 1} de {imagens.length}</span>}
                 </div>
                 <div className="header-actions">
-                    <button 
-                        className="btn-history" 
-                        onClick={buscarAnteriores} 
+                    <button
+                        className="btn-history"
+                        onClick={buscarAnteriores}
                         disabled={loading || buscandoAnteriores || imagens.length === 0}
                     >
-                         {buscandoAnteriores ? "..." : "⏪ Buscar Anteriores"}
+                        {buscandoAnteriores ? "..." : "⏪ Buscar Anteriores"}
                     </button>
                 </div>
             </header>
 
             {/* CONTEÚDO */}
             <div className="workspace-content">
-                
+
                 {/* 1. PAINEL DE IMAGEM (ESQUERDA) */}
                 <div className="image-viewer-panel">
                     {loading ? (
@@ -159,17 +176,17 @@ function FormsPage() {
                         </div>
                     ) : imagemAtual ? (
                         <div className="viewer-canvas">
-                            
+
                             {/* --- COMPONENTE LENS (INTEGRADO) --- */}
-                            <Lens 
+                            <Lens
                                 zoomFactor={2.5}     // Zoom de 2.5x
                                 lensSize={200}       // Lupa grande de 200px
-                                imageSrc={urlImagemAtual} 
+                                imageSrc={urlImagemAtual}
                             >
-                                <img 
-                                    src={urlImagemAtual} 
+                                <img
+                                    src={urlImagemAtual}
                                     alt={imagemAtual.nome_img}
-                                    className="main-image-lens" 
+                                    className="main-image-lens"
                                 />
                             </Lens>
                             {/* ----------------------------------- */}
@@ -206,17 +223,18 @@ function FormsPage() {
                     {/* AVISO DE PREVIEW PARA O ADMIN */}
                     {isPreview && (
                         <div style={{ background: '#fff5f5', color: '#c53030', padding: '12px', borderRadius: '8px', marginBottom: '15px', textAlign: 'center', fontSize: '0.9rem', border: '1px solid #feb2b2', lineHeight: '1.4' }}>
-                            <strong style={{display: 'block', marginBottom: '4px'}}>⚠️ MODO PREVIEW</strong>
+                            <strong style={{ display: 'block', marginBottom: '4px' }}>⚠️ MODO PREVIEW</strong>
                             Nenhuma classificação será salva no banco de dados.
                         </div>
                     )}
 
                     {imagemAtual ? (
                         <div className="forms-wrapper">
-                            <FormsAmbiente 
-                                ambienteId={id} 
+                            <FormsAmbiente
+                                ambienteId={id}
                                 imagemId={imagemAtual?.content_hash}
-                                isPreview={isPreview} // <-- Passando a flag pro componente filho
+                                isPreview={isPreview}
+                                selecaoInicial={selecaoPrevia} /* <--- PASSA AS OPÇÕES AQUI */
                                 onSucesso={handleSucesso}
                             />
                         </div>

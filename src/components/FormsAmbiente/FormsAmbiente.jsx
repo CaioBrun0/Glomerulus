@@ -70,10 +70,13 @@ function FormsAmbiente({ ambienteId, imagemId, onSucesso, isPreview, selecaoInic
         }
 
         // --- TRAVA DE SEGURANÇA (PREVIEW) ---
+        // --- TRAVA DE SEGURANÇA (PREVIEW) ---
         if (isPreview) {
             toast.info("👀 Visão de Médico: A imagem avançaria agora, mas nada foi salvo.");
+            // Cria um histórico falso para o botão de voltar funcionar no preview
+            const mockClassificacoes = selecao.map(id => ({ id_opc: id })); 
             setSelecao([]); 
-            onSucesso(); 
+            onSucesso(mockClassificacoes); 
             return; 
         }
 
@@ -81,7 +84,6 @@ function FormsAmbiente({ ambienteId, imagemId, onSucesso, isPreview, selecaoInic
         try {
             const payload = { 
                 content_hash: imagemId, 
-                // Garante que manda os IDs limpos pro back
                 id_opc: selecao 
             };
             
@@ -96,8 +98,9 @@ function FormsAmbiente({ ambienteId, imagemId, onSucesso, isPreview, selecaoInic
             });
 
             if (response.ok) {
+                const data = await response.json();
                 setSelecao([]); 
-                onSucesso();
+                onSucesso(data.classificacoes); 
             } else {
                 const errorData = await response.json().catch(() => ({}));
                 toast.error(`Erro ao salvar: ${errorData.detail || "Tente novamente."}`);

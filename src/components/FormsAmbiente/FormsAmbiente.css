@@ -1,21 +1,26 @@
 /* Container Principal do Formulário */
 .forms-modern-container {
-    height: 100%;
+    /* Mudado de 100% para flex-grow para se adaptar melhor ao pai */
+    flex-grow: 1; 
     display: flex;
     flex-direction: column;
+    min-height: 0; /* Impede o vazamento em telas pequenas */
+    height: 100%;
 }
 
 .forms-content {
     display: flex;
     flex-direction: column;
-    height: 100%;
+    flex-grow: 1; /* Ocupa todo o container */
+    min-height: 0; /* Essencial para o scroll das opções funcionar em telas baixas */
 }
 
 /* Cabeçalho (Pergunta) */
 .forms-header {
-    margin-bottom: 25px;
-    padding-bottom: 15px;
+    margin-bottom: 15px;
+    padding-bottom: 10px;
     border-bottom: 1px solid #f1f5f9;
+    flex-shrink: 0; /* Impede o cabeçalho de ser esmagado */
 }
 
 .form-label {
