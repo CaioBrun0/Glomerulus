@@ -1,22 +1,32 @@
 import React, { useState, useEffect } from "react";
+import { toast } from 'react-toastify';
 import "./FormsAmbiente.css";
 
-function FormsAmbiente({ ambienteId, imagemId, onSucesso }) {
+// Removemos o "= []" do selecaoInicial para não gerar novas referências em branco
+function FormsAmbiente({ ambienteId, imagemId, onSucesso, isPreview, selecaoInicial }) {
     const [opcoes, setOpcoes] = useState([]);
-    const [selecao, setSelecao] = useState([]); 
+    const [selecao, setSelecao] = useState(selecaoInicial || []); 
     const [enviando, setEnviando] = useState(false);
     const [descricaoAmbiente, setDescricaoAmbiente] = useState(""); 
 
     const API_BASE = import.meta.env.VITE_API_BASE ?? "http://localhost:8000";
+
+    // --- CORREÇÃO DO LOOP INFINITO E ZERAR IMAGEM ---
+    // Transforma o array em um texto fixo (ex: '["1", "2"]') para o React não se perder
+    const dependenciasSelecao = JSON.stringify(selecaoInicial || []);
+
+    useEffect(() => {
+        // Se a imagem mudar ou vier algo do histórico, atualiza as marcações
+        setSelecao(JSON.parse(dependenciasSelecao));
+    }, [imagemId, dependenciasSelecao]); 
+    // ------------------------------------------------
 
     useEffect(() => {
         if (!ambienteId) return;
         const carregarDados = async () => {
             try {
                 const token = localStorage.getItem("access_token");
-                const headers = {
-                    "Authorization": `Bearer ${token}`
-                };
+                const headers = { "Authorization": `Bearer ${token}` };
 
                 const resOpcoes = await fetch(`${API_BASE}/opcoes/ambiente/${ambienteId}`, { headers });
                 if (resOpcoes.ok) {
@@ -26,7 +36,7 @@ function FormsAmbiente({ ambienteId, imagemId, onSucesso }) {
                 const resAmbientes = await fetch(`${API_BASE}/usuarios-ambientes/meus-ambientes`, { headers });
                 if (resAmbientes.ok) {
                     const data = await resAmbientes.json();
-                    const ambienteAtual = data.ambientes.find(a => a.id_amb === ambienteId);
+                    const ambienteAtual = data.ambientes.find(a => String(a.id_amb) === String(ambienteId));
                     if (ambienteAtual) setDescricaoAmbiente(ambienteAtual.descricao_questionario);
                 }
             } catch (err) { console.error(err); }
@@ -35,37 +45,46 @@ function FormsAmbiente({ ambienteId, imagemId, onSucesso }) {
     }, [ambienteId, API_BASE]);
 
     const handleToggle = (id) => {
-        setSelecao(prev => prev.includes(id) ? prev.filter(i => i !== id) : [...prev, id]);
+        // Converte para string para não dar conflito de tipos (ID 1 vs "1")
+        const strId = String(id);
+        setSelecao(prev => {
+            const prevStr = prev.map(String);
+            if (prevStr.includes(strId)) {
+                return prevStr.filter(i => i !== strId);
+            } else {
+                return [...prevStr, strId];
+            }
+        });
     };
 
     const handleConfirmar = async (e) => {
         e.preventDefault();
         
-        // 1. Validação Visual: Mostra no console o que vai ser enviado
-        console.log("=== TENTANDO CLASSIFICAR ===");
-        console.log("Ambiente ID:", ambienteId);
-        console.log("Imagem Hash:", imagemId);
-        console.log("Opções Selecionadas:", selecao);
-
-        // 2. Bloqueios de segurança
         if (!imagemId) {
-            alert("ERRO: O ID da imagem está vazio ou indefinido.");
+            toast.error("O ID da imagem está vazio ou indefinido.");
             return;
         }
         if (selecao.length === 0) {
-            alert("Selecione pelo menos uma opção!");
+            toast.warning("Selecione pelo menos uma opção!");
             return;
+        }
+
+        // --- TRAVA DE SEGURANÇA (PREVIEW) ---
+        if (isPreview) {
+            toast.info("👀 Visão de Médico: A imagem avançaria agora, mas nada foi salvo.");
+            setSelecao([]); 
+            onSucesso(); 
+            return; 
         }
 
         setEnviando(true);
         try {
             const payload = { 
                 content_hash: imagemId, 
+                // Garante que manda os IDs limpos pro back
                 id_opc: selecao 
             };
             
-            console.log("Payload JSON:", JSON.stringify(payload)); // Veja se isso parece certo no console
-
             const token = localStorage.getItem("access_token");
             const response = await fetch(`${API_BASE}/classificacoes/ambiente/${ambienteId}/classificar`, {
                 method: "POST",
@@ -77,21 +96,16 @@ function FormsAmbiente({ ambienteId, imagemId, onSucesso }) {
             });
 
             if (response.ok) {
-                console.log("Sucesso!");
                 setSelecao([]); 
                 onSucesso();
             } else {
-                // Captura o erro detalhado vindo do Python
                 const errorData = await response.json().catch(() => ({}));
-                console.error("Erro retornado pela API:", errorData);
-                
-                // Mensagem amigável baseada no erro
-                alert(`Erro ao salvar: ${errorData.detail || "Verifique o console para detalhes."}`);
+                toast.error(`Erro ao salvar: ${errorData.detail || "Tente novamente."}`);
             }
 
         } catch (err) { 
-            console.error("Erro de Rede/Código:", err);
-            alert("Erro de conexão ao salvar."); 
+            console.error("Erro de Rede:", err);
+            toast.error("Erro de conexão ao salvar."); 
         } finally { 
             setEnviando(false); 
         }
@@ -109,24 +123,36 @@ function FormsAmbiente({ ambienteId, imagemId, onSucesso }) {
                     </p>
                 </div>
                 
-                {/* Lista de Opções (Scrollável se necessário) */}
+                {/* Lista de Opções (Com correção de clique) */}
                 <div className="options-grid">
                     {opcoes.map((opc) => {
-                        const isSelected = selecao.includes(opc.id_opc);
+                        const strId = String(opc.id_opc);
+                        const isSelected = selecao.map(String).includes(strId);
+                        const inputId = `opt-${strId}`;
+
                         return (
-                            <label 
-                                key={opc.id_opc} 
+                            <div 
+                                key={strId} 
                                 className={`modern-option-card ${isSelected ? 'active' : ''}`}
+                                onClick={() => handleToggle(strId)}
+                                style={{ cursor: 'pointer' }}
                             >
                                 <input 
+                                    id={inputId}
                                     type="checkbox" 
                                     checked={isSelected}
-                                    onChange={() => handleToggle(opc.id_opc)}
+                                    onChange={() => {}} // O onClick da div gerencia isso
                                     hidden 
                                 />
                                 <div className="option-indicator"></div>
-                                <span className="option-label">{opc.texto}</span>
-                            </label>
+                                <label 
+                                    htmlFor={inputId} 
+                                    className="option-label"
+                                    onClick={(e) => e.preventDefault()} // Impede o duplo clique irritante
+                                >
+                                    {opc.texto}
+                                </label>
+                            </div>
                         );
                     })}
                 </div>
@@ -137,9 +163,12 @@ function FormsAmbiente({ ambienteId, imagemId, onSucesso }) {
                         type="submit" 
                         className="btn-modern-submit"
                         disabled={enviando || selecao.length === 0}
+                        style={{ background: isPreview ? '#4a5568' : '' }} 
                     >
                         {enviando ? (
                             <span className="loading-dots">Salvando<span>.</span><span>.</span><span>.</span></span>
+                        ) : isPreview ? (
+                            <>Simular Envio</>
                         ) : (
                             <>
                                 Confirmar Classificação

@@ -198,6 +198,7 @@ function HistoricPage() {
                                 <FormsAmbiente 
                                     ambienteId={modalData.id_amb}
                                     imagemId={modalData.content_hash}
+                                    selecaoInicial={modalData.ids_opcoes || []} // <---
                                     onSucesso={() => {
                                         toast.success("Atualizado com sucesso!");
                                         setModalData(null);

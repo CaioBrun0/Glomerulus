@@ -41,10 +41,11 @@
     display: flex;
     flex-direction: column;
     gap: 12px;
-    flex: 1; /* Ocupa o espaço disponível */
-    overflow-y: auto; /* Scroll apenas nas opções se a lista for longa */
-    padding: 2px; /* Evita cortar a sombra do foco */
-    margin-bottom: 20px;
+    /* Removido o flex: 1 para as opções não empurrarem o botão para baixo */
+    overflow-y: auto; 
+    padding: 2px; 
+    /* Reduzido o espaço para aproximar o botão */
+    margin-bottom: 5px; 
 }
 
 /* Scrollbar fina e elegante */
@@ -126,8 +127,9 @@
 
 /* Área do Botão Submit */
 .submit-area {
-    margin-top: auto; /* Empurra para o fundo */
-    padding-top: 20px;
+    /* Removido o margin-top: auto para ele parar de fugir pro fundo */
+    margin-top: 15px; 
+    padding-top: 15px;
     border-top: 1px solid #f1f5f9;
 }
 

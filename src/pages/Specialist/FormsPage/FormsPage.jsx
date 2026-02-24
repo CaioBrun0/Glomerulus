@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { useParams, useNavigate } from "react-router-dom";
+import { useParams, useNavigate, useLocation } from "react-router-dom"; // <-- useLocation adicionado
 import FormsAmbiente from "../../../components/FormsAmbiente/FormsAmbiente.jsx";
 import { toast } from 'react-toastify';
 import "./FormsPage.css";
@@ -10,6 +10,10 @@ import Lens from "../../../components/Lens/Lens";
 function FormsPage() {
     const { id } = useParams(); 
     const navigate = useNavigate();
+    
+    // --- LÓGICA DE PREVIEW ---
+    const location = useLocation();
+    const isPreview = new URLSearchParams(location.search).get("preview") === "true";
     
     // Estados
     const [imagens, setImagens] = useState([]);
@@ -24,10 +28,14 @@ function FormsPage() {
         try {
             setLoading(true);
             const token = localStorage.getItem("access_token");
-            const response = await fetch(`${API_BASE}/classificacoes/ambiente/${id}/inicializar`, { 
-                headers: {
-                    "Authorization": `Bearer ${token}`
-                }
+            
+            // Lógica dinâmica: Se for preview bate na rota nova, se não bate na inicializar normal
+            const endpoint = isPreview 
+                ? `${API_BASE}/ambientes/${id}/preview-imagens` 
+                : `${API_BASE}/classificacoes/ambiente/${id}/inicializar`;
+
+            const response = await fetch(endpoint, { 
+                headers: { "Authorization": `Bearer ${token}` }
             });
 
             if (response.ok) {
@@ -119,12 +127,13 @@ function FormsPage() {
             
             {/* HEADER */}
             <header className="workspace-header">
-                <button className="btn-back-workspace" onClick={() => navigate("/HomePage")}>
+                {/* Se for Preview, volta para aba anterior. Se for uso real, volta para HomePage */}
+                <button className="btn-back-workspace" onClick={() => navigate(isPreview ? -1 : "/HomePage")}>
                     <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M19 12H5"/><path d="M12 19l-7-7 7-7"/></svg>
                     Voltar
                 </button>
                 <div className="workspace-title">
-                    <h1>Rotulação</h1>
+                    <h1>Rotulação {isPreview && <span style={{color: '#e53e3e', fontSize: '0.8em'}}>(Visualização)</span>}</h1>
                     {imagemAtual && <span className="image-counter">Imagem {indexAtual + 1} de {imagens.length}</span>}
                 </div>
                 <div className="header-actions">
@@ -194,11 +203,20 @@ function FormsPage() {
 
                 {/* 2. SIDEBAR (DIREITA) */}
                 <aside className="tools-sidebar">
+                    {/* AVISO DE PREVIEW PARA O ADMIN */}
+                    {isPreview && (
+                        <div style={{ background: '#fff5f5', color: '#c53030', padding: '12px', borderRadius: '8px', marginBottom: '15px', textAlign: 'center', fontSize: '0.9rem', border: '1px solid #feb2b2', lineHeight: '1.4' }}>
+                            <strong style={{display: 'block', marginBottom: '4px'}}>⚠️ MODO PREVIEW</strong>
+                            Nenhuma classificação será salva no banco de dados.
+                        </div>
+                    )}
+
                     {imagemAtual ? (
                         <div className="forms-wrapper">
                             <FormsAmbiente 
                                 ambienteId={id} 
                                 imagemId={imagemAtual?.content_hash}
+                                isPreview={isPreview} // <-- Passando a flag pro componente filho
                                 onSucesso={handleSucesso}
                             />
                         </div>
