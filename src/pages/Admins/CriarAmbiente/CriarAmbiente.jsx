@@ -10,6 +10,7 @@ function CriarAmbiente() {
     const [titulo, setTitulo] = useState("");
     const [descricao, setDescricao] = useState("");
     const [perguntas, setPerguntas] = useState(["", ""]);
+    const [multiplaEscolha, setMultiplaEscolha] = useState(false);
 
     // --- ESTADOS NEXTCLOUD ---
     const [conjuntos, setConjuntos] = useState([]);
@@ -127,7 +128,8 @@ function CriarAmbiente() {
                 descricao_questionario: descricao,
                 titulo_questionario: titulo,
                 ids_conjuntos: [selectedConjunto],
-                opcoes: perguntas
+                opcoes: perguntas,
+                multipla_escolha: multiplaEscolha
             };
 
             const res = await fetch(IMPORT_FROM_NC, {
@@ -222,6 +224,20 @@ function CriarAmbiente() {
                                 </button>
                             </div>
                         </section>
+
+                        <div className="input-group">
+                                <label htmlFor="tipo-selecao">Tipo de Seleção</label>
+                                <select
+                                    id="tipo-selecao"
+                                    className="modern-input" // <--- MUDOU AQUI
+                                    value={multiplaEscolha ? "multipla" : "unica"}
+                                    onChange={(e) => setMultiplaEscolha(e.target.value === "multipla")}
+                                    style={{ cursor: 'pointer' }}
+                                >
+                                    <option value="unica">⚪ Escolha Única (Apenas 1 opção por imagem)</option>
+                                    <option value="multipla">☑️ Múltipla Escolha (Várias opções permitidas)</option>
+                                </select>
+                            </div>
 
                         <hr className="divider" />
 

@@ -5,9 +5,10 @@ import "./FormsAmbiente.css";
 // Removemos o "= []" do selecaoInicial para não gerar novas referências em branco
 function FormsAmbiente({ ambienteId, imagemId, onSucesso, isPreview, selecaoInicial }) {
     const [opcoes, setOpcoes] = useState([]);
-    const [selecao, setSelecao] = useState(selecaoInicial || []); 
+    const [selecao, setSelecao] = useState(selecaoInicial || []);
     const [enviando, setEnviando] = useState(false);
-    const [descricaoAmbiente, setDescricaoAmbiente] = useState(""); 
+    const [descricaoAmbiente, setDescricaoAmbiente] = useState("");
+    const [isMultipla, setIsMultipla] = useState(false);
 
     const API_BASE = import.meta.env.VITE_API_BASE ?? "http://localhost:8000";
 
@@ -18,7 +19,7 @@ function FormsAmbiente({ ambienteId, imagemId, onSucesso, isPreview, selecaoInic
     useEffect(() => {
         // Se a imagem mudar ou vier algo do histórico, atualiza as marcações
         setSelecao(JSON.parse(dependenciasSelecao));
-    }, [imagemId, dependenciasSelecao]); 
+    }, [imagemId, dependenciasSelecao]);
     // ------------------------------------------------
 
     useEffect(() => {
@@ -37,7 +38,10 @@ function FormsAmbiente({ ambienteId, imagemId, onSucesso, isPreview, selecaoInic
                 if (resAmbientes.ok) {
                     const data = await resAmbientes.json();
                     const ambienteAtual = data.ambientes.find(a => String(a.id_amb) === String(ambienteId));
-                    if (ambienteAtual) setDescricaoAmbiente(ambienteAtual.descricao_questionario);
+                    if (ambienteAtual) {
+                        setDescricaoAmbiente(ambienteAtual.descricao_questionario);
+                        setIsMultipla(ambienteAtual.multipla_escolha === true);
+                    }
                 }
             } catch (err) { console.error(err); }
         };
@@ -45,21 +49,33 @@ function FormsAmbiente({ ambienteId, imagemId, onSucesso, isPreview, selecaoInic
     }, [ambienteId, API_BASE]);
 
     const handleToggle = (id) => {
-        // Converte para string para não dar conflito de tipos (ID 1 vs "1")
         const strId = String(id);
-        setSelecao(prev => {
-            const prevStr = prev.map(String);
-            if (prevStr.includes(strId)) {
-                return prevStr.filter(i => i !== strId);
-            } else {
-                return [...prevStr, strId];
-            }
-        });
+
+        // Se for ESCOLHA ÚNICA
+        if (!isMultipla) {
+            setSelecao(prev => {
+                // Se clicar na mesma opção que já tá marcada, ele desmarca
+                if (prev.includes(strId)) return [];
+                // Se clicar em outra, ele substitui limpando a antiga
+                return [strId];
+            });
+        }
+        // Se for MÚLTIPLA ESCOLHA (comportamento antigo)
+        else {
+            setSelecao(prev => {
+                const prevStr = prev.map(String);
+                if (prevStr.includes(strId)) {
+                    return prevStr.filter(i => i !== strId);
+                } else {
+                    return [...prevStr, strId];
+                }
+            });
+        }
     };
 
     const handleConfirmar = async (e) => {
         e.preventDefault();
-        
+
         if (!imagemId) {
             toast.error("O ID da imagem está vazio ou indefinido.");
             return;
@@ -74,23 +90,23 @@ function FormsAmbiente({ ambienteId, imagemId, onSucesso, isPreview, selecaoInic
         if (isPreview) {
             toast.info("👀 Visão de Médico: A imagem avançaria agora, mas nada foi salvo.");
             // Cria um histórico falso para o botão de voltar funcionar no preview
-            const mockClassificacoes = selecao.map(id => ({ id_opc: id })); 
-            setSelecao([]); 
-            onSucesso(mockClassificacoes); 
-            return; 
+            const mockClassificacoes = selecao.map(id => ({ id_opc: id }));
+            setSelecao([]);
+            onSucesso(mockClassificacoes);
+            return;
         }
 
         setEnviando(true);
         try {
-            const payload = { 
-                content_hash: imagemId, 
-                id_opc: selecao 
+            const payload = {
+                content_hash: imagemId,
+                id_opc: selecao
             };
-            
+
             const token = localStorage.getItem("access_token");
             const response = await fetch(`${API_BASE}/classificacoes/ambiente/${ambienteId}/classificar`, {
                 method: "POST",
-                headers: { 
+                headers: {
                     "Content-Type": "application/json",
                     "Authorization": `Bearer ${token}`
                 },
@@ -99,25 +115,25 @@ function FormsAmbiente({ ambienteId, imagemId, onSucesso, isPreview, selecaoInic
 
             if (response.ok) {
                 const data = await response.json();
-                setSelecao([]); 
-                onSucesso(data.classificacoes); 
+                setSelecao([]);
+                onSucesso(data.classificacoes);
             } else {
                 const errorData = await response.json().catch(() => ({}));
                 toast.error(`Erro ao salvar: ${errorData.detail || "Tente novamente."}`);
             }
 
-        } catch (err) { 
+        } catch (err) {
             console.error("Erro de Rede:", err);
-            toast.error("Erro de conexão ao salvar."); 
-        } finally { 
-            setEnviando(false); 
+            toast.error("Erro de conexão ao salvar.");
+        } finally {
+            setEnviando(false);
         }
     };
 
     return (
         <div className="forms-modern-container">
             <form onSubmit={handleConfirmar} className="forms-content">
-                
+
                 {/* Cabeçalho do Form */}
                 <div className="forms-header">
                     <span className="form-label">QUESTÃO</span>
@@ -125,7 +141,7 @@ function FormsAmbiente({ ambienteId, imagemId, onSucesso, isPreview, selecaoInic
                         {descricaoAmbiente || "Classifique a imagem abaixo:"}
                     </p>
                 </div>
-                
+
                 {/* Lista de Opções (Com correção de clique) */}
                 <div className="options-grid">
                     {opcoes.map((opc) => {
@@ -134,22 +150,22 @@ function FormsAmbiente({ ambienteId, imagemId, onSucesso, isPreview, selecaoInic
                         const inputId = `opt-${strId}`;
 
                         return (
-                            <div 
-                                key={strId} 
+                            <div
+                                key={strId}
                                 className={`modern-option-card ${isSelected ? 'active' : ''}`}
                                 onClick={() => handleToggle(strId)}
                                 style={{ cursor: 'pointer' }}
                             >
-                                <input 
+                                <input
                                     id={inputId}
-                                    type="checkbox" 
+                                    type={isMultipla ? "checkbox" : "radio"}
                                     checked={isSelected}
-                                    onChange={() => {}} // O onClick da div gerencia isso
-                                    hidden 
+                                    onChange={() => { }} // O onClick da div gerencia isso
+                                    hidden
                                 />
                                 <div className="option-indicator"></div>
-                                <label 
-                                    htmlFor={inputId} 
+                                <label
+                                    htmlFor={inputId}
                                     className="option-label"
                                     onClick={(e) => e.preventDefault()} // Impede o duplo clique irritante
                                 >
@@ -162,11 +178,11 @@ function FormsAmbiente({ ambienteId, imagemId, onSucesso, isPreview, selecaoInic
 
                 {/* Botão Fixo no Final */}
                 <div className="submit-area">
-                    <button 
-                        type="submit" 
+                    <button
+                        type="submit"
                         className="btn-modern-submit"
                         disabled={enviando || selecao.length === 0}
-                        style={{ background: isPreview ? '#4a5568' : '' }} 
+                        style={{ background: isPreview ? '#4a5568' : '' }}
                     >
                         {enviando ? (
                             <span className="loading-dots">Salvando<span>.</span><span>.</span><span>.</span></span>
@@ -175,7 +191,7 @@ function FormsAmbiente({ ambienteId, imagemId, onSucesso, isPreview, selecaoInic
                         ) : (
                             <>
                                 Confirmar Classificação
-                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M5 12l5 5l10 -10"/></svg>
+                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M5 12l5 5l10 -10" /></svg>
                             </>
                         )}
                     </button>

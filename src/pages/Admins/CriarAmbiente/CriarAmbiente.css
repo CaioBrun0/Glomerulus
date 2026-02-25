@@ -118,7 +118,7 @@
     letter-spacing: 0.5px;
 }
 
-.modern-input, .modern-textarea {
+.modern-input, .modern-textarea, select.modern-input {
     width: 100%;
     padding: 14px 18px;
     border-radius: 12px;
@@ -131,7 +131,7 @@
     box-sizing: border-box; /* Vital para inputs não vazarem */
 }
 
-.modern-input:focus, .modern-textarea:focus {
+.modern-input:focus, .modern-textarea:focus, select.modern-input:focus {
     outline: none;
     background-color: white;
     border-color: #6C63FF;
