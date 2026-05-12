@@ -15,7 +15,7 @@ function Landing() {
         {/* Navbar: Apenas Logo e Botão Entrar */}
         <nav className="landing-nav">
           <div className="logo-area">
-            <span className="logo-text">Glomerulus</span>
+            <span className="logo-text">Labeller</span>
           </div>
           <button className="btn-nav" onClick={() => setModalOpen(true)}>
             Entrar

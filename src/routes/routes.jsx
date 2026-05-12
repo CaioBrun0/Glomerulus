@@ -15,7 +15,7 @@ import DashboardPage from '../pages/Admins/DashboardPage/DashboardPage.jsx';
 function Rotas() {
   return (
     <AuthProvider> {/* <--- ENVOLVER TUDO */}
-      <BrowserRouter>
+      <BrowserRouter basename='/pathospotterlabeller'>
         <Routes>
           {/* Tela pública */}
           <Route path="/" element={<Landing />} />

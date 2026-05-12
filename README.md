@@ -1,12 +1,31 @@
-# React + Vite
+# 🔬 PathoSpotter - Classificação de Biópsias Renais (Frontend)
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+![React](https://img.shields.io/badge/react-%2320232a.svg?style=for-the-badge&logo=react&logoColor=%2361DAFB)
+![Docker](https://img.shields.io/badge/docker-%230db7ed.svg?style=for-the-badge&logo=docker&logoColor=white)
+![Nginx](https://img.shields.io/badge/nginx-%23009639.svg?style=for-the-badge&logo=nginx&logoColor=white)
 
-Currently, two official plugins are available:
+Interface web responsiva e otimizada desenvolvida para o **Sistema de Classificação de Imagens de Biópsias Renais (Glomerulopatias Crescenticas)**. 
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+Este projeto faz parte de uma iniciativa de Iniciação Científica vinculada ao **Centro de Pesquisas Gonçalo Muniz (CpqGM/FIOCRUZ)**, atuando como uma camada de inteligência e anotação perfeitamente integrada ao ecossistema do **PathoSpotter** e Nextcloud.
 
-## Expanding the ESLint configuration
+---
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+## ✨ Funcionalidades
+
+- **Autenticação Segura:** Login baseado em tokens JWT com controle de acesso para usuários comuns e administradores.
+- **Visualização Otimizada:** Interface sob demanda para visualização de imagens médicas de alta resolução via WebDAV, sem sobrecarregar a memória do navegador.
+- **Classificação Dinâmica:** Formulários de classificação de biópsias (incluindo suporte a múltipla escolha e metadados customizados).
+- **Gestão de Ambientes:** Painel administrativo para importação, criação e distribuição de conjuntos de imagens (ambientes de classificação).
+- **Conteinerização Pronta:** Estrutura Multi-stage build (Node.js + Nginx) pronta para implantação em servidores institucionais.
+
+---
+
+## 🛠️ Tecnologias Utilizadas
+
+- **Core:** React.js / JavaScript
+- **Roteamento:** React Router DOM
+- **Integração de API:** Axios (Comunicação com o Backend em FastAPI)
+- **Deploy e Infraestrutura:** Docker, Docker Compose e Nginx
+
+---
+

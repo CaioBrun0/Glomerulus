@@ -98,7 +98,7 @@ function HomePageAdmin() {
             <nav className="admin-navbar">
                 <div className="nav-brand">
                     <span className="brand-icon">🧬</span> {/* Ou sua logo <img> */}
-                    <span className="brand-name">Glomerulus Admin</span>
+                    <span className="brand-name">Labeller Admin</span>
                 </div>
                 <div className="nav-actions">
                     <span className="admin-badge">Administrador</span>
